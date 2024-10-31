@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Seed\AbstractSeed;
 
-class CProductSeeder extends AbstractSeed
+class ProductSeeder extends AbstractSeed
 {
     /**
      * Run Method.
@@ -21,6 +21,8 @@ class CProductSeeder extends AbstractSeed
             [
                 'name' => 'iPhone 14',
                 'price' => 999.99,
+                'quantity' => 30,
+                'discount_percent' => 10,
                 'description' => 'Điện thoại iPhone 14 với công nghệ mới nhất.',
                 'thumbnail' => 'iphone14_thumbnail.jpg',
                 'category_id' => 1,
@@ -30,6 +32,8 @@ class CProductSeeder extends AbstractSeed
             [
                 'name' => 'MacBook Pro 16"',
                 'price' => 2399.99,
+                'quantity' => 50,
+                'discount_percent' => 5,
                 'description' => 'Laptop MacBook Pro 16 inch, hiệu năng mạnh mẽ.',
                 'thumbnail' => 'macbookpro16_thumbnail.jpg',
                 'category_id' => 2,
@@ -39,6 +43,8 @@ class CProductSeeder extends AbstractSeed
             [
                 'name' => 'Tai nghe không dây',
                 'price' => 149.99,
+                'quantity' => 70,
+                'discount_percent' => 15,
                 'description' => 'Phụ kiện tai nghe không dây chất lượng cao.',
                 'thumbnail' => 'wireless_headphones_thumbnail.jpg',
                 'category_id' => 3,

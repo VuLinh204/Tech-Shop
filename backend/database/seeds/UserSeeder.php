@@ -11,13 +11,14 @@ class UserSeeder extends AbstractSeed
         // Lấy kết nối đến cơ sở dữ liệu
         $adapter = $this->getAdapter();
 
-        // Select ra data bảng role
+        // Truy vấn tất cả vai trò
         $roles = $adapter->fetchAll('SELECT * FROM role');
 
         if (empty($roles)) {
             throw new Exception('No roles found. Please seed the roles first.');
         }
 
+        // Giả sử bạn muốn sử dụng id của vai trò đầu tiên
         $roleIdAdmin = $roles[0]['id'];
         $roleIdUser = $roles[1]['id'];
 
@@ -34,38 +35,8 @@ class UserSeeder extends AbstractSeed
             ],
             [
                 'username' => 'Nhật Tuấn',
-                'email' => 'tuannhat124@gmail.com',
-                'phone_number' => '0962256941',
-                'address' => '456 User Ave',
-                'password' => password_hash('123456@', PASSWORD_BCRYPT),
-                'role_id' => $roleIdUser,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-            ],
-            [
-                'username' => 'Quang Dinh',
-                'email' => 'dinhquang295@gmail.com',
-                'phone_number' => '0528359104',
-                'address' => '456 User Ave',
-                'password' => password_hash('123456@', PASSWORD_BCRYPT),
-                'role_id' => $roleIdUser,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-            ],
-            [
-                'username' => 'Công Mến',
-                'email' => 'nguyenme123321@gmail.com',
-                'phone_number' => '0392974339',
-                'address' => '456 User Ave',
-                'password' => password_hash('123456@', PASSWORD_BCRYPT),
-                'role_id' => $roleIdUser,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-            ],
-            [
-                'username' => 'Thành Đạt',
-                'email' => 'nguyenthanhdat01012k3@gmail.com',
-                'phone_number' => '0328436826',
+                'email' => 'user@example.com',
+                'phone_number' => '0987654321',
                 'address' => '456 User Ave',
                 'password' => password_hash('123456@', PASSWORD_BCRYPT),
                 'role_id' => $roleIdUser,
@@ -74,6 +45,7 @@ class UserSeeder extends AbstractSeed
             ]
         ];
 
+        // Chèn dữ liệu vào bảng user
         $this->table('user')->insert($data)->saveData();
     }
 }

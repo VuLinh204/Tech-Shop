@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Seed\AbstractSeed;
 
-class ProductColorSeeder extends AbstractSeed
+class ProductVSColorSeeder extends AbstractSeed
 {
     /**
      * Run Method.

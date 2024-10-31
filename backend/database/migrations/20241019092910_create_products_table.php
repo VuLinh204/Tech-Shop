@@ -22,7 +22,9 @@ final class CreateProductsTable extends AbstractMigration
         $table = $this->table('product');
         $table->addColumn('name', 'string', ['limit' => 255, 'null' => false])
             ->addColumn('price', 'decimal', ['precision' => 10, 'scale' => 2, 'null' => false])
+            ->addColumn('quantity', 'integer', ['null' => false, 'default' => 0, 'signed' => false])
             ->addColumn('description', 'text', ['null' => false])
+            ->addColumn('discount_percent', 'integer', ['null' => false, 'default' => 0])
             ->addColumn('thumbnail', 'string', ['limit' => 255, 'null' => false])
             ->addColumn('category_id', 'integer', ['null' => false, 'signed' => false])
             ->addForeignKey('category_id', 'category', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
