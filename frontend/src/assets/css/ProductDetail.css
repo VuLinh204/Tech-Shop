@@ -1,0 +1,173 @@
+.related-products {
+    margin-bottom: 15px;
+}
+
+.related-products__title {
+    box-sizing: border-box;
+}
+
+.product-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.product-row {
+    display: flex;
+    align-items: center;
+}
+
+.product-image {
+    flex: 0 0 40%;
+    max-width: 40%;
+    margin-top: 5em;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.product-details {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding-left: 40px;
+    margin-top: 5em;
+}
+
+.product-title,
+.product-prices,
+.product-description,
+.product-actions {
+    margin-bottom: 20px;
+}
+
+.product-title h1 {
+    font-size: 4rem;
+    color: #333;
+    font-weight: bold;
+    overflow-wrap: break-word;
+}
+h1 {
+    line-height: 1.2;
+}
+
+.product-prices {
+    display: flex;
+    align-items: center;
+}
+
+.product-prices .product-price-new {
+    font-size: 3rem;
+    color: var(--primary-color);
+}
+
+.product-prices span:first-child {
+    margin-right: 2rem;
+}
+
+.product-prices .product-price-old {
+    text-decoration: line-through;
+    color: #666;
+    font-size: 2rem;
+}
+
+.product-price-old h6,
+.product-price-new h6 {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: super;
+}
+
+.product-description {
+    font-size: 16px;
+    color: #444;
+    line-height: 1.5;
+}
+
+.product-actions {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-quantity,
+.quantity-input button,
+.size-options,
+.color-options,
+.product-add-to-cart {
+    margin-bottom: 15px;
+}
+
+.product-add-to-cart {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 45px;
+    min-width: 200px;
+}
+
+.size-options button,
+.color-options button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.size-options button:hover,
+.color-options button:hover {
+    background-color: #e2e2e2;
+}
+
+.size-btn,
+.color-btn {
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.size-btn:hover,
+.color-btn:hover {
+    background-color: #ddd;
+}
+
+.size-btn.active,
+.color-btn.active {
+    border-color: #007bff;
+    background-color: #e7f0ff;
+    color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+}
+
+.quantity-input {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-input button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+.quantity-input button:hover {
+    background-color: #e0e0e0;
+}
+
+.product-quantity {
+    text-align: center;
+    max-width: 4rem;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.related-products-slider {
+    position: relative;
+    margin-bottom: 50px;
+}
