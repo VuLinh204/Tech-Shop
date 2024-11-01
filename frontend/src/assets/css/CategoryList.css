@@ -1,0 +1,87 @@
+.home__category {
+  padding: 20px;
+  text-align: center;
+}
+
+.home__category-item-list {
+  margin-bottom: 20px;
+}
+
+.home__category-item-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.home__category-row {
+  display: flex; /* Sử dụng flexbox để căn chỉnh các danh mục */
+  flex-wrap: wrap; /* Cho phép các mục xuống hàng */
+  margin-bottom: 10px; /* Khoảng cách giữa các hàng */
+}
+
+.home__category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(
+    20% - 10px
+  ); /* Đảm bảo mỗi ô chiếm khoảng 20% chiều rộng của hàng */
+  height: 150px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  transition: transform 0.2s; /* Hiệu ứng chuyển động khi hover */
+}
+
+.home__category-item:hover {
+  transform: translateY(-5px); /* Đẩy lên một chút khi hover */
+}
+
+.home__category-image {
+  width: 60px;
+  height: 60px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 10px;
+}
+
+.home__category-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+}
+.load-more {
+  display: block;
+  margin: 20px auto; /* Căn giữa nút */
+  padding: 10px 20px;
+  background-color: #007bff; /* Màu nền */
+  color: #fff; /* Màu chữ */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.load-more:hover {
+  background-color: #0056b3; /* Màu nền khi hover */
+}
+.show-less {
+  margin-top: 10px; /* Khoảng cách với các danh mục */
+  padding: 10px 20px; /* Padding cho nút */
+  font-size: 16px;
+  background-color: #007bff; /* Màu nền */
+  color: #fff; /* Màu chữ */
+  border: none; /* Không có viền */
+  cursor: pointer; /* Hiển thị con trỏ tay */
+}
+
+.show-less:hover {
+  background-color: #0056b3; /* Màu nền khi hover */
+}

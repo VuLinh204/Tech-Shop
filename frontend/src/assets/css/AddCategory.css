@@ -1,0 +1,57 @@
+.add-category {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.add-category h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.add-category form {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-category label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.add-category input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.add-category button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-category button:hover {
+  background-color: #0056b3;
+}
+
+.add-category p {
+  margin-top: 10px;
+  color: #d9534f; /* Màu đỏ cho thông báo lỗi */
+}
+
+.add-category .success-message {
+  color: #5cb85c; /* Màu xanh cho thông báo thành công */
+}
