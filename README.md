@@ -18,9 +18,9 @@ database:
 composer require robmorgan/phinx
 
 lệnh chạy database:
-vendor/bin/phinx migrate
+php vendor/bin/phinx migrate
 
-vendor/bin/phinx seed:run
+php vendor/bin/phinx seed:run
 
 ---
 
