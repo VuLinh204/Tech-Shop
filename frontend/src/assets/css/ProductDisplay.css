@@ -1,0 +1,59 @@
+.product-display {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Tạo 5 cột trên mỗi hàng */
+  gap: 20px; /* Khoảng cách giữa các sản phẩm */
+  max-width: 1200px; /* Giới hạn chiều rộng tổng thể */
+  margin: 0 auto; /* Căn giữa grid */
+}
+
+/* Sản phẩm riêng trong ProductDisplay */
+.product-item {
+  display: block;
+  text-align: center;
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform ease-in 0.1s;
+  will-change: transform;
+}
+
+.product-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.05);
+}
+
+.product-image {
+  padding-top: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: top center;
+  border-radius: 2px;
+}
+
+.product-name {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--text-color);
+  line-height: 1.8rem;
+  height: 3.6rem;
+  margin: 10px 10px 6px;
+  overflow: hidden;
+  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-wrap: break-word;
+}
+
+.product-price {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+/* CSS cho grid__column-2-4 riêng của ProductDisplay */
+.product-display-column {
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 100%;
+}
