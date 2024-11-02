@@ -15,6 +15,8 @@ dừng -> docker-compose down
 ---
 
 database:
+composer remove robmorgan/phinx
+
 composer require robmorgan/phinx
 
 lệnh chạy database:
