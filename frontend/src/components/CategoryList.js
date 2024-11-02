@@ -6,7 +6,7 @@ const CategoryList = ({ setProducts, setCurrentPage, productsPerPage }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [visibleCount, setVisibleCount] = useState(10); // Số lượng danh mục hiển thị mặc định là 10
+  const [visibleCount, setVisibleCount] = useState(12); // Số lượng danh mục hiển thị mặc định là 12
   const [isLoadMoreVisible, setIsLoadMoreVisible] = useState(false); // Trạng thái để kiểm tra nút Load More
 
   useEffect(() => {
@@ -45,12 +45,12 @@ const CategoryList = ({ setProducts, setCurrentPage, productsPerPage }) => {
   }, [selectedCategory, sortOrder, setProducts, setCurrentPage]);
 
   const handleLoadMore = () => {
-    setVisibleCount((prevCount) => prevCount + 5); // Mỗi lần nhấn nút sẽ hiển thị thêm 5 danh mục
+    setVisibleCount((prevCount) => prevCount + 6); // Mỗi lần nhấn nút sẽ hiển thị thêm 6 danh mục
     setIsLoadMoreVisible(true); // Hiển thị nút quay lại
   };
 
   const handleShowLess = () => {
-    setVisibleCount(10); // Quay lại hiển thị 10 danh mục
+    setVisibleCount(12); // Quay lại hiển thị 10 danh mục
     setIsLoadMoreVisible(false); // Ẩn nút quay lại
   };
 

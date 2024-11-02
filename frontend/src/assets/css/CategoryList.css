@@ -16,9 +16,11 @@
 }
 
 .home__category-row {
-  display: flex; /* Sử dụng flexbox để căn chỉnh các danh mục */
-  flex-wrap: wrap; /* Cho phép các mục xuống hàng */
-  margin-bottom: 10px; /* Khoảng cách giữa các hàng */
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  justify-content: center; /* Căn giữa các danh mục */
+  gap: 10px; /* Khoảng cách giữa các ô */
 }
 
 .home__category-item {
@@ -27,18 +29,18 @@
   align-items: center;
   justify-content: center;
   width: calc(
-    20% - 10px
-  ); /* Đảm bảo mỗi ô chiếm khoảng 20% chiều rộng của hàng */
+    16.66% - 10px
+  ); /* Mỗi ô chiếm 1/6 chiều rộng hàng và trừ khoảng cách */
   height: 150px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   text-decoration: none;
-  transition: transform 0.2s; /* Hiệu ứng chuyển động khi hover */
+  transition: transform 0.2s;
 }
 
 .home__category-item:hover {
-  transform: translateY(-5px); /* Đẩy lên một chút khi hover */
+  transform: translateY(-5px);
 }
 
 .home__category-image {
@@ -56,12 +58,13 @@
   color: black;
   text-align: center;
 }
+
 .load-more {
   display: block;
-  margin: 20px auto; /* Căn giữa nút */
+  margin: 20px auto;
   padding: 10px 20px;
-  background-color: #007bff; /* Màu nền */
-  color: #fff; /* Màu chữ */
+  background-color: #007bff;
+  color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -70,18 +73,19 @@
 }
 
 .load-more:hover {
-  background-color: #0056b3; /* Màu nền khi hover */
+  background-color: #0056b3;
 }
+
 .show-less {
-  margin-top: 10px; /* Khoảng cách với các danh mục */
-  padding: 10px 20px; /* Padding cho nút */
+  margin-top: 10px;
+  padding: 10px 20px;
   font-size: 16px;
-  background-color: #007bff; /* Màu nền */
-  color: #fff; /* Màu chữ */
-  border: none; /* Không có viền */
-  cursor: pointer; /* Hiển thị con trỏ tay */
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
 }
 
 .show-less:hover {
-  background-color: #0056b3; /* Màu nền khi hover */
+  background-color: #0056b3;
 }
