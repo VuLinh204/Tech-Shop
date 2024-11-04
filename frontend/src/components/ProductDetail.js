@@ -49,7 +49,7 @@ const ProductDetails = () => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `http://localhost:82/tech-shop/backend/api/getProduct.php?id=${id}`
+          `http://localhost/tech-shop/backend/api/getProduct.php?id=${id}`
         ); // Cập nhật đường dẫn API
         const data = await response.json();
         setProduct(data);

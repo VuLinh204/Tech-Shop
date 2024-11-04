@@ -8,7 +8,7 @@
   transition: all 0.3s ease-in-out;
 }
 
-.add-category h1 {
+.add-category h2 {
   font-size: 26px;
   margin-bottom: 25px;
   color: #333;
@@ -92,4 +92,7 @@
   font-weight: 500;
   text-align: center;
   margin-top: 15px;
+}
+.error {
+  border: 2px solid red; /* Đổi màu viền thành đỏ khi không hợp lệ */
 }

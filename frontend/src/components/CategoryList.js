@@ -54,23 +54,33 @@ const CategoryList = ({ setProducts, setCurrentPage, productsPerPage }) => {
     setIsLoadMoreVisible(false); // Ẩn nút quay lại
   };
 
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
+    const productSection = document.getElementById("product-section"); // Đặt id cho mục hiển thị sản phẩm
+    if (productSection) {
+      productSection.scrollIntoView({ behavior: "smooth" }); // Cuộn xuống phần sản phẩm
+    }
+  };
+
   return (
     <div className="home__category">
       <div className="home__category-item-list">
         <div className="home__category-row">
           {categories.slice(0, visibleCount).map((category) => (
-            <a
+            <div
               key={category.id}
-              href="#"
               className="home__category-item"
-              onClick={() => setSelectedCategory(category.id)}
+              onClick={() => handleCategoryClick(category.id)}
             >
               <div
                 className="home__category-image"
-                style={{ backgroundImage: `url(${category.thumbnail})` }}
+                style={{
+                  backgroundImage: `url(http://localhost/tech-shop/backend/public/uploads/${category.thumbnail})`,
+                }}
               />
+
               <div className="home__category-name">{category.name}</div>
-            </a>
+            </div>
           ))}
         </div>
         {/* Chỉ hiển thị nút "Load More" nếu còn danh mục chưa hiển thị */}

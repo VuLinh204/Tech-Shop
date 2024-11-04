@@ -25,6 +25,31 @@ class Category
     return $categories;
   }
 
+  // Lấy danh mục với phân trang
+  public function getCategories($limit, $offset)
+  {
+    $query = "SELECT * FROM {$this->table} LIMIT ? OFFSET ?";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param("ii", $limit, $offset);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $categories = [];
+    while ($row = $result->fetch_assoc()) {
+      $categories[] = $row;
+    }
+    return $categories;
+  }
+
+  // Lấy tổng số danh mục
+  public function getTotalCategories()
+  {
+    $query = "SELECT COUNT(*) as total FROM {$this->table}";
+    $result = $this->conn->query($query);
+    $row = $result->fetch_assoc();
+    return $row['total'];
+  }
+
   // Tạo danh mục mới
   public function createCategory($name, $thumbnail)
   {
