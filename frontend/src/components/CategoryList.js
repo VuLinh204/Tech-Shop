@@ -13,7 +13,7 @@ const CategoryList = ({ setProducts, setCurrentPage, productsPerPage }) => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:82/tech-shop/backend/api/getCategories.php"
+          "http://localhost:82/tech-shop/backend/api/CategoryApi.php"
         );
         setCategories(response.data);
       } catch (error) {

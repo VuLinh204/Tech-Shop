@@ -33,4 +33,8 @@ class ProductController
     {
         return $this->product->deleteProduct($id);
     }
+    public function getProductById($id)
+    {
+        return $this->product->getProductById($id);
+    }
 }
