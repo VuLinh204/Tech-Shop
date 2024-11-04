@@ -1,40 +1,39 @@
 # Tech-store
 
-Chạy docker:
+Cách 1: Tạo các image
 
-docker-compose up -d  -> (run)
-docker-compose down   -> (remove)
+start -> docker-compose up (8081)
 
+dừng -> ctr+C
+
+CáCh 2: Không tạo các image
+
+start -> docker-compose start (8080) nhớ sửa trong docker-compose yml
+
+dừng -> docker-compose down
 
 ---
 
-database: cd backend
-
+database:
 composer remove robmorgan/phinx
 
 composer require robmorgan/phinx
 
 lệnh chạy database:
-
 php vendor/bin/phinx migrate
 
 php vendor/bin/phinx seed:run
 
 ---
 
-front end (Nhớ cài node_module -> npm i) 
-cd frontend (chạy các lệnh dưới)
+front end (Nhớ cài node_module -> npm i)
 
 npm install react-router-dom
 
 npm install @fortawesome/fontawesome-free
 
-npm install axiosa
+npm install axios
 
-npm install react-slick slick-carousel
-
-
-lệnh chạy localhost:3000
-cd frontend
-npm start -> run
-ctr C  -> tắt
+cd Tech-store\frontend
+npm start -> bật
+ctr C tắt

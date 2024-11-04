@@ -25,7 +25,7 @@ const EditCategory = ({ categoryData, onEditSuccess }) => {
 
     try {
       await axios.put(
-        "http://localhost/tech-shop/backend/api/updateCategory.php",
+        "http://localhost:82/tech-shop/backend/api/updateCategory.php",
         {
           id: categoryData.id,
           name,

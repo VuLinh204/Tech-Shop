@@ -66,7 +66,6 @@ function Content() {
                 fontSize: "3rem",
                 textAlign: "center",
                 height: "50px",
-                marginTop: "35px",
               }}
             >
               FlashSale
@@ -78,7 +77,6 @@ function Content() {
                 fontSize: "3rem",
                 textAlign: "center",
                 height: "50px",
-                marginTop: "35px",
               }}
             >
               Gợi ý hôm nay

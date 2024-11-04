@@ -17,7 +17,7 @@ const CategoriesManage = () => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost/tech-shop/backend/api/getCategories.php"
+        "http://localhost:82/tech-shop/backend/api/getCategories.php"
       );
       setCategories(response.data);
     } catch (error) {
@@ -34,7 +34,7 @@ const CategoriesManage = () => {
       try {
         await axios({
           method: "post",
-          url: "http://localhost/tech-shop/backend/api/deleteCategory.php",
+          url: "http://localhost:82/tech-shop/backend/api/deleteCategory.php",
           headers: {
             "Content-Type": "application/json",
           },

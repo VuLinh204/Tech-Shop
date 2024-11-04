@@ -16,7 +16,7 @@ const AddCategory = ({ onAddSuccess }) => {
 
     try {
       const response = await fetch(
-        "http://localhost/tech-shop/backend/api/addCategory.php",
+        "http://localhost:82/tech-shop/backend/api/addCategory.php",
         {
           method: "POST",
           headers: {
