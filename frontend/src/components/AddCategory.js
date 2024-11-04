@@ -5,8 +5,9 @@ const AddCategory = ({ onAddSuccess }) => {
   const [name, setName] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [message, setMessage] = useState("");
-  const [error, setError] = useState(""); // Thêm biến để lưu lỗi cụ thể hơn
-  const [selectedFile, setSelectedFile] = useState(null); // Thêm state để lưu file ảnh
+  const [error, setError] = useState(""); // Biến để lưu lỗi cụ thể hơn
+  const [selectedFile, setSelectedFile] = useState(null); // State để lưu file ảnh
+  const [isNameValid, setIsNameValid] = useState(true); // Biến để kiểm tra tính hợp lệ của tên
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -27,8 +28,29 @@ const AddCategory = ({ onAddSuccess }) => {
     }
   };
 
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    setName(value);
+
+    // Kiểm tra tính hợp lệ của tên
+    const regex = /^[a-zA-Z0-9]+$/; // Chỉ cho phép ký tự a-z, A-Z và 0-9
+    if (regex.test(value) && value.length <= 50) {
+      setIsNameValid(true); // Nếu hợp lệ thì set true
+      setError(""); // Reset lỗi
+    } else {
+      setIsNameValid(false); // Nếu không hợp lệ thì set false
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isNameValid) {
+      setError(
+        "Tên danh mục không hợp lệ! Chỉ cho phép ký tự a-z, A-Z và 0-9, và không quá 50 ký tự."
+      );
+      return; // Dừng thực hiện nếu tên không hợp lệ
+    }
 
     setMessage(""); // Reset message mỗi lần submit
     setError(""); // Reset error mỗi lần submit
@@ -74,8 +96,9 @@ const AddCategory = ({ onAddSuccess }) => {
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={handleNameChange}
             required
+            className={isNameValid ? "" : "error"} // Thêm lớp CSS khi tên không hợp lệ
           />
         </div>
         <div>

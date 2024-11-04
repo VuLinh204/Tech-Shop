@@ -129,7 +129,7 @@ const CategoriesManage = () => {
                               <td>{category.name}</td>
                               <td>
                                 <img
-                                  src={category.thumbnail}
+                                  src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`} // Cập nhật đường dẫn đến hình ảnh
                                   alt="Hình ảnh"
                                   style={{ width: "100px" }}
                                 />

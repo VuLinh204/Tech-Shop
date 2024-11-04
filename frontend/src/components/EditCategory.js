@@ -7,29 +7,67 @@ const EditCategory = ({ categoryData, onEditSuccess }) => {
   const [thumbnail, setThumbnail] = useState(
     categoryData ? categoryData.thumbnail : ""
   );
+  const [preview, setPreview] = useState(
+    categoryData
+      ? `http://localhost/tech-shop/backend/public/uploads/${categoryData.thumbnail}`
+      : ""
+  );
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [isNameValid, setIsNameValid] = useState(true); // Biến để kiểm tra tính hợp lệ của tên
 
   useEffect(() => {
     if (categoryData) {
       setName(categoryData.name);
       setThumbnail(categoryData.thumbnail);
+      setPreview(
+        `http://localhost/tech-shop/backend/public/uploads/${categoryData.thumbnail}`
+      );
     }
   }, [categoryData]);
 
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setThumbnail(file); // Lưu tệp ảnh mới
+      setPreview(URL.createObjectURL(file)); // Hiển thị ảnh xem trước
+    }
+  };
+
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    setName(value);
+
+    // Kiểm tra tính hợp lệ của tên
+    const regex = /^[a-zA-Z0-9]+$/; // Chỉ cho phép ký tự a-z, A-Z và 0-9
+    if (regex.test(value) && value.length <= 50) {
+      setIsNameValid(true); // Nếu hợp lệ thì set true
+      setError(""); // Reset lỗi
+    } else {
+      setIsNameValid(false); // Nếu không hợp lệ thì set false
+    }
+  };
+
   const handleUpdateCategory = async () => {
-    if (!name || !thumbnail) {
-      setError("Vui lòng điền đầy đủ thông tin!");
+    if (!isNameValid || !name || !thumbnail) {
+      setError("Vui lòng điền đầy đủ thông tin hợp lệ!");
       return;
     }
 
+    const formData = new FormData();
+    formData.append("id", categoryData.id);
+    formData.append("name", name);
+    formData.append("thumbnail", thumbnail);
+    formData.append("action", "update"); // Thêm thông tin để xác định là cập nhật
+
     try {
-      await axios.put(
+      await axios.post(
         "http://localhost/tech-shop/backend/api/CategoryApi.php",
+        formData,
         {
-          id: categoryData.id,
-          name,
-          thumbnail,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
@@ -49,18 +87,31 @@ const EditCategory = ({ categoryData, onEditSuccess }) => {
       <form onSubmit={(e) => e.preventDefault()}>
         <div className="form-group">
           <label>Tên danh mục</label>
+          <br />
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={handleNameChange}
+            className={isNameValid ? "" : "error"} // Thêm lớp CSS khi tên không hợp lệ
           />
         </div>
         <div className="form-group">
-          <label>Thumbnail</label>
+          <label>Thumbnail hiện tại</label> <br />
+          {preview && (
+            <img
+              src={preview}
+              alt="Thumbnail hiện tại"
+              className="thumbnail-preview"
+              style={{ maxWidth: "200px" }}
+            />
+          )}
+          <br />
+          <br />
+          <label>Chọn Thumbnail cần thay</label>
           <input
-            type="text"
-            value={thumbnail}
-            onChange={(e) => setThumbnail(e.target.value)}
+            type="file"
+            onChange={handleThumbnailChange}
+            accept="image/*"
           />
         </div>
         {message && <div className="message">{message}</div>}
