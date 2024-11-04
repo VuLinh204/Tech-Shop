@@ -108,6 +108,96 @@ class ProductSeeder extends AbstractSeed
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
+            [
+                'name' => 'iPhone 14 Pro Max',
+                'price' => 1099.99,
+                'description' => 'Điện thoại iPhone 14 Pro Max với camera chất lượng cao.',
+                'thumbnail' => 'https://example.com/images/iphone14_pro_max_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Mac Mini M1',
+                'price' => 699.99,
+                'description' => 'Máy tính để bàn Mac Mini với chip M1 mạnh mẽ.',
+                'thumbnail' => 'https://example.com/images/mac_mini_m1_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Apple Pencil (2nd Gen)',
+                'price' => 129.99,
+                'description' => 'Bút cảm ứng Apple Pencil thế hệ thứ hai cho iPad.',
+                'thumbnail' => 'https://example.com/images/apple_pencil_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Samsung Galaxy Tab S8',
+                'price' => 699.99,
+                'description' => 'Máy tính bảng Samsung Galaxy Tab S8 với màn hình đẹp.',
+                'thumbnail' => 'https://example.com/images/galaxy_tab_s8_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Fujifilm X-T4',
+                'price' => 1699.99,
+                'description' => 'Máy ảnh Fujifilm X-T4 với khả năng chụp ảnh chuyên nghiệp.',
+                'thumbnail' => 'https://example.com/images/fujifilm_xt4_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Razer Blade 15',
+                'price' => 1999.99,
+                'description' => 'Laptop gaming Razer Blade 15 với hiệu năng cao.',
+                'thumbnail' => 'https://example.com/images/razer_blade15_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Nintendo Switch',
+                'price' => 299.99,
+                'description' => 'Máy chơi game Nintendo Switch với nhiều trò chơi thú vị.',
+                'thumbnail' => 'https://example.com/images/nintendo_switch_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Bose SoundLink II',
+                'price' => 199.99,
+                'description' => 'Loa Bluetooth Bose SoundLink II với âm thanh tuyệt vời.',
+                'thumbnail' => 'https://example.com/images/bose_soundlink2_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Microsoft Surface Pro 8',
+                'price' => 999.99,
+                'description' => 'Máy tính bảng Microsoft Surface Pro 8 với hiệu năng mạnh.',
+                'thumbnail' => 'https://example.com/images/surface_pro8_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Fitbit Charge 5',
+                'price' => 149.99,
+                'description' => 'Đồng hồ thể thao Fitbit Charge 5 với tính năng theo dõi sức khỏe.',
+                'thumbnail' => 'https://example.com/images/fitbit_charge5_thumbnail.jpg',
+                'category_id' => rand(1, 10), // Category ID from 1 to 10
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]
         ];
 
         // Kiểm tra và thêm dữ liệu vào bảng product

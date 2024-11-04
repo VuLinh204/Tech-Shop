@@ -6,14 +6,14 @@ const CategoryList = ({ setProducts, setCurrentPage, productsPerPage }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [visibleCount, setVisibleCount] = useState(10); // Số lượng danh mục hiển thị mặc định là 10
+  const [visibleCount, setVisibleCount] = useState(12); // Số lượng danh mục hiển thị mặc định là 12
   const [isLoadMoreVisible, setIsLoadMoreVisible] = useState(false); // Trạng thái để kiểm tra nút Load More
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:82/tech-shop/backend/api/getCategories.php"
+          "http://localhost/tech-shop/backend/api/CategoryApi.php"
         );
         setCategories(response.data);
       } catch (error) {
@@ -27,8 +27,8 @@ const CategoryList = ({ setProducts, setCurrentPage, productsPerPage }) => {
     const fetchProducts = async () => {
       try {
         const url = selectedCategory
-          ? `http://localhost:82/tech-shop/backend/api/getProducts.php?category_id=${selectedCategory}`
-          : "http://localhost:82/tech-shop/backend/api/getProducts.php";
+          ? `http://localhost/tech-shop/backend/api/getProducts.php?category_id=${selectedCategory}`
+          : "http://localhost/tech-shop/backend/api/getProducts.php";
 
         const response = await axios.get(url);
         let productData = Array.isArray(response.data) ? response.data : [];
@@ -45,13 +45,21 @@ const CategoryList = ({ setProducts, setCurrentPage, productsPerPage }) => {
   }, [selectedCategory, sortOrder, setProducts, setCurrentPage]);
 
   const handleLoadMore = () => {
-    setVisibleCount((prevCount) => prevCount + 5); // Mỗi lần nhấn nút sẽ hiển thị thêm 5 danh mục
+    setVisibleCount((prevCount) => prevCount + 6); // Mỗi lần nhấn nút sẽ hiển thị thêm 6 danh mục
     setIsLoadMoreVisible(true); // Hiển thị nút quay lại
   };
 
   const handleShowLess = () => {
-    setVisibleCount(10); // Quay lại hiển thị 10 danh mục
+    setVisibleCount(12); // Quay lại hiển thị 10 danh mục
     setIsLoadMoreVisible(false); // Ẩn nút quay lại
+  };
+
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
+    const productSection = document.getElementById("product-section"); // Đặt id cho mục hiển thị sản phẩm
+    if (productSection) {
+      productSection.scrollIntoView({ behavior: "smooth" }); // Cuộn xuống phần sản phẩm
+    }
   };
 
   return (
@@ -59,18 +67,20 @@ const CategoryList = ({ setProducts, setCurrentPage, productsPerPage }) => {
       <div className="home__category-item-list">
         <div className="home__category-row">
           {categories.slice(0, visibleCount).map((category) => (
-            <a
+            <div
               key={category.id}
-              href="#"
               className="home__category-item"
-              onClick={() => setSelectedCategory(category.id)}
+              onClick={() => handleCategoryClick(category.id)}
             >
               <div
                 className="home__category-image"
-                style={{ backgroundImage: `url(${category.thumbnail})` }}
+                style={{
+                  backgroundImage: `url(http://localhost/tech-shop/backend/public/uploads/${category.thumbnail})`,
+                }}
               />
+
               <div className="home__category-name">{category.name}</div>
-            </a>
+            </div>
           ))}
         </div>
         {/* Chỉ hiển thị nút "Load More" nếu còn danh mục chưa hiển thị */}

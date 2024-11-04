@@ -1,4 +1,3 @@
-// src/components/AddCategory.js
 import React, { useState } from "react";
 import "../assets/css/AddCategory.css"; // Import file CSS
 
@@ -6,26 +5,66 @@ const AddCategory = ({ onAddSuccess }) => {
   const [name, setName] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [message, setMessage] = useState("");
-  const [error, setError] = useState(""); // Thêm biến để lưu lỗi cụ thể hơn
+  const [error, setError] = useState(""); // Biến để lưu lỗi cụ thể hơn
+  const [selectedFile, setSelectedFile] = useState(null); // State để lưu file ảnh
+  const [isNameValid, setIsNameValid] = useState(true); // Biến để kiểm tra tính hợp lệ của tên
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileType = file.type;
+      if (fileType === "image/jpeg" || fileType === "image/png") {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setThumbnail(reader.result); // Cập nhật thumbnail với dữ liệu hình ảnh
+          setSelectedFile(file); // Lưu trữ file để tải lên
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setError("Chỉ cho phép chọn file JPG hoặc PNG.");
+        setThumbnail(""); // Reset thumbnail nếu file không hợp lệ
+        setSelectedFile(null);
+      }
+    }
+  };
+
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    setName(value);
+
+    // Kiểm tra tính hợp lệ của tên
+    const regex = /^[a-zA-Z0-9]+$/; // Chỉ cho phép ký tự a-z, A-Z và 0-9
+    if (regex.test(value) && value.length <= 50) {
+      setIsNameValid(true); // Nếu hợp lệ thì set true
+      setError(""); // Reset lỗi
+    } else {
+      setIsNameValid(false); // Nếu không hợp lệ thì set false
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!isNameValid) {
+      setError(
+        "Tên danh mục không hợp lệ! Chỉ cho phép ký tự a-z, A-Z và 0-9, và không quá 50 ký tự."
+      );
+      return; // Dừng thực hiện nếu tên không hợp lệ
+    }
+
     setMessage(""); // Reset message mỗi lần submit
     setError(""); // Reset error mỗi lần submit
 
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("thumbnail", selectedFile); // Thêm file hình ảnh vào formData
+
     try {
       const response = await fetch(
-        "http://localhost:82/tech-shop/backend/api/addCategory.php",
+        "http://localhost/tech-shop/backend/api/CategoryApi.php",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            thumbnail,
-          }),
+          body: formData,
         }
       );
 
@@ -35,6 +74,7 @@ const AddCategory = ({ onAddSuccess }) => {
         setMessage("Category created successfully!");
         setName("");
         setThumbnail("");
+        setSelectedFile(null);
         onAddSuccess();
       } else {
         setError(data.error || "Failed to create category");
@@ -52,22 +92,34 @@ const AddCategory = ({ onAddSuccess }) => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Tên danh mục:</label>
+          <br />
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={handleNameChange}
             required
+            className={isNameValid ? "" : "error"} // Thêm lớp CSS khi tên không hợp lệ
           />
         </div>
         <div>
-          <label>Hình ảnh URL:</label>
+          <label>Chọn hình ảnh (JPG hoặc PNG):</label>
           <input
-            type="text"
-            value={thumbnail}
-            onChange={(e) => setThumbnail(e.target.value)}
+            type="file"
+            accept="image/jpeg, image/png"
+            onChange={handleFileChange}
             required
           />
         </div>
+        {thumbnail && (
+          <div className="thumbnail-preview">
+            <h4>Thumbnail Preview:</h4>
+            <img
+              src={thumbnail}
+              alt="Thumbnail Preview"
+              style={{ maxWidth: "200px" }}
+            />
+          </div>
+        )}
         <button type="submit">Thêm danh mục</button>
 
         {/* Hiển thị thông báo thành công hoặc lỗi */}

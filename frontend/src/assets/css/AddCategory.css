@@ -1,57 +1,98 @@
 .add-category {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  margin: 20px auto;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  margin: 30px auto;
+  transition: all 0.3s ease-in-out;
 }
 
-.add-category h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
+.add-category h2 {
+  font-size: 26px;
+  margin-bottom: 25px;
   color: #333;
+  text-align: center;
+  font-weight: 600;
 }
 
 .add-category form {
   display: flex;
   flex-direction: column;
+  gap: 18px;
 }
 
 .add-category label {
-  margin-bottom: 8px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 600;
   color: #555;
+  margin-bottom: 6px;
 }
 
-.add-category input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 15px;
+.add-category input[type="text"],
+.add-category input[type="file"] {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.add-category input[type="text"]:focus,
+.add-category input[type="file"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.25);
 }
 
 .add-category button {
-  padding: 10px;
+  padding: 12px;
   background-color: #007bff;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .add-category button:hover {
   background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
 }
 
-.add-category p {
-  margin-top: 10px;
-  color: #d9534f; /* Màu đỏ cho thông báo lỗi */
+.add-category .thumbnail-preview {
+  text-align: center;
+  margin-top: 15px;
 }
 
-.add-category .success-message {
-  color: #5cb85c; /* Màu xanh cho thông báo thành công */
+.add-category .thumbnail-preview h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.add-category .thumbnail-preview img {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.success-message {
+  color: #28a745; /* Xanh cho thông báo thành công */
+  font-weight: 500;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.error-message {
+  color: #dc3545; /* Đỏ cho thông báo lỗi */
+  font-weight: 500;
+  text-align: center;
+  margin-top: 15px;
+}
+.error {
+  border: 2px solid red; /* Đổi màu viền thành đỏ khi không hợp lệ */
 }

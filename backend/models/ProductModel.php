@@ -57,4 +57,14 @@ class Product
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+    public function getProductById($id)
+    {
+        $query = "SELECT * FROM {$this->table} WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_assoc(); // Trả về sản phẩm
+    }
 }

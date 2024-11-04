@@ -17,7 +17,7 @@ const CategoriesManage = () => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:82/tech-shop/backend/api/getCategories.php"
+        "http://localhost/tech-shop/backend/api/CategoryApi.php"
       );
       setCategories(response.data);
     } catch (error) {
@@ -32,14 +32,15 @@ const CategoriesManage = () => {
 
     if (confirmDelete) {
       try {
-        await axios({
-          method: "post",
-          url: "http://localhost:82/tech-shop/backend/api/deleteCategory.php",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: JSON.stringify({ id: id }),
-        });
+        await axios.delete(
+          "http://localhost/tech-shop/backend/api/CategoryApi.php",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            data: { id: id },
+          }
+        );
         fetchCategories();
       } catch (error) {
         console.error("Lỗi khi xóa danh mục:", error);
@@ -128,7 +129,7 @@ const CategoriesManage = () => {
                               <td>{category.name}</td>
                               <td>
                                 <img
-                                  src={category.thumbnail}
+                                  src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`} // Cập nhật đường dẫn đến hình ảnh
                                   alt="Hình ảnh"
                                   style={{ width: "100px" }}
                                 />
