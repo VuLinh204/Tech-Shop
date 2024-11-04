@@ -58,6 +58,17 @@ const products = [
         percent_discount: 5,
         quantity_sold: 20,
     },
+<<<<<<< HEAD
+=======
+    {
+        id: 8,
+        name: 'Sản phẩm 8',
+        image: 'product3.png',
+        price: 150000,
+        percent_discount: 5,
+        quantity_sold: 20,
+    },
+>>>>>>> product_home
 ];
 
 const FlashSale = () => {
@@ -77,7 +88,9 @@ const FlashSale = () => {
         });
     };
 
+    
     return (
+<<<<<<< HEAD
         <div className="home__product">
             {/* <div className="slider-controls">
                 <button onClick={scrollLeft}>&lt;</button>
@@ -90,6 +103,14 @@ const FlashSale = () => {
                     ))}
                 </div>
             </div>
+=======
+        <div className='home__product'>
+            <Slider {...settings}>
+                {products.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                ))}
+            </Slider>
+>>>>>>> product_home
         </div>
     );
 };
