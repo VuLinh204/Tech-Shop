@@ -58,6 +58,14 @@ const products = [
         percent_discount: 5,
         quantity_sold: 20,
     },
+    {
+        id: 7,
+        name: 'Sản phẩm 7',
+        image: 'product3.png',
+        price: 150000,
+        percent_discount: 5,
+        quantity_sold: 20,
+    },
 ];
 
 const FlashSale = () => {
