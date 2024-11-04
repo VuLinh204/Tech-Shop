@@ -1,79 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../assets/css/ProductDetail.css";
+import axios from "axios";
 
 const ProductDetails = () => {
-  const { id } = useParams(); // Lấy ID từ URL
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1); // Số lượng sản phẩm
-  const [selectedSize, setSelectedSize] = useState(""); // Kích thước đã chọn
-  const [selectedColor, setSelectedColor] = useState(""); // Màu sắc đã chọn
-  const products = {
-    id: 1,
-    name: "Sản phẩm mẫu",
-    price: 1000000,
-    percent_discount: 10,
-    description: "Đây là mô tả của sản phẩm mẫu.",
-    image: "product_image.png",
-    size: ["S", "M", "L"],
-    color: ["Red", "Blue", "Green"],
-    favorite_count: 25,
-    comments: [
-      {
-        id: 1,
-        user: { name: "Người dùng 1" },
-        body: "Bình luận mẫu 1",
-        created_at: "2 giờ trước",
-        image: "user1.png",
-      },
-      {
-        id: 2,
-        user: { name: "Người dùng 2" },
-        body: "Bình luận mẫu 2",
-        created_at: "1 ngày trước",
-        image: "user2.png",
-      },
-    ],
-  };
+  const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState("");
+  const [colors, setColors] = useState([]);
 
-  // Xử lý chọn size
-  const handleSelectSize = (size) => {
-    setSelectedSize(size);
-  };
-
-  // Xử lý chọn màu sắc
-  const handleSelectColor = (color) => {
-    setSelectedColor(color);
-  };
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
           `http://localhost/tech-shop/backend/api/getProduct.php?id=${id}`
-        ); // Cập nhật đường dẫn API
+        );
         const data = await response.json();
         setProduct(data);
+
+        // Nếu `product.color` có các thuộc tính chứa tên màu, thêm chúng vào mảng colors
+        if (data.color && Array.isArray(data.color)) {
+          setColors(data.color.map((c) => c.name || c.color || c)); // Giả sử tên màu ở thuộc tính `name`
+        }
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
     };
 
+    const fetchColors = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost/tech-shop/backend/api/ColorApi.php"
+        );
+
+        // Nếu API trả về màu là tên đơn thuần, sử dụng nó; nếu không, lấy thuộc tính thích hợp.
+        const colorData = Array.isArray(response.data)
+          ? response.data.map((item) => item.name || item.color || item)
+          : [];
+
+        setColors(colorData);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu màu sắc:", error);
+        setColors([]);
+      }
+    };
+
     fetchProduct();
+    fetchColors();
   }, [id]);
 
-  const incrementQuantity = () => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
-  };
+  if (!product) return <div>Loading...</div>;
 
-  const decrementQuantity = () => {
-    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
-  };
-
-  if (!product) {
-    return <div>Loading...</div>; // Hiển thị loading khi dữ liệu đang được lấy
-  }
-
-  // Tính toán giá mới
   const newPrice =
     product.price - (product.price * product.percent_discount) / 100;
 
@@ -81,11 +59,6 @@ const ProductDetails = () => {
     <div className="app__container">
       <div className="grid">
         <div className="grid__row app__content">
-          <div className="grid__column-2">
-            <nav className="manager">
-              <h3 className="manager__heading">Product</h3>
-            </nav>
-          </div>
           <div className="grid__column-10">
             <section className="product-section">
               <div className="product-container">
@@ -100,75 +73,30 @@ const ProductDetails = () => {
                     <h1 className="product-title">{product.name}</h1>
                     <div className="product-prices">
                       <span className="product-price-old">
-                        <h6>₫</h6>
-                        {product.price.toLocaleString()}
+                        ₫{product.price.toLocaleString()}
                       </span>
                       <span className="product-price-new">
-                        <h3>₫{newPrice.toLocaleString()}</h3>
+                        ₫{newPrice.toLocaleString()}
                       </span>
                     </div>
                     <p className="product-description">{product.description}</p>
                     <div className="product-actions">
                       <form className="product-actions-form">
-                        <div className="quantity-input">
-                          <button
-                            type="button"
-                            className="quantity-decrement"
-                            onClick={decrementQuantity}
-                          >
-                            -
-                          </button>
-                          <input
-                            className="product-quantity"
-                            type="text"
-                            value={quantity}
-                            readOnly
-                          />
-                          <button
-                            type="button"
-                            className="quantity-increment"
-                            onClick={incrementQuantity}
-                          >
-                            +
-                          </button>
-                        </div>
-
-                        <div className="size-options">
-                          {products.size.map((size) => (
-                            <button
-                              key={size}
-                              type="button"
-                              className="size-btn"
-                              onClick={() => setSelectedSize(size)}
-                            >
-                              {size}
-                            </button>
-                          ))}
-                        </div>
-                        <input
-                          type="hidden"
-                          name="selected_size"
-                          value={selectedSize}
-                        />
-
+                        {/* Hiển thị các màu sắc */}
                         <div className="color-options">
-                          {products.color.map((color) => (
+                          {colors.map((color, index) => (
                             <button
-                              key={color}
+                              key={index}
                               type="button"
-                              className="color-btn"
+                              className={`color-btn ${
+                                selectedColor === color ? "selected" : ""
+                              }`}
                               onClick={() => setSelectedColor(color)}
                             >
-                              {color}
+                              {color} {/* Hiển thị tên màu */}
                             </button>
                           ))}
                         </div>
-                        <input
-                          type="hidden"
-                          name="selected_color"
-                          value={selectedColor}
-                        />
-
                         <button
                           type="submit"
                           className="btn product-add-to-cart"
@@ -176,7 +104,6 @@ const ProductDetails = () => {
                           Thêm Vào Giỏ Hàng
                         </button>
                       </form>
-                      <hr />
                       <div className="favorite">
                         <button type="button" className="favorite__btn">
                           <svg width="25" height="20">
@@ -187,7 +114,7 @@ const ProductDetails = () => {
                           </svg>
                         </button>
                         <div className="favorite__qty">
-                          ({products.favorite_count}) Đã Thích
+                          ({product.favorite_count}) Đã Thích
                         </div>
                       </div>
                     </div>
@@ -195,7 +122,6 @@ const ProductDetails = () => {
                 </div>
               </div>
             </section>
-            {/* Các phần khác giữ nguyên... */}
           </div>
         </div>
       </div>
