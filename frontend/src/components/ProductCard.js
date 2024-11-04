@@ -9,7 +9,7 @@ const ProductCard = ({ product }) => {
     return (
         <div className="grid__column-2-4">  
             <a className="home__product-item" href={`/ProductDetail/${product.id}`}>
-                <div className="home__product-item__img" style={{ backgroundImage: `url(${require(`${imageUrl}`)})`}}></div>
+                <div className="home__product-item__img" style={{ backgroundImage: `url(${require(`../assets/img/${imageUrl}`)})`}}></div>
                 <h4 className="home__product-item__name">{product.name}</h4>
                 <div className="home__product-item__price">
                     <span className="home__product-item__price-old">{product.price.toLocaleString()}</span>
