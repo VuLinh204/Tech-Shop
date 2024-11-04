@@ -1,29 +1,56 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "../assets/css/ProductDetail.css";
+import axios from "axios";
 
 const ProductDetails = () => {
-  const { id } = useParams(); // Lấy ID từ URL
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1); // Số lượng sản phẩm
-  const [selectedSize, setSelectedSize] = useState(""); // Kích thước đã chọn
-  const [selectedColor, setSelectedColor] = useState(""); // Màu sắc đã chọn
+  const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState("");
+  const [colors, setColors] = useState([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
           `http://localhost/tech-shop/backend/api/getProduct.php?id=${id}`
-        ); // Cập nhật đường dẫn API
+        );
         const data = await response.json();
         setProduct(data);
+
+        // Nếu `product.color` có các thuộc tính chứa tên màu, thêm chúng vào mảng colors
+        if (data.color && Array.isArray(data.color)) {
+          setColors(data.color.map((c) => c.name || c.color || c)); // Giả sử tên màu ở thuộc tính `name`
+        }
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
     };
 
+    const fetchColors = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost/tech-shop/backend/api/ColorApi.php"
+        );
+
+        // Nếu API trả về màu là tên đơn thuần, sử dụng nó; nếu không, lấy thuộc tính thích hợp.
+        const colorData = Array.isArray(response.data)
+          ? response.data.map((item) => item.name || item.color || item)
+          : [];
+
+        setColors(colorData);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu màu sắc:", error);
+        setColors([]);
+      }
+    };
+
     fetchProduct();
+    fetchColors();
   }, [id]);
+
+  if (!product) return <div>Loading...</div>;
 
   const incrementQuantity = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -65,37 +92,29 @@ const ProductDetails = () => {
                     <h1 className="product-title">{product.name}</h1>
                     <div className="product-prices">
                       <span className="product-price-old">
-                        <h6>₫</h6>
-                        {product.price.toLocaleString()}
+                        ₫{product.price.toLocaleString()}
                       </span>
                       <span className="product-price-new">
-                        <h3>₫{newPrice.toLocaleString()}</h3>
+                        ₫{newPrice.toLocaleString()}
                       </span>
                     </div>
                     <p className="product-description">{product.description}</p>
                     <div className="product-actions">
                       <form className="product-actions-form">
-                        <div className="quantity-input">
-                          <button
-                            type="button"
-                            className="quantity-decrement"
-                            onClick={decrementQuantity}
-                          >
-                            -
-                          </button>
-                          <input
-                            className="product-quantity"
-                            type="text"
-                            value={quantity}
-                            readOnly
-                          />
-                          <button
-                            type="button"
-                            className="quantity-increment"
-                            onClick={incrementQuantity}
-                          >
-                            +
-                          </button>
+                        {/* Hiển thị các màu sắc */}
+                        <div className="color-options">
+                          {colors.map((color, index) => (
+                            <button
+                              key={index}
+                              type="button"
+                              className={`color-btn ${
+                                selectedColor === color ? "selected" : ""
+                              }`}
+                              onClick={() => setSelectedColor(color)}
+                            >
+                              {color} {/* Hiển thị tên màu */}
+                            </button>
+                          ))}
                         </div>
                         <br />
                         <button
