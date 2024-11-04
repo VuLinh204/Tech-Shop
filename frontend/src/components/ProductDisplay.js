@@ -1,12 +1,24 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../assets/css/ProductDisplay.css";
 
 const ProductDisplay = ({ products }) => {
+  const navigate = useNavigate();
+
+  const handleProductClick = (productId) => {
+    // Chuyển hướng đến trang chi tiết sản phẩm với ID sản phẩm
+    navigate(`/productDetail/${productId}`);
+  };
+
   return (
     <div className="product-display">
       {products.length > 0 ? (
         products.map((product) => (
-          <div key={product.id} className="product-item product-display-column">
+          <div
+            key={product.id}
+            className="product-item product-display-column"
+            onClick={() => handleProductClick(product.id)} // Thêm sự kiện click
+          >
             <div
               className="product-image"
               style={{
