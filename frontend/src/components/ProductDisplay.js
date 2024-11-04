@@ -22,10 +22,10 @@ const ProductDisplay = ({ products }) => {
             <div
               className="product-image"
               style={{
-                backgroundImage: `url(${product.thumbnail})`,
-                width: "60px",
-                height: "60px",
-                backgroundSize: "contain",
+                backgroundImage: `url(http://localhost/tech-shop/backend/public/uploads/${product.thumbnail})`,
+                width: "100%",
+                height: "320px",
+                backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 marginBottom: "10px",
               }}

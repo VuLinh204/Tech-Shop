@@ -192,6 +192,10 @@ const Cart = () => {
                                 )}
                             </div>
                         </section>
+                        <div 
+                        
+                        div/>
+                       
                         <section className="related-products">
                             <div className="container">
                                 <h2>Có thể bạn sẽ thích</h2>
