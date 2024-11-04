@@ -39,7 +39,7 @@ const AddCategory = ({ onAddSuccess }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:82/tech-shop/backend/api/CategoryApi.php",
+        "http://localhost/tech-shop/backend/api/CategoryApi.php",
         {
           method: "POST",
           body: formData,
@@ -70,6 +70,7 @@ const AddCategory = ({ onAddSuccess }) => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Tên danh mục:</label>
+          <br />
           <input
             type="text"
             value={name}
