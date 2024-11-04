@@ -222,3 +222,7 @@ i.home__product-item__like-icon-fill {
     opacity: 1 !important;
     background-color: #666 !important;
 }
+
+.slick-slide div .grid__column-2-4{
+    width: 100% !important;
+}

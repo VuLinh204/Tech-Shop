@@ -68,7 +68,7 @@ const FlashSale = () => {
         dots: true,
         infinite: true,
         speed: 500,
-        slidesToShow: 1,  // Number of products visible at a time
+        slidesToShow: 5,  // Number of products visible at a time
         slidesToScroll: 1,
         autoplay: true,
         autoplaySpeed: 3000,
