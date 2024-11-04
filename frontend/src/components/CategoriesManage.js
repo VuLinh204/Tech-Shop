@@ -7,7 +7,6 @@ import Manages from "./Manages"; // Import Manages component
 import "../assets/css/CategoriesManage.css"; // Import file CSS
 import axios from "axios";
 
-
 const CategoriesManage = () => {
   const [activeItem, setActiveItem] = useState("Danh mục");
   const [isAdding, setIsAdding] = useState(false);
@@ -18,7 +17,7 @@ const CategoriesManage = () => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:82/tech-shop/backend/api/CategoryApi.php"
+        "http://localhost/tech-shop/backend/api/CategoryApi.php"
       );
       setCategories(response.data);
     } catch (error) {
@@ -33,14 +32,15 @@ const CategoriesManage = () => {
 
     if (confirmDelete) {
       try {
-        await axios({
-          method: "post",
-          url: "http://localhost:82/tech-shop/backend/api/CategoryApi.php",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: JSON.stringify({ id: id }),
-        });
+        await axios.delete(
+          "http://localhost/tech-shop/backend/api/CategoryApi.php",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            data: { id: id },
+          }
+        );
         fetchCategories();
       } catch (error) {
         console.error("Lỗi khi xóa danh mục:", error);
