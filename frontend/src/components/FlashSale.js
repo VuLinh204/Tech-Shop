@@ -1,5 +1,8 @@
 import React, { useRef } from 'react';
-import ProductCard from './ProductCart';
+import Slider from 'react-slick';
+import ProductCard from './ProductCard';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const products = [
     {
@@ -58,8 +61,6 @@ const products = [
         percent_discount: 5,
         quantity_sold: 20,
     },
-<<<<<<< HEAD
-=======
     {
         id: 8,
         name: 'Sản phẩm 8',
@@ -68,49 +69,28 @@ const products = [
         percent_discount: 5,
         quantity_sold: 20,
     },
->>>>>>> product_home
 ];
 
 const FlashSale = () => {
-    const sliderRef = useRef(null);
-
-    const scrollLeft = () => {
-        sliderRef.current.scrollBy({
-            left: -300,
-            behavior: 'smooth',
-        });
-    };
-
-    const scrollRight = () => {
-        sliderRef.current.scrollBy({
-            left: 300,
-            behavior: 'smooth',
-        });
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 5,  // Number of products visible at a time
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        arrows: true,
     };
 
     
     return (
-<<<<<<< HEAD
-        <div className="home__product">
-            {/* <div className="slider-controls">
-                <button onClick={scrollLeft}>&lt;</button>
-                <button onClick={scrollRight}>&gt;</button>
-            </div> */}
-            <div className="home__product-sale-container" ref={sliderRef}>
-                <div className="grid__row">
-                    {products.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
-                </div>
-            </div>
-=======
         <div className='home__product'>
             <Slider {...settings}>
                 {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </Slider>
->>>>>>> product_home
         </div>
     );
 };
