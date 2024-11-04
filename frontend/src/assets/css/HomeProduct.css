@@ -202,16 +202,17 @@ i.home__product-item__like-icon-fill {
     align-items: center!important;
     justify-content: center!important;
 }
-/* Tùy chỉnh vị trí của nút điều hướng */
+
+/*slider flashsale*/
 .slick-prev {
-    left: -6px!important;
+    left: -6px !important;
 }
 
 .slick-next {
-    right: -6px!important; 
+    right: -6px !important; 
 }
 /* Căn chỉnh biểu tượng mũi tên vào giữa nút */
-.slick-prev:before, .slick-next:before {
+.slick-prev:before, .slick-next:before  {
     font-size: 28px !important;
     color: rgba(0, 0, 0, 0.5) !important; 
     background: none !important; 
@@ -220,9 +221,9 @@ i.home__product-item__like-icon-fill {
 }
 .slick-prev:hover, .slick-next:hover {
     opacity: 1 !important;
-    background-color: #666 !important;
+    background-color: #7c7a7a !important;
 }
 
 .slick-slide div .grid__column-2-4{
-    width: 100% !important;
+    width: 100%  !important;
 }

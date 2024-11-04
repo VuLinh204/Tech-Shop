@@ -62,8 +62,8 @@ const products = [
         quantity_sold: 20,
     },
     {
-        id: 7,
-        name: 'Sản phẩm 7',
+        id: 8,
+        name: 'Sản phẩm 8',
         image: 'product3.png',
         price: 150000,
         percent_discount: 5,
@@ -83,8 +83,9 @@ const FlashSale = () => {
         arrows: true,
     };
 
+    
     return (
-        <div className="home__product">
+        <div className='home__product'>
             <Slider {...settings}>
                 {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
