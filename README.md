@@ -3,7 +3,9 @@
 Chạy docker:
 
 docker-compose up -d  -> (chạy container trong nền, terminal không bị chiếm dụng)
+
 docker-compose up     -> (run giữ terminal vs  container đang chạy)
+
 docker-compose down   -> (stop và delete toàn bộ container đang chạy)
 
 
@@ -30,7 +32,7 @@ npm install react-router-dom
 
 npm install @fortawesome/fontawesome-free
 
-npm install axiosa
+npm install axios
 
 npm install react-slick slick-carousel
 
