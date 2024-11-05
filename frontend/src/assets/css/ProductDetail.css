@@ -18,8 +18,11 @@
 
 .product-image {
   flex: 0 0 40%;
-  max-width: 40%;
-  margin-top: 5em;
+  margin-top: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #fff;
 }
 
 .product-image img {
@@ -204,4 +207,26 @@ h1 {
 
 .color-options .color-btn:hover {
   background-color: #cef8fd;
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+.breadcrumb-link {
+  text-decoration: none;
+
+  color: #007bff;
+  margin-right: 5px;
+}
+
+.breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-current {
+  color: #333;
+  margin-left: 5px;
 }
