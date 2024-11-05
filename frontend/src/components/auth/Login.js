@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import '../../assets/css/Header.css';
+import '../../assets/css/Alert.css';
 
 // Component Login
 const Login = () => {
@@ -6,33 +10,62 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
 
         // Gửi thông tin đăng nhập tới backend
         try {
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
+            const response = await axios.post('http://localhost/Tech-Shop/backend/api/login.php', {
+                email,
+                password,
             });
 
-            const data = await response.json();
+            const data = response.data;
 
-            if (response.ok) {
+            if (data.status === 'success') {
                 setSuccessMessage(data.message);
                 setErrorMessage('');
+                sessionStorage.setItem('user', JSON.stringify(data.user));
+
                 // Thực hiện chuyển hướng hoặc xử lý sau khi đăng nhập thành công
+                if (data.user.role_id === 1) {
+                    // Giả sử role_id = 1 là admin
+                    setTimeout(() => navigate('/dashboard'), 1000);
+                } else {
+                    setTimeout(() => navigate('/'), 1000);
+                }
             } else {
                 setErrorMessage(data.message || 'Đăng nhập thất bại');
                 setSuccessMessage('');
+                console.error(response.data.message);
             }
         } catch (error) {
-            setErrorMessage('Có lỗi xảy ra. Vui lòng thử lại.');
+            if (error.response) {
+                // Trường hợp backend trả về lỗi với mã trạng thái HTTP khác 200
+                const { status } = error.response;
+                const data = error.response.data;
+
+                if (status === 404) {
+                    setErrorMessage('Người dùng không tồn tại.');
+                } else if (status === 401) {
+                    setErrorMessage('Mật khẩu không chính xác.');
+                } else if (status === 400) {
+                    setErrorMessage(data.message || 'Dữ liệu đầu vào không hợp lệ.');
+                } else {
+                    setErrorMessage('Đã xảy ra lỗi không xác định.');
+                }
+            } else {
+                // Lỗi khác không liên quan đến phản hồi HTTP (ví dụ: không kết nối được server)
+                setErrorMessage('Không thể kết nối đến server. Vui lòng kiểm tra lại kết nối.');
+            }
             setSuccessMessage('');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -75,8 +108,8 @@ const Login = () => {
 
                             <div className="auth-form__form">
                                 {errorMessage && (
-                                    <div className="alert alert-danger">
-                                        <ul>
+                                    <div className="msg msg-danger">
+                                        <ul className="msg-ul">
                                             <li>{errorMessage}</li>
                                         </ul>
                                         <button className="close" onClick={() => setErrorMessage('')}>
@@ -85,7 +118,7 @@ const Login = () => {
                                     </div>
                                 )}
                                 {successMessage && (
-                                    <div className="alert alert-success">
+                                    <div className="msg msg-success">
                                         {successMessage}
                                         <button className="close" onClick={() => setSuccessMessage('')}>
                                             &times;
@@ -121,15 +154,15 @@ const Login = () => {
                                         Quên mật khẩu
                                     </a>
                                     <span className="auth-form__help-separate"></span>
-                                    <a href="#" className="auth-form__help-link">
+                                    <a href="/help" className="auth-form__help-link">
                                         Cần trợ giúp?
                                     </a>
                                 </div>
                             </div>
 
                             <div className="auth-form__controls">
-                                <button type="submit" className="btn btn--primary">
-                                    ĐĂNG NHẬP
+                                <button type="submit" className="btn btn--primary" disabled={isLoading}>
+                                    {isLoading ? 'Đang đăng nhập...' : 'ĐĂNG NHẬP'}
                                 </button>
                             </div>
                         </div>

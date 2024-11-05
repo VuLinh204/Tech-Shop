@@ -1,15 +1,18 @@
 // ProductCard.js
 import React from 'react';
-import '../assets/css/HomeProduct.css';
+import '../../assets/css/HomeProduct.css';
 
 const ProductCard = ({ product }) => {
     const imageUrl = product.image;
     const newPrice = product.price - (product.price * product.percent_discount) / 100;
 
     return (
-        <div className="grid__column-2-4">  
+        <div className="grid__column-2-4">
             <a className="home__product-item" href={`/ProductDetail/${product.id}`}>
-                <div className="home__product-item__img" style={{ backgroundImage: `url(${require(`../assets/img/${imageUrl}`)})`}}></div>
+                <div
+                    className="home__product-item__img"
+                    style={{ backgroundImage: `url(${require(`../../assets/img/${imageUrl}`)})` }}
+                ></div>
                 <h4 className="home__product-item__name">{product.name}</h4>
                 <div className="home__product-item__price">
                     <span className="home__product-item__price-old">{product.price.toLocaleString()}</span>

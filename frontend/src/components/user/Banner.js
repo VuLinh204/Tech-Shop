@@ -1,10 +1,10 @@
 import React from 'react';
-import '../assets/css/Banner.css';
+import '../../assets/css/Banner.css';
 
-import Banner1 from '../assets/img/banner1.jpg';
-import Banner2 from '../assets/img/banner1.jpg';
-import Banner3 from '../assets/img/banner1.jpg';
-import Banner4 from '../assets/img/banner1.jpg';
+import Banner1 from '../../assets/img/banner1.jpg';
+import Banner2 from '../../assets/img/banner1.jpg';
+import Banner3 from '../../assets/img/banner1.jpg';
+import Banner4 from '../../assets/img/banner1.jpg';
 
 const Banner = (
     {

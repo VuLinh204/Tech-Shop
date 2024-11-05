@@ -1,40 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-    // Dữ liệu mẫu
-    const currentUser = {
-        id: 1,
-        email: 'example@example.com',
-        name: 'Nguyễn Văn A',
-        customer: {
-            phone: '0123456789',
-            address: '123 Đường ABC',
-            image: 'avatar.png',
-        },
-    };
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        name: currentUser.name,
-        phone: currentUser.customer.phone,
-        address: currentUser.customer.address,
-        image: null,
-    });
+    useEffect(() => {
+        const storedUser = JSON.parse(sessionStorage.getItem('user'));
+        if (!storedUser) {
+            navigate('/login');
+        } else {
+            setUser(storedUser); // Lưu thông tin người dùng vào state
+        }
+    }, [navigate]);
 
-    const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        setFormData({
-            ...formData,
-            [name]: files ? files[0] : value,
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Xử lý cập nhật thông tin ở đây
-        console.log('Cập nhật thông tin:', formData);
-    };
-
-    const imageUrl = currentUser.customer.image ? `assets/img/${currentUser.customer.image}` : null;
+    if (!user) {
+        return <div>Loading...</div>; // Có thể hiển thị thông báo tải dữ liệu
+    }
 
     return (
         <div className="app__container">
@@ -68,18 +50,11 @@ const Profile = () => {
                         </nav>
                     </div>
                     <div className="grid__column-10">
-                        <form className="profile" onSubmit={handleSubmit}>
+                        <form className="profile">
                             <h1>Thông Tin Tài Khoản</h1>
                             <div className="form-group">
                                 <label htmlFor="email">Email:</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={currentUser.email}
-                                    disabled
-                                    required
-                                />
+                                <input type="email" id="email" name="email" value={user.email} disabled required />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="name">Họ và Tên:</label>
@@ -87,8 +62,8 @@ const Profile = () => {
                                     type="text"
                                     id="name"
                                     name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
+                                    value={user.username}
+                                    // onChange={handleChange}
                                     required
                                 />
                             </div>
@@ -98,8 +73,8 @@ const Profile = () => {
                                     type="text"
                                     id="phone"
                                     name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
+                                    value={user.phone_number}
+                                    // onChange={handleChange}
                                     required
                                 />
                             </div>
@@ -109,12 +84,12 @@ const Profile = () => {
                                     type="text"
                                     id="address"
                                     name="address"
-                                    value={formData.address}
-                                    onChange={handleChange}
+                                    value={user.address}
+                                    // onChange={handleChange}
                                     required
                                 />
                             </div>
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label htmlFor="image">Ảnh Đại Diện:</label>
                                 {imageUrl ? (
                                     <div
@@ -125,7 +100,7 @@ const Profile = () => {
                                     <p>Không có ảnh đại diện</p>
                                 )}
                                 <input type="file" id="image" name="image" onChange={handleChange} />
-                            </div>
+                            </div> */}
                             <button className="btn btn--primary" type="submit">
                                 Cập Nhật Thông Tin
                             </button>
