@@ -1,9 +1,9 @@
 import React from 'react';
-import '../assets/css/Footer.css';
+import '../../assets/css/Footer.css';
 
-import qrCode from '../assets/img/qr_code.png';
-import googlePlay from '../assets/img/google_play.png';
-import appStore from '../assets/img/app_store.png';
+import qrCode from '../../assets/img/qr_code.png';
+import googlePlay from '../../assets/img/google_play.png';
+import appStore from '../../assets/img/app_store.png';
 
 function Footer() {
     return (

@@ -1,30 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { changePassword, getUser } from '../../api/Api';
 
 const Password = () => {
-    // Dữ liệu mẫu
-    const currentUser = {
-        id: 1,
-        email: 'example@example.com',
-    };
-
     const [formData, setFormData] = useState({
         oldPassword: '',
         newPassword: '',
         confirmPassword: '',
     });
+    const [currentUser, setCurrentUser] = useState({ email: '' }); // Lưu thông tin người dùng
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const userData = await getUser();
+            setCurrentUser(userData);
+        };
+
+        fetchUser();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
+        setFormData((prevData) => ({
             ...formData,
             [name]: value,
-        });
+        }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Xử lý đổi mật khẩu ở đây
-        console.log('Đổi mật khẩu:', formData);
+        if (formData.newPassword !== formData.confirmPassword) {
+            alert('Mật khẩu mới không khớp.');
+            return;
+        }
+        const result = await changePassword(formData.oldPassword, formData.newPassword, currentUser.email);
+        alert(result.message);
     };
 
     return (
@@ -71,7 +80,7 @@ const Password = () => {
                                     type="password"
                                     id="old_password"
                                     name="oldPassword"
-                                    value={formData.oldPassword}
+                                    value={formData.oldPassword || ''}
                                     onChange={handleChange}
                                     required
                                 />

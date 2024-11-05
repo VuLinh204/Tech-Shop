@@ -76,16 +76,15 @@ const FlashSale = () => {
         dots: true,
         infinite: true,
         speed: 500,
-        slidesToShow: 5,  // Number of products visible at a time
+        slidesToShow: 5, // Number of products visible at a time
         slidesToScroll: 1,
         autoplay: true,
         autoplaySpeed: 3000,
         arrows: true,
     };
 
-    
     return (
-        <div className='home__product'>
+        <div className="home__product">
             <Slider {...settings}>
                 {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
