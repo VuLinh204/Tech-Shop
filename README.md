@@ -2,8 +2,9 @@
 
 Chạy docker:
 
-docker-compose up -d  -> (run)
-docker-compose down   -> (remove)
+docker-compose up -d  -> (chạy container trong nền, terminal không bị chiếm dụng)
+docker-compose up     -> (run giữ terminal vs  container đang chạy)
+docker-compose down   -> (stop và delete toàn bộ container đang chạy)
 
 
 ---
