@@ -3,15 +3,15 @@ import React from 'react';
 import '../../assets/css/HomeProduct.css';
 
 const ProductCard = ({ product }) => {
-    const imageUrl = product.image;
-    const newPrice = product.price - (product.price * product.percent_discount) / 100;
+    const imageUrl = product.thumbnail;
+    const newPrice = product.price - (product.price * product.discount_percent) / 100;
 
     return (
         <div className="grid__column-2-4">
             <a className="home__product-item" href={`/ProductDetail/${product.id}`}>
                 <div
                     className="home__product-item__img"
-                    style={{ backgroundImage: `url(${require(`../../assets/img/${imageUrl}`)})` }}
+                    style={{ backgroundImage: `url(http://localhost/tech-shop/backend/public/uploads/${imageUrl})` }}
                 ></div>
                 <h4 className="home__product-item__name">{product.name}</h4>
                 <div className="home__product-item__price">
@@ -34,7 +34,7 @@ const ProductCard = ({ product }) => {
                     <span className="home__product-item__sold">{product.quantity_sold} Đã bán</span>
                 </div>
                 <div className="home__product-item__origin">
-                    <span className="home__product-item__brand">GenZ</span>
+                    <span className="home__product-item__brand">Tech-shop</span>
                     <span className="home__product-item__origin-name">Việt Nam</span>
                 </div>
                 {product.percent_discount > 0 && (

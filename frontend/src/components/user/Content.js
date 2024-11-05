@@ -39,18 +39,18 @@ function Content() {
                             onCategorySelect={handleScrollToProducts}
                         />
                         <div
-                            style={{
-                                color: 'var(--primary-color)',
-                                fontSize: '3rem',
-                                textAlign: 'center',
-                                height: '50px',
-                            }}
+                            // style={{
+                            //     color: 'var(--primary-color)',
+                            //     fontSize: '3rem',
+                            //     textAlign: 'center',
+                            //     height: '50px',
+                            // }}
                         >
-                            Sản Phẩm
+                            {/* Sản Phẩm */}
                         </div>
-                        <div ref={productDisplayRef}>
+                        {/* <div ref={productDisplayRef}>
                             {' '}
-                            {/* Gán ref cho phần hiển thị sản phẩm */}
+                            Gán ref cho phần hiển thị sản phẩm
                             <ProductDisplay
                                 products={products.slice(
                                     (currentPage - 1) * productsPerPage,
@@ -59,7 +59,7 @@ function Content() {
                                 currentPage={currentPage}
                                 setCurrentPage={setCurrentPage}
                             />
-                        </div>
+                        </div> */}
                         <div
                             style={{
                                 color: 'var(--primary-color)',
@@ -77,6 +77,7 @@ function Content() {
                                 fontSize: '3rem',
                                 textAlign: 'center',
                                 height: '50px',
+                                marginTop: '50px',
                             }}
                         >
                             Gợi ý hôm nay
