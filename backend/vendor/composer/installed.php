@@ -3,7 +3,7 @@
         'name' => 'tech-store/backend',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '4e727092803a07661f1b01bd3b4c50a43793a920',
+        'reference' => 'af53a583785e4ecad48d9e3a8c89019843c8e87e',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -308,7 +308,7 @@
         'tech-store/backend' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '4e727092803a07661f1b01bd3b4c50a43793a920',
+            'reference' => 'af53a583785e4ecad48d9e3a8c89019843c8e87e',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
