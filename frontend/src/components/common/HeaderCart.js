@@ -1,6 +1,5 @@
 import React from "react";
-import "../assets/css/Cart.css";
-
+import "../../assets/css/Cart.css";
 // Dữ liệu mẫu cho giỏ hàng
 const sampleCarts = [
   {

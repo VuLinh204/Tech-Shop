@@ -133,6 +133,15 @@ const ProductDetails = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
+
+    // Lấy user_id từ localStorage (hoặc từ nơi bạn lưu trữ thông tin người dùng)
+    const userId = localStorage.getItem("user_id");
+
+    if (!userId) {
+      alert("Vui lòng đăng nhập để gửi bình luận.");
+      return;
+    }
+
     const url = editFeedbackId
       ? "http://localhost/tech-shop/backend/api/FeedbackApi.php" // Edit URL
       : "http://localhost/tech-shop/backend/api/FeedbackApi.php"; // Add new comment URL
@@ -144,7 +153,7 @@ const ProductDetails = () => {
         url: url,
         data: {
           id: editFeedbackId,
-          user_id: 1, // Replace with actual user ID
+          user_id: userId, // Lưu user_id vào dữ liệu gửi lên
           product_id: id, // The current product ID
           body: editComment,
           rating: editRating,
@@ -158,7 +167,6 @@ const ProductDetails = () => {
         setFeedbackList(response.data.feedbackList);
         setNewComment(""); // Reset the input field
         setEditFeedbackId(null); // Reset the edit state
-        // Do not hide the message automatically
       } else {
         setFeedbackMessage(response.data.message);
         setFeedbackMessageClass(response.data.cssClass);

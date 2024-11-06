@@ -1,7 +1,8 @@
 <?php
 header("Content-Type: application/json");
 require '../config/cors.php';
-
+session_start();
+$_SESSION['user_id'] = $userId;
 class UserController
 {
     private $userModel;
