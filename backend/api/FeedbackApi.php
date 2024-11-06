@@ -1,3 +1,4 @@
+
 <?php
 
 require_once '../models/FeedbackModel.php';
@@ -23,15 +24,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
         break;
 
     case 'POST':
-        // Kiểm tra xem user đã đăng nhập chưa
-        if (isset($_SESSION['user_id'])) {
-            $userId = $_SESSION['user_id']; // Lấy user_id từ session
-        } else {
-            echo json_encode(["error" => "User is not logged in"]);
-            exit;
-        }
-
+        // Thêm feedback mới hoặc cập nhật nếu đã tồn tại
         $data = json_decode(file_get_contents('php://input'), true);
+        $userId = $data['user_id'] ?? null;
         $productId = $data['product_id'] ?? null;
         $comment = $data['body'] ?? '';
         $rating = $data['rating'] ?? 5;
@@ -46,62 +41,53 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     'status' => 'success',
                     'message' => 'Cảm ơn bạn đã để lại bình luận',
                     'feedbackList' => $feedback,
-                    'cssClass' => 'feedback-success'
+                    'cssClass' => 'feedback-success' // Thêm class cho thông báo thành công
                 ]);
             } else {
+                // Nếu đã có bình luận rồi thì sẽ trả về thông báo lỗi
                 echo json_encode([
                     'status' => 'error',
-                    'message' => 'Bạn đã bình luận cho sản phẩm này rồi.',
-                    'cssClass' => 'feedback-error'
+                    'message' => 'Bạn đã bình luận cho sản phẩm này rồi. Mỗi tài khoản chỉ có thể bình luận 1 lần cho mỗi sản phẩm.',
+                    'cssClass' => 'feedback-error' // Thêm class cho thông báo thất bại
                 ]);
             }
         } else {
             echo json_encode(["error" => "Invalid input data."]);
         }
         break;
-
     case 'PUT':
-        if (isset($_SESSION['user_id'])) {
-            $userId = $_SESSION['user_id']; // Lấy user_id từ session
-        } else {
-            echo json_encode(["error" => "User is not logged in"]);
-            exit;
-        }
-
+        // Sửa feedback
         $data = json_decode(file_get_contents('php://input'), true);
         $feedbackId = $data['id'] ?? null;
+        $userId = $data['user_id'] ?? null;
         $comment = $data['body'] ?? '';
         $rating = $data['rating'] ?? 5;
 
         if ($feedbackId && $userId && $comment) {
             $result = $feedbackController->updateFeedback($feedbackId, $userId, $comment, $rating);
             if ($result) {
+                // Sau khi cập nhật thành công, lấy lại danh sách bình luận mới nhất
                 $feedback = $feedbackController->getFeedback($data['product_id']);
                 echo json_encode([
                     'status' => 'success',
                     'message' => 'Bình luận đã được cập nhật.',
                     'feedbackList' => $feedback,
-                    'cssClass' => 'feedback-success'
+                    'cssClass' => 'feedback-success' // Thêm class cho thông báo thành công
                 ]);
             } else {
                 echo json_encode([
                     'status' => 'error',
                     'message' => 'Không thể cập nhật bình luận.',
-                    'cssClass' => 'feedback-error'
+                    'cssClass' => 'feedback-error' // Thêm class cho thông báo thất bại
                 ]);
             }
         } else {
             echo json_encode(["error" => "Invalid input data."]);
         }
         break;
-    case 'DELETE':
-        if (isset($_SESSION['user_id'])) {
-            $userId = $_SESSION['user_id']; // Lấy user_id từ session
-        } else {
-            echo json_encode(["error" => "User is not logged in"]);
-            exit;
-        }
 
+    case 'DELETE':
+        // Xóa feedback
         $data = json_decode(file_get_contents("php://input"), true);
         $feedbackId = $data['id'] ?? null;
 
@@ -112,7 +98,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
             echo json_encode(["error" => "Invalid feedback ID."]);
         }
         break;
-
 
     default:
         echo json_encode(["error" => "Method not allowed."]);
