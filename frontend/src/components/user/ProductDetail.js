@@ -114,7 +114,7 @@ const ProductDetails = () => {
       const response = await axios.post(
         "http://localhost/tech-shop/backend/api/CartApi.php",
         {
-          user_id: 1, // Sử dụng user_id thích hợp
+          user_id: 5, // Sử dụng user_id thích hợp
           product_id: id,
           quantity,
         }
@@ -144,7 +144,7 @@ const ProductDetails = () => {
         url: url,
         data: {
           id: editFeedbackId,
-          user_id: 1, // Replace with actual user ID
+          user_id: 5, // Replace with actual user ID
           product_id: id, // The current product ID
           body: editComment,
           rating: editRating,
