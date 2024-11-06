@@ -1,0 +1,83 @@
+/* Toast notification */
+.feedback-toast {
+  position: fixed;
+  top: 50%; /* Vị trí từ trên màn hình, chính giữa */
+  left: 50%;
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Căn giữa thông báo cả theo chiều ngang và dọc */
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 30px;
+  border-radius: 8px;
+  z-index: 9999;
+  animation: fadeInOut 3s forwards; /* Hiệu ứng xuất hiện và biến mất */
+  text-align: center;
+  width: 300px;
+  max-width: 100%;
+}
+
+/* Thông báo thành công */
+.feedback-success {
+  background-color: #33ff33; /* Màu nền xanh lá */
+  border: 2px solid #82b366;
+}
+
+/* Thông báo thất bại */
+.feedback-error {
+  background-color: #ff3333; /* Màu nền đỏ */
+  border: 2px solid #b36666;
+}
+.comment-actions {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  align-items: center; /* Center buttons vertically */
+  margin-top: 10px;
+}
+
+.comment-action-buttons {
+  display: flex;
+  gap: 10px; /* Space between the buttons */
+}
+
+.btn-edit,
+.btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  color: #007bff; /* Adjust color to fit your design */
+  font-size: 14px;
+}
+
+.btn-delete {
+  color: #dc3545; /* Red color for delete button */
+}
+
+.btn-edit:hover,
+.btn-delete:hover {
+  text-decoration: underline;
+}
+
+/* Hiệu ứng xuất hiện và biến mất */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(-20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(-20px);
+  }
+}
