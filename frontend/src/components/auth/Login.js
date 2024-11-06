@@ -35,9 +35,9 @@ const Login = () => {
                 // Thực hiện chuyển hướng hoặc xử lý sau khi đăng nhập thành công
                 if (data.user.role_id === 1) {
                     // Giả sử role_id = 1 là admin
-                    setTimeout(() => navigate('/dashboard'), 1000);
+                    setTimeout(() => navigate('/admin/controlPanel'), 1000);
                 } else {
-                    setTimeout(() => navigate('/'), 1000);
+                    setTimeout(() => navigate('/home'), 1000);
                 }
             } else {
                 setErrorMessage(data.message || 'Đăng nhập thất bại');

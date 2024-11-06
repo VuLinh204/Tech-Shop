@@ -3,7 +3,7 @@
         'name' => 'tech-store/backend',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'af53a583785e4ecad48d9e3a8c89019843c8e87e',
+        'reference' => 'b612138822a6cc587886a00babe566a0201689bf',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -97,6 +97,15 @@
                 0 => '~2.0',
             ),
         ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v6.9.2',
+            'version' => '6.9.2.0',
+            'reference' => 'a7b17b42fa4887c92146243f3d2f4ccb962af17c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'psr/clock' => array(
             'pretty_version' => '1.0.0',
             'version' => '1.0.0.0',
@@ -124,8 +133,8 @@
         'psr/container-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '^1.0',
-                1 => '^2.0',
+                0 => '^2.0',
+                1 => '^1.0',
             ),
         ),
         'psr/http-client' => array(
@@ -308,7 +317,7 @@
         'tech-store/backend' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'af53a583785e4ecad48d9e3a8c89019843c8e87e',
+            'reference' => 'b612138822a6cc587886a00babe566a0201689bf',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

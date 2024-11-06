@@ -1,37 +1,39 @@
 import React, { useState } from 'react';
+import { sendOtp, verifyOtp } from '../../api/Api';
+import axios from 'axios';
 
-// Component Register
 const Register = () => {
     const [email, setEmail] = useState('');
+    const [otp, setOtp] = useState('');
+    const [isOtpSent, setIsOtpSent] = useState(false);
     const [errors, setErrors] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
 
-    const handleSubmit = async (event) => {
+    // Handle email submission and sending OTP
+    const handleSendOtp = async (event) => {
         event.preventDefault();
+        const data = await sendOtp(email);
+        if (data.errors) {
+            setErrors(data.errors);
+        } else {
+            setSuccessMessage(data.message || 'OTP sent to your email.');
+            setIsOtpSent(true);
+            setErrors([]);
+        }
+    };
 
-        // Gửi thông tin đăng ký tới backend
-        try {
-            const response = await fetch('/register/send', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setSuccessMessage(data.message || 'Đăng ký thành công!');
-                setErrors([]);
-                setEmail(''); // Reset email
-            } else {
-                setErrors(data.errors || ['Đăng ký thất bại, vui lòng thử lại.']);
-                setSuccessMessage('');
-            }
-        } catch (error) {
-            setErrors(['Có lỗi xảy ra. Vui lòng thử lại.']);
-            setSuccessMessage('');
+    // Handle OTP verification and registration completion
+    const handleVerifyOtp = async (event) => {
+        event.preventDefault();
+        const data = await verifyOtp(email, otp);
+        if (data.errors) {
+            setErrors(data.errors);
+        } else {
+            setSuccessMessage(data.message || 'Registration successful!');
+            setErrors([]);
+            setEmail('');
+            setOtp('');
+            setIsOtpSent(false);
         }
     };
 
@@ -63,7 +65,7 @@ const Register = () => {
             <div className="modal">
                 <div className="modal__overlay"></div>
                 <div className="modal__body">
-                    <form onSubmit={handleSubmit} className="auth-form">
+                    <form onSubmit={isOtpSent ? handleVerifyOtp : handleSendOtp} className="auth-form">
                         <div className="auth-form__container">
                             <div className="auth-form__header">
                                 <h3 className="auth-form__heading">Đăng ký</h3>
@@ -72,7 +74,7 @@ const Register = () => {
                                 </a>
                             </div>
                             <div className="auth-form__form">
-                                {/* Hiển thị thông báo lỗi */}
+                                {/* Display error messages */}
                                 {errors.length > 0 && (
                                     <div className="alert alert-danger">
                                         <ul>
@@ -93,26 +95,50 @@ const Register = () => {
                                         </button>
                                     </div>
                                 )}
-                                <div className="auth-form__group">
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        className="auth-form__input"
-                                        placeholder="Email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
-                                    />
-                                </div>
+
+                                {/* Email input */}
+                                {!isOtpSent && (
+                                    <div className="auth-form__group">
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            className="auth-form__input"
+                                            placeholder="Email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                            aria-describedby="emailHelp"
+                                        />
+                                        <small id="emailHelp" className="form-text text-muted">
+                                            Chúng tôi sẽ gửi OTP tới địa chỉ email này. Đảm bảo nó hợp lệ và có thể truy
+                                            cập được.
+                                        </small>
+                                    </div>
+                                )}
+
+                                {/* OTP Input */}
+                                {isOtpSent && (
+                                    <div className="auth-form__group">
+                                        <input
+                                            type="text"
+                                            name="otp"
+                                            className="auth-form__input"
+                                            placeholder="Enter OTP"
+                                            value={otp}
+                                            onChange={(e) => setOtp(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                )}
                             </div>
                             <div className="auth-form__aside">
                                 <p className="auth-form__policy-text">
                                     Bằng việc đăng kí, bạn đã đồng ý với Shopee về
-                                    <a href="" className="auth-form__text-link">
+                                    <a href="#" className="auth-form__text-link">
                                         Điều khoản dịch vụ
                                     </a>
                                     &
-                                    <a href="" className="auth-form__text-link">
+                                    <a href="#" className="auth-form__text-link">
                                         Chính sách bảo mật
                                     </a>
                                 </p>
@@ -122,7 +148,7 @@ const Register = () => {
                                     TRỞ LẠI
                                 </a>
                                 <button type="submit" className="btn btn--primary">
-                                    ĐĂNG KÝ
+                                    {isOtpSent ? 'XÁC THỰC OTP' : 'GỬI OTP'}
                                 </button>
                             </div>
                         </div>

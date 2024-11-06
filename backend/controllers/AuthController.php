@@ -46,8 +46,9 @@ class AuthController
             'id' => $user['id'],
             'username' => $user['username'],
             'email' => $user['email'],
-            'address' => $user['address'],
             'phone_number' => $user['phone_number'],
+            'address' => $user['address'],
+            'password' => $user['password'],
             'role_id' => $user['role_id']
         ];
 

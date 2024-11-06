@@ -57,6 +57,26 @@ export const changePassword = async (oldPassword, newPassword, email) => {
     }
 };
 
+// Hàm gọi API gửi OTP
+export const sendOtp = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/sendOtp`, { email });
+        return response.data;
+    } catch (error) {
+        return { errors: error.response ? error.response.data.errors : ['Failed to send OTP.'] };
+    }
+};
+
+// Hàm gọi API xác thực OTP
+export const verifyOtp = async (email, otp) => {
+    try {
+        const response = await axios.post(`${API_URL}/verifyOtpAndRegister`, { email, otp });
+        return response.data;
+    } catch (error) {
+        return { errors: error.response ? error.response.data.errors : ['OTP verification failed.'] };
+    }
+};
+
 // Ví dụ hàm đăng xuất
 export const logout = async () => {
     try {

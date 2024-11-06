@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { changePassword, getUser } from '../../api/Api';
+import { useNavigate } from 'react-router-dom';
 
 const Password = () => {
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         oldPassword: '',
         newPassword: '',
         confirmPassword: '',
     });
-    const [currentUser, setCurrentUser] = useState({ email: '' }); // Lưu thông tin người dùng
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const userData = await getUser();
-            setCurrentUser(userData);
-        };
+        const storedUser = JSON.parse(sessionStorage.getItem('user'));
+        if (!storedUser) {
+            navigate('/login');
+        } else {
+            setUser(storedUser); // Lưu thông tin người dùng vào state
+        }
+    }, [navigate]);
 
-        fetchUser();
-    }, []);
+    if (!user) {
+        return <div>Loading...</div>;
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -32,7 +38,7 @@ const Password = () => {
             alert('Mật khẩu mới không khớp.');
             return;
         }
-        const result = await changePassword(formData.oldPassword, formData.newPassword, currentUser.email);
+        const result = await changePassword(formData.oldPassword, formData.newPassword, user.email);
         alert(result.message);
     };
 
@@ -72,7 +78,7 @@ const Password = () => {
                             <h1>Đổi Mật Khẩu</h1>
                             <div className="form-group">
                                 <label htmlFor="email">Email:</label>
-                                <input type="email" id="email" name="email" value={currentUser.email} disabled />
+                                <input type="email" id="email" name="email" value={user.email} disabled />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="old_password">Nhập Mật Khẩu Hiện Tại:</label>

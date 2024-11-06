@@ -12,7 +12,7 @@ const CategoryList = ({ setProducts, productsPerPage = 12 }) => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost/tech-shop/backend/api/CategoryApi.php');
+                const response = await axios.get('http://localhost/Tech-Shop/backend/api/CategoryApi.php');
                 setCategories(response.data);
             } catch (error) {
                 console.error('Lỗi khi lấy danh mục:', error);
@@ -25,8 +25,8 @@ const CategoryList = ({ setProducts, productsPerPage = 12 }) => {
         const fetchProducts = async () => {
             try {
                 const url = selectedCategory
-                    ? `http://localhost/tech-shop/backend/api/getProducts.php?category_id=${selectedCategory}`
-                    : 'http://localhost/tech-shop/backend/api/getProducts.php';
+                    ? `http://localhost/Tech-Shop/backend/api/getProducts.php?category_id=${selectedCategory}`
+                    : 'http://localhost/Tech-Shop/backend/api/getProducts.php';
 
                 const response = await axios.get(url);
                 let productData = Array.isArray(response.data) ? response.data : [];
