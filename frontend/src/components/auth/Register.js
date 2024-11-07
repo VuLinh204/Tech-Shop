@@ -1,40 +1,87 @@
 import React, { useState } from 'react';
+import { sendOtp, verifyOtp, createPassword, createUser } from '../../api/Api';
 
 // Component Register
 const Register = () => {
     const [email, setEmail] = useState('');
+    const [otp, setOtp] = useState('');
+    const [password, setPassword] = useState('');
+    const [step, setStep] = useState(1);
     const [errors, setErrors] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = async (event) => {
+    const [username, setUsername] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [address, setAddress] = useState('');
+    const [roleId, setRoleId] = useState('');
+
+    // Xử lý gửi OTP
+    const handleSendOtp = async (event) => {
         event.preventDefault();
+        const data = await sendOtp(email);
 
-        // Gửi thông tin đăng ký tới backend
-        try {
-            const response = await fetch('/register/send', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setSuccessMessage(data.message || 'Đăng ký thành công!');
-                setErrors([]);
-                setEmail(''); // Reset email
-            } else {
-                setErrors(data.errors || ['Đăng ký thất bại, vui lòng thử lại.']);
-                setSuccessMessage('');
-            }
-        } catch (error) {
-            setErrors(['Có lỗi xảy ra. Vui lòng thử lại.']);
+        if (data.errors) {
+            setErrors(data.errors);
             setSuccessMessage('');
+        } else {
+            setSuccessMessage(data.message);
+            setStep(2);
+            setErrors([]);
         }
     };
 
+    // Handle OTP verification and registration completion
+    const handleVerifyOtp = async (event) => {
+        event.preventDefault();
+        const data = await verifyOtp(email, otp);
+
+        if (data.errors) {
+            setErrors(data.errors);
+            setSuccessMessage('');
+        } else {
+            setSuccessMessage(data.message);
+            setStep(3);
+            setErrors([]);
+        }
+    };
+
+    // Handle password creation after OTP verification
+    const handleCreatePassword = async (event) => {
+        event.preventDefault();
+        const data = await createPassword(password);
+
+        if (data.errors) {
+            setErrors(data.errors);
+            setSuccessMessage('');
+        } else {
+            setSuccessMessage(data.message);
+            setErrors([]);
+            handleRegister();
+        }
+    };
+
+    const handleRegister = async () => {
+        const userData = {
+            username,
+            email,
+            phone_number: phoneNumber,
+            address,
+            password,
+            role_id: roleId,
+        };
+
+        const data = await createUser(userData);
+
+        if (data.errors) {
+            setErrors([data.errors]);
+            setSuccessMessage('');
+        } else {
+            setSuccessMessage(data.message);
+            setErrors([]);
+            window.location.href = '/login';
+        }
+    };
     return (
         <>
             <header
@@ -51,7 +98,7 @@ const Register = () => {
                                 ></i>
                                 <svg className="header__logo-img" viewBox="0 0 200 50">
                                     <text x="12" y="40" fontFamily="Arial, sans-serif" fontSize="36" fill="#74C0FC">
-                                        GenZ Store
+                                        Tech Shop
                                     </text>
                                 </svg>
                             </a>
@@ -63,7 +110,10 @@ const Register = () => {
             <div className="modal">
                 <div className="modal__overlay"></div>
                 <div className="modal__body">
-                    <form onSubmit={handleSubmit} className="auth-form">
+                    <form
+                        onSubmit={step === 1 ? handleSendOtp : step === 2 ? handleVerifyOtp : handleCreatePassword}
+                        className="auth-form"
+                    >
                         <div className="auth-form__container">
                             <div className="auth-form__header">
                                 <h3 className="auth-form__heading">Đăng ký</h3>
@@ -74,7 +124,7 @@ const Register = () => {
                             <div className="auth-form__form">
                                 {/* Hiển thị thông báo lỗi */}
                                 {errors.length > 0 && (
-                                    <div className="alert alert-danger">
+                                    <div className="msg msg-danger">
                                         <ul>
                                             {errors.map((error, index) => (
                                                 <li key={index}>{error}</li>
@@ -86,24 +136,63 @@ const Register = () => {
                                     </div>
                                 )}
                                 {successMessage && (
-                                    <div className="alert alert-success">
+                                    <div className="msg msg-success">
                                         {successMessage}
                                         <button className="close" onClick={() => setSuccessMessage('')}>
                                             &times;
                                         </button>
                                     </div>
                                 )}
-                                <div className="auth-form__group">
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        className="auth-form__input"
-                                        placeholder="Email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
-                                    />
-                                </div>
+
+                                {/* Email input */}
+                                {step === 1 && (
+                                    <div className="auth-form__group">
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            className="auth-form__input"
+                                            placeholder="Email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                            aria-describedby="emailHelp"
+                                        />
+                                        <small id="emailHelp" className="form-text text-muted">
+                                            Chúng tôi sẽ gửi OTP tới địa chỉ email này. Đảm bảo nó hợp lệ và có thể truy
+                                            cập được.
+                                        </small>
+                                    </div>
+                                )}
+
+                                {/* OTP Input */}
+                                {step === 2 && (
+                                    <div className="auth-form__group">
+                                        <input
+                                            type="text"
+                                            name="otp"
+                                            className="auth-form__input"
+                                            placeholder="Enter OTP"
+                                            value={otp}
+                                            onChange={(e) => setOtp(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Password Input */}
+                                {step === 3 && (
+                                    <div className="auth-form__group">
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            className="auth-form__input"
+                                            placeholder="Create your password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                )}
                             </div>
                             <div className="auth-form__aside">
                                 <p className="auth-form__policy-text">
@@ -111,8 +200,8 @@ const Register = () => {
                                     <a href="" className="auth-form__text-link">
                                         Điều khoản dịch vụ
                                     </a>
-                                    &
-                                    <a href="" className="auth-form__text-link">
+                                    &amp;
+                                    <a href="#" className="auth-form__text-link">
                                         Chính sách bảo mật
                                     </a>
                                 </p>
@@ -122,7 +211,7 @@ const Register = () => {
                                     TRỞ LẠI
                                 </a>
                                 <button type="submit" className="btn btn--primary">
-                                    ĐĂNG KÝ
+                                    {step === 1 ? 'GỬI OTP' : step === 2 ? 'XÁC THỰC OTP' : 'TẠO MẬT KHẨU'}
                                 </button>
                             </div>
                         </div>

@@ -1,31 +1,29 @@
 import React, { useState } from 'react';
+import { createPassword } from '../../api/Api'; // Import hàm API
 
 // Component CreatePassword
 const CreatePassword = () => {
-    const [password, setPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
-    const [errors, setErrors] = useState([]);
-    const [successMessage, setSuccessMessage] = useState('');
+    const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState([]); // Lỗi sẽ được lưu trong mảng
+    const [successMessage, setSuccessMessage] = useState(''); // Thông báo thành công
     const email = new URLSearchParams(window.location.search).get('email');
     const otp = new URLSearchParams(window.location.search).get('otp');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Gửi thông tin đến backend
+        // Kiểm tra nếu mật khẩu và xác nhận mật khẩu khớp
+        if (password !== passwordConfirmation) {
+            setErrors(['Mật khẩu và xác nhận mật khẩu không khớp.']);
+            return;
+        }
+
         try {
-            const response = await fetch('/signup_create_password', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify({ email, otp, password, password_confirmation: passwordConfirmation }),
-            });
+            // Gọi hàm API để gửi yêu cầu tạo mật khẩu
+            const data = await createPassword(email, otp, password, passwordConfirmation);
 
-            const data = await response.json();
-
-            if (response.ok) {
+            if (data.success) {
                 setSuccessMessage(data.message || 'Mật khẩu đã được tạo thành công!');
                 setErrors([]);
                 setPassword('');
@@ -35,7 +33,7 @@ const CreatePassword = () => {
                 setSuccessMessage('');
             }
         } catch (error) {
-            setErrors(['Có lỗi xảy ra. Vui lòng thử lại.']);
+            setErrors([error.message || 'Có lỗi xảy ra. Vui lòng thử lại.']);
             setSuccessMessage('');
         }
     };
@@ -76,6 +74,8 @@ const CreatePassword = () => {
                                     Đăng nhập
                                 </a>
                             </div>
+
+                            {/* Hiển thị lỗi */}
                             {errors.length > 0 && (
                                 <div
                                     className="alert alert-danger"
@@ -91,6 +91,17 @@ const CreatePassword = () => {
                                     </button>
                                 </div>
                             )}
+
+                            {/* Hiển thị thông báo thành công */}
+                            {successMessage && (
+                                <div
+                                    className="alert alert-success"
+                                    style={{ maxHeight: '100px', display: 'flex', alignItems: 'center' }}
+                                >
+                                    <span>{successMessage}</span>
+                                </div>
+                            )}
+
                             <input type="hidden" name="email" value={email} />
                             <input type="hidden" name="otp" value={otp} />
                             <div className="auth-form__form">
