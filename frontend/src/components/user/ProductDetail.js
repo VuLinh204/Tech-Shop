@@ -215,9 +215,7 @@ const ProductDetails = () => {
                         ₫{newPrice?.toLocaleString()}
                       </span>
                     </div>
-                    <p className="product-description">
-                      {product?.description}
-                    </p>
+
                     <div className="product-actions">
                       <form
                         className="product-actions-form"
@@ -274,6 +272,8 @@ const ProductDetails = () => {
                 </div>
               </div>
             </section>
+            <br />
+            <p className="product-description">{product?.description}</p>
             <br />
             <div className="container mt-5">
               <div className="d-flex justify-content-center row">
