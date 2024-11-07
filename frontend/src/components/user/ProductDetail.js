@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import "../../assets/css/ProductDetail.css";
 import axios from "axios";
 import "../../assets/css/Feedback.css";
+import { getUser, logout } from "../../api/Api";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -18,7 +19,21 @@ const ProductDetails = () => {
   const [editFeedbackId, setEditFeedbackId] = useState(null); // New state for editing feedback
   const [editComment, setEditComment] = useState(""); // Store the comment being edited
   const [editRating, setEditRating] = useState(5); // Store the rating being edited
-
+  const [user, setUser] = useState(null);
+  const fetchUser = async () => {
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    } else {
+      const data = await getUser();
+      if (data.status === "success") {
+        setUser(data.user);
+        sessionStorage.setItem("user", JSON.stringify(data.user));
+      } else {
+        console.error(data.message);
+      }
+    }
+  };
   const handleEditFeedback = (comment) => {
     setEditFeedbackId(comment.id);
     setEditComment(comment.comment); // Set the comment in the input field
@@ -98,6 +113,7 @@ const ProductDetails = () => {
     fetchProduct();
     fetchColors();
     fetchFeedback();
+    fetchUser();
   }, [id]);
 
   const incrementQuantity = () => {
@@ -114,7 +130,7 @@ const ProductDetails = () => {
       const response = await axios.post(
         "http://localhost/tech-shop/backend/api/CartApi.php",
         {
-          user_id: 5, // Sử dụng user_id thích hợp
+          user_id: user.id, // Sử dụng user_id thích hợp
           product_id: id,
           quantity,
         }
@@ -144,7 +160,7 @@ const ProductDetails = () => {
         url: url,
         data: {
           id: editFeedbackId,
-          user_id: 5, // Replace with actual user ID
+          user_id: user.id, // Replace with actual user ID
           product_id: id, // The current product ID
           body: editComment,
           rating: editRating,
