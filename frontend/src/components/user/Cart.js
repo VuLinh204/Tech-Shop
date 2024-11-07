@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import EmtyCart from '../../assets/img/emty-cart.png';
 
 const Cart = () => {
   // Sample data for cart items
@@ -117,8 +118,8 @@ const Cart = () => {
               <h2>Giỏ Hàng</h2>
               <div className="cart-actions">
                 {cartItems.length === 0 ? (
-                  <div>
-                    <img src="/assets/img/no-cart.webp" alt="No-cart" />
+                  <div className="cart-emty">
+                    <img src={EmtyCart} alt="No-cart" />
                     <a href="/product" className="button buy-now-btn">
                       Mua Ngay
                     </a>
