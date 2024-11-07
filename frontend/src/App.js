@@ -21,11 +21,7 @@ import Order from './components/user/Order';
 import Payment from './components/user/Payment';
 import CategoriesManage from './components/admin/CategoriesManage';
 import ControlPanel from './components/admin/ControlPanel';
-
-// const isAuthenticated = () => {
-//     const user = JSON.parse(localStorage.getItem('user'));
-//     return user && user.role_id;
-// };
+import AuthLayout from './components/common/AuthLayout';
 
 const ProtectedRoute = ({ element, allowedRoles }) => {
     const user = JSON.parse(sessionStorage.getItem('user'));
@@ -45,39 +41,47 @@ function App() {
     return (
         <Router>
             <div className="app">
-                <Header />
-
                 <Routes>
-                    <Route path="/" element={<Main />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/forgot_password" element={<ForgotPassword />} />
 
-                    {/* Routes yêu cầu người dùng đăng nhập */}
-                    <Route path="/profile" element={<ProtectedRoute element={<Profile />} allowedRoles={[2]} />} />
-                    <Route path="/password" element={<ProtectedRoute element={<Password />} allowedRoles={[2]} />} />
-                    <Route path="/orderList" element={<ProtectedRoute element={<OrderList />} allowedRoles={[2]} />} />
-                    <Route path="/order" element={<ProtectedRoute element={<Order />} allowedRoles={[2]} />} />
-                    <Route path="/voucher" element={<ProtectedRoute element={<VoucherList />} allowedRoles={[2]} />} />
+                    <Route element={<AuthLayout />}>
+                        {/* Routes yêu cầu người dùng đăng nhập */}
+                        <Route path="/home" element={<Main />} />
+                        <Route path="/profile" element={<ProtectedRoute element={<Profile />} allowedRoles={[2]} />} />
+                        <Route
+                            path="/password"
+                            element={<ProtectedRoute element={<Password />} allowedRoles={[2]} />}
+                        />
+                        <Route
+                            path="/orderList"
+                            element={<ProtectedRoute element={<OrderList />} allowedRoles={[2]} />}
+                        />
+                        <Route path="/order" element={<ProtectedRoute element={<Order />} allowedRoles={[2]} />} />
+                        <Route
+                            path="/voucher"
+                            element={<ProtectedRoute element={<VoucherList />} allowedRoles={[2]} />}
+                        />
 
-                    {/* Routes không yêu cầu đăng nhập */}
-                    <Route path="/productDetail/:id" element={<ProductDetail />} />
-                    <Route path="/categories" element={<CategoryList />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/payment" element={<Payment />} />
+                        {/* Routes không yêu cầu đăng nhập */}
+                        <Route path="/productDetail/:id" element={<ProductDetail />} />
+                        <Route path="/categories" element={<CategoryList />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/payment" element={<Payment />} />
 
-                    {/* Routes dành riêng cho admin */}
-                    <Route
-                        path="/categories/manages"
-                        element={<ProtectedRoute element={<CategoriesManage />} allowedRoles={[1]} />}
-                    />
-                    <Route
-                        path="/categories/controlpanel"
-                        element={<ProtectedRoute element={<ControlPanel />} allowedRoles={[1]} />}
-                    />
+                        {/* Routes dành riêng cho admin */}
+                        <Route
+                            path="/categories/manages"
+                            element={<ProtectedRoute element={<CategoriesManage />} allowedRoles={[1]} />}
+                        />
+                        <Route
+                            path="/categories/controlpanel"
+                            element={<ProtectedRoute element={<ControlPanel />} allowedRoles={[1]} />}
+                        />
+                    </Route>
+                    <Route path="*" element={<Navigate to="/home" replace />} />
                 </Routes>
-
-                <Footer />
             </div>
         </Router>
     );
