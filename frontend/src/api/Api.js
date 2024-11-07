@@ -60,20 +60,44 @@ export const changePassword = async (oldPassword, newPassword, email) => {
 // Hàm gọi API gửi OTP
 export const sendOtp = async (email) => {
     try {
-        const response = await axios.post(`${API_URL}/sendOtp`, { email });
+        const response = await axios.post(`${API_URL}/sendOtp.php`, { email }, { withCredentials: true });
         return response.data;
     } catch (error) {
-        return { errors: error.response ? error.response.data.errors : ['Failed to send OTP.'] };
+        console.error(error);
     }
 };
 
 // Hàm gọi API xác thực OTP
 export const verifyOtp = async (email, otp) => {
     try {
-        const response = await axios.post(`${API_URL}/verifyOtpAndRegister`, { email, otp });
+        const response = await axios.post(
+            `${API_URL}/verifyOtp.php`,
+            { email, otp },
+            { withCredentials: true, headers: { 'Content-Type': 'application/json' } },
+        );
         return response.data;
     } catch (error) {
         return { errors: error.response ? error.response.data.errors : ['OTP verification failed.'] };
+    }
+};
+
+// Hàm gọi API để tạo mật khẩu mới sau khi xác thực OTP
+export const createPassword = async (password) => {
+    try {
+        const response = await axios.post(`${API_URL}/createPassword.php`, { password });
+        return response.data;
+    } catch (error) {
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const createUser = async (userData, $email, $password) => {
+    try {
+        const response = await axios.post(`${API_URL}/createUser.php`, userData, { $email, $password });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
     }
 };
 

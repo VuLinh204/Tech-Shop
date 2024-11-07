@@ -21,11 +21,6 @@ import CategoriesManage from './components/admin/CategoriesManage';
 import ControlPanel from './components/admin/ControlPanel';
 import AuthLayout from './components/common/AuthLayout';
 
-// const isAuthenticated = () => {
-//     const user = JSON.parse(localStorage.getItem('user'));
-//     return user && user.role_id;
-// };
-
 const ProtectedRoute = ({ element, allowedRoles }) => {
     const user = JSON.parse(sessionStorage.getItem('user'));
 
@@ -50,19 +45,13 @@ function App() {
         <Router>
             <div className="app">
                 <Routes>
-                    <Route path="/login" element={<RedirectRoute element={<Login />} />} />
-                    <Route path="/register" element={<RedirectRoute element={<Register />} />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
                     <Route path="/forgot_password" element={<ForgotPassword />} />
 
-                    {/* Routes với AuthLayout */}
                     <Route element={<AuthLayout />}>
-                        <Route path="/home" element={<Main />} />
-                        <Route path="/productDetail/:id" element={<ProductDetail />} />
-                        <Route path="/categories" element={<CategoryList />} />
-                        <Route path="/cart" element={<Cart />} />
-                        <Route path="/payment" element={<Payment />} />
-
                         {/* Routes yêu cầu người dùng đăng nhập */}
+                        <Route path="/home" element={<Main />} />
                         <Route path="/profile" element={<ProtectedRoute element={<Profile />} allowedRoles={[2]} />} />
                         <Route
                             path="/password"
@@ -78,21 +67,22 @@ function App() {
                             element={<ProtectedRoute element={<VoucherList />} allowedRoles={[2]} />}
                         />
 
+                        {/* Routes không yêu cầu đăng nhập */}
+                        <Route path="/productDetail/:id" element={<ProductDetail />} />
+                        <Route path="/categories" element={<CategoryList />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/payment" element={<Payment />} />
+
                         {/* Routes dành riêng cho admin */}
                         <Route
-                            path="/admin/manages"
+                            path="/categories/manages"
                             element={<ProtectedRoute element={<CategoriesManage />} allowedRoles={[1]} />}
                         />
                         <Route
-                            path="/admin/controlPanel"
+                            path="/categories/controlpanel"
                             element={<ProtectedRoute element={<ControlPanel />} allowedRoles={[1]} />}
                         />
-                        <Route
-                            path="/admin/categoriesManage"
-                            element={<ProtectedRoute element={<CategoriesManage />} allowedRoles={[1]} />}
-                        />
                     </Route>
-
                     <Route path="*" element={<Navigate to="/home" replace />} />
                 </Routes>
             </div>

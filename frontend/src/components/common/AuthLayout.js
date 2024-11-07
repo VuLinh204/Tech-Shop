@@ -1,15 +1,15 @@
 import React from 'react';
-import Header from './Header';
-import Footer from './Footer';
+import Header from '../common/Header';
+import Footer from '../common/Footer';
 import { Outlet } from 'react-router-dom';
 
-const AuthLayout = ({ children }) => {
+const AuthLayout = () => {
     return (
-        <div>
+        <div className="auth-layout">
             <Header />
-            <main>
+            <div className="auth-content">
                 <Outlet />
-            </main>
+            </div>
             <Footer />
         </div>
     );
