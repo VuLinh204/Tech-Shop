@@ -1,3 +1,4 @@
+// src/components/CategoriesManage.js
 import React, { useState, useEffect } from "react";
 import AddCategory from "./AddCategory";
 import EditCategory from "./EditCategory";
@@ -5,7 +6,6 @@ import ControlPanel from "./ControlPanel";
 import Manages from "./Manages";
 import "../../assets/css/CategoriesManage.css";
 import axios from "axios";
-import Pagination from "../common/Pagination_admin";
 
 const CategoriesManage = () => {
   const [activeItem, setActiveItem] = useState("Danh mục");
@@ -13,8 +13,6 @@ const CategoriesManage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editCategoryData, setEditCategoryData] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   const fetchCategories = async () => {
     try {
@@ -56,12 +54,31 @@ const CategoriesManage = () => {
     fetchCategories();
   }, []);
 
-  const offset = (currentPage - 1) * itemsPerPage;
-  const currentItems = categories.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(categories.length / itemsPerPage);
+  const handleItemClick = (item) => {
+    setActiveItem(item);
+    setIsAdding(false);
+    setIsEditing(false);
+  };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handleAddCategoryClick = () => {
+    setIsAdding(true);
+    setIsEditing(false);
+  };
+
+  const handleEditCategoryClick = (category) => {
+    setEditCategoryData(category);
+    setIsEditing(true);
+    setIsAdding(false);
+  };
+
+  const handleAddSuccess = () => {
+    setIsAdding(false);
+    fetchCategories();
+  };
+
+  const handleEditSuccess = () => {
+    setIsEditing(false);
+    fetchCategories();
   };
 
   return (
@@ -70,7 +87,7 @@ const CategoriesManage = () => {
         <div className="grid">
           <div className="grid__row app__content">
             <div className="grid__column-2">
-              <Manages activeItem={activeItem} onItemClick={setActiveItem} />
+              <Manages activeItem={activeItem} onItemClick={handleItemClick} />{" "}
             </div>
 
             <div className="grid__column-10">
@@ -78,11 +95,11 @@ const CategoriesManage = () => {
                 {activeItem === "Bảng điều khiển" ? (
                   <ControlPanel />
                 ) : isAdding ? (
-                  <AddCategory onAddSuccess={fetchCategories} />
+                  <AddCategory onAddSuccess={handleAddSuccess} />
                 ) : isEditing ? (
                   <EditCategory
                     categoryData={editCategoryData}
-                    onEditSuccess={fetchCategories}
+                    onEditSuccess={handleEditSuccess}
                   />
                 ) : (
                   <div>
@@ -90,7 +107,7 @@ const CategoriesManage = () => {
                       <h1>Danh sách các danh mục</h1>
                       <button
                         className="btn btn--primary"
-                        onClick={() => setIsAdding(true)}
+                        onClick={handleAddCategoryClick}
                       >
                         + Thêm
                       </button>
@@ -105,21 +122,23 @@ const CategoriesManage = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {currentItems.length > 0 ? (
-                          currentItems.map((category) => (
+                        {categories.length > 0 ? (
+                          categories.map((category) => (
                             <tr key={category.id}>
                               <td>{category.id}</td>
                               <td>{category.name}</td>
                               <td>
                                 <img
-                                  src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`}
+                                  src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`} // Cập nhật đường dẫn đến hình ảnh
                                   alt="Hình ảnh"
                                   style={{ width: "100px" }}
                                 />
                               </td>
                               <td>
                                 <button
-                                  onClick={() => setEditCategoryData(category)}
+                                  onClick={() =>
+                                    handleEditCategoryClick(category)
+                                  }
                                   className="btn-edit"
                                   title="Sửa"
                                 >
@@ -143,12 +162,9 @@ const CategoriesManage = () => {
                       </tbody>
                     </table>
                     <div className="pagination">
-                      <Pagination
-                        totalPages={pageCount}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        onPageChange={handlePageChange}
-                      />
+                      <button className="btn-pagination">1</button>
+                      <button className="btn-pagination">2</button>
+                      <button className="btn-pagination">3</button>
                     </div>
                   </div>
                 )}
