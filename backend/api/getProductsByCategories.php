@@ -1,5 +1,5 @@
 <?php
-include_once '../config/db.php';
+include_once '../config/database.php';
 
 $input = json_decode(file_get_contents("php://input"), true);
 $categoryIds = $input['categoryIds'];
