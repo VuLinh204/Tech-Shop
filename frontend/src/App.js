@@ -1,55 +1,93 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
+import './Base.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
-import "./App.css";
-import "./Base.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+import Main from './components/common/Main';
+import ProductDetail from './components/user/ProductDetail';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import Cart from './components/user/Cart';
+import CategoryList from './components/user/CategoryList';
+import ForgotPassword from './components/auth/ForgotPassword';
+import Profile from './components/user/Profile';
+import Password from './components/user/Password';
+import OrderList from './components/user/OrderList';
+import VoucherList from './components/user/VoucherList';
+import Order from './components/user/Order';
+import Payment from './components/user/Payment';
+import CategoriesManage from './components/admin/CategoriesManage';
+import ControlPanel from './components/admin/ControlPanel';
+import AuthLayout from './components/common/AuthLayout';
 
-// import ProductList from './components/ProductList';
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Main from "./components/Main";
-import ProductDetail from "./components/ProductDetail";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import Cart from "./components/Cart";
-import CategoryList from "./components/CategoryList";
-import ForgotPassword from "./components/ForgotPassword";
-import Profile from "./components/Profile";
-import Password from "./components/Password";
-import OrderList from "./components/OrderList";
-import VoucherList from "./components/VoucherList";
-import Order from "./components/Order";
-import Payment from "./components/Payment";
-import CategoriesManage from "./components/CategoriesManage";
-import ControlPanel from "./components/ControlPanel";
+const ProtectedRoute = ({ element, allowedRoles }) => {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+
+    if (!allowedRoles.includes(user.role_id)) {
+        return <Navigate to="/" replace />;
+    }
+
+    return element;
+};
+
+const RedirectRoute = ({ element }) => {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    return user ? <Navigate to="/home" replace /> : element;
+};
 
 function App() {
-  return (
-    <Router>
-      <div className="app">
-        <Header />
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/orderList" element={<OrderList />} />
-          <Route path="/voucher" element={<VoucherList />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/password" element={<Password />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot_password" element={<ForgotPassword />} />
-          <Route path="/productDetail/:id" element={<ProductDetail />} />
-          <Route path="/categories" element={<CategoryList />} />
-          <Route path="/categories/manages" element={<CategoriesManage />} />
-          <Route path="/categories/controlpanel" element={<ControlPanel />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/payment" element={<Payment />} />
-        </Routes>
-        <Footer />
-      </div>
-    </Router>
-  );
+    return (
+        <Router>
+            <div className="app">
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/forgot_password" element={<ForgotPassword />} />
+
+                    <Route element={<AuthLayout />}>
+                        {/* Routes yêu cầu người dùng đăng nhập */}
+                        <Route path="/home" element={<Main />} />
+                        <Route path="/profile" element={<ProtectedRoute element={<Profile />} allowedRoles={[2]} />} />
+                        <Route
+                            path="/password"
+                            element={<ProtectedRoute element={<Password />} allowedRoles={[2]} />}
+                        />
+                        <Route
+                            path="/orderList"
+                            element={<ProtectedRoute element={<OrderList />} allowedRoles={[2]} />}
+                        />
+                        <Route path="/order" element={<ProtectedRoute element={<Order />} allowedRoles={[2]} />} />
+                        <Route
+                            path="/voucher"
+                            element={<ProtectedRoute element={<VoucherList />} allowedRoles={[2]} />}
+                        />
+
+                        {/* Routes không yêu cầu đăng nhập */}
+                        <Route path="/productDetail/:id" element={<ProductDetail />} />
+                        <Route path="/categories" element={<CategoryList />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/payment" element={<Payment />} />
+
+                        {/* Routes dành riêng cho admin */}
+                        <Route
+                            path="/categories/manages"
+                            element={<ProtectedRoute element={<CategoriesManage />} allowedRoles={[1]} />}
+                        />
+                        <Route
+                            path="/categories/controlpanel"
+                            element={<ProtectedRoute element={<ControlPanel />} allowedRoles={[1]} />}
+                        />
+                    </Route>
+                    <Route path="*" element={<Navigate to="/home" replace />} />
+                </Routes>
+            </div>
+        </Router>
+    );
 }
 
 export default App;

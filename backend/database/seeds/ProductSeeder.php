@@ -22,7 +22,7 @@ class ProductSeeder extends AbstractSeed
                 'name' => 'iPhone 14',
                 'price' => 999.99,
                 'description' => 'Điện thoại iPhone 14 với công nghệ mới nhất.',
-                'thumbnail' => 'https://example.com/images/iphone14_thumbnail.jpg',
+                'thumbnail' => 'Iphone14.jpg',
                 'category_id' => rand(1, 10), // Category ID from 1 to 10
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
