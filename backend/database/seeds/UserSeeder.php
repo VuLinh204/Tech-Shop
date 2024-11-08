@@ -24,7 +24,7 @@ class UserSeeder extends AbstractSeed
 
         $data = [
             [
-                'username' => 'Vũ Linh',
+                'username' => 'VuLinh',
                 'email' => 'linhlg2004@gmail.com',
                 'phone_number' => '0364704715',
                 'address' => 'q Gò Vấp , tp HCM',
@@ -34,9 +34,39 @@ class UserSeeder extends AbstractSeed
                 'updated_at' => date('Y-m-d H:i:s')
             ],
             [
-                'username' => 'Nhật Tuấn',
-                'email' => 'user@example.com',
-                'phone_number' => '0987654321',
+                'username' => 'NhatTuan',
+                'email' => 'tuannhat124@gmail.com',
+                'phone_number' => '0962256941',
+                'address' => '456 User Ave',
+                'password' => password_hash('123456@', PASSWORD_BCRYPT),
+                'role_id' => $roleIdUser,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'username' => 'QuangDinh',
+                'email' => 'dinhquang295@gmail.com',
+                'phone_number' => '0528359104',
+                'address' => '456 User Ave',
+                'password' => password_hash('123456@', PASSWORD_BCRYPT),
+                'role_id' => $roleIdUser,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'username' => 'CongMen',
+                'email' => 'nguyenme123321@gmail.com',
+                'phone_number' => '0392974339',
+                'address' => '456 User Ave',
+                'password' => password_hash('123456@', PASSWORD_BCRYPT),
+                'role_id' => $roleIdUser,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'username' => 'ThanhDat',
+                'email' => 'nguyenthanhdat01012k3@gmail.com',
+                'phone_number' => '0328436826',
                 'address' => '456 User Ave',
                 'password' => password_hash('123456@', PASSWORD_BCRYPT),
                 'role_id' => $roleIdUser,
