@@ -14,6 +14,7 @@ class FeedbackModel
   {
     $query = "SELECT 
     feedback.id,
+    feedback.user_id,
     user.username AS user_name, 
     feedback.comment,
     feedback.rating,
