@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import "../../assets/css/ProductDetail.css";
 import axios from "axios";
 import "../../assets/css/Feedback.css";
@@ -19,7 +19,28 @@ const ProductDetails = () => {
   const [editFeedbackId, setEditFeedbackId] = useState(null); // New state for editing feedback
   const [editComment, setEditComment] = useState(""); // Store the comment being edited
   const [editRating, setEditRating] = useState(5); // Store the rating being edited
+  const [rating, setRating] = useState(0); // Giá trị đánh giá
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
+  // Ràng buộc nội dung bình luận
+  const validateComment = (comment) => {
+    // Loại bỏ khoảng trắng đầu và cuối
+    const trimmedComment = comment.trim();
+
+    // Kiểm tra độ dài tối đa và ký tự đặc biệt
+    const isValid =
+      trimmedComment.length > 0 &&
+      trimmedComment.length <= 255 &&
+      /^[\p{L}\p{N}\p{Zs}]+$/u.test(trimmedComment); // Chỉ cho phép ký tự chữ cái, số và khoảng trắng thông thường
+
+    return isValid;
+  };
+
   const fetchUser = async () => {
     const storedUser = JSON.parse(sessionStorage.getItem("user"));
     if (storedUser) {
@@ -38,8 +59,15 @@ const ProductDetails = () => {
     setEditFeedbackId(comment.id);
     setEditComment(comment.comment); // Set the comment in the input field
     setEditRating(comment.rating); // Set the rating in the state
+    setRating(comment.rating);
   };
   const handleDeleteFeedback = async (feedbackId) => {
+    // Hiển thị hộp thoại xác nhận xóa
+    const isConfirmed = window.confirm(
+      "Bạn có chắc chắn muốn xóa bình luận này không?"
+    );
+    if (!isConfirmed) return; // Nếu người dùng chọn "Hủy", dừng hàm
+
     try {
       const response = await axios.delete(
         "http://localhost/tech-shop/backend/api/FeedbackApi.php",
@@ -149,10 +177,27 @@ const ProductDetails = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
+    // Kiểm tra người dùng đã đăng nhập chưa
+    if (!user) {
+      setFeedbackMessage("Vui lòng đăng nhập để bình luận!");
+      setFeedbackMessageClass("feedback-error");
+      setShowToast(true);
+      return;
+    }
+    // Hiển thị thông báo ngay cả khi không hợp lệ
+    setShowToast(true);
+
+    // Kiểm tra nếu nội dung bình luận không hợp lệ
+    if (!validateComment(editComment)) {
+      setFeedbackMessage("Bình luận không hợp lệ. Vui lòng kiểm tra lại.");
+      setFeedbackMessageClass("feedback-error");
+      return;
+    }
+
     const url = editFeedbackId
-      ? "http://localhost/tech-shop/backend/api/FeedbackApi.php" // Edit URL
-      : "http://localhost/tech-shop/backend/api/FeedbackApi.php"; // Add new comment URL
-    const method = editFeedbackId ? "PUT" : "POST"; // PUT for editing, POST for adding
+      ? "http://localhost/tech-shop/backend/api/FeedbackApi.php" // URL chỉnh sửa
+      : "http://localhost/tech-shop/backend/api/FeedbackApi.php"; // URL thêm mới bình luận
+    const method = editFeedbackId ? "PUT" : "POST";
 
     try {
       const response = await axios({
@@ -160,33 +205,36 @@ const ProductDetails = () => {
         url: url,
         data: {
           id: editFeedbackId,
-          user_id: user.id, // Replace with actual user ID
-          product_id: id, // The current product ID
+          user_id: user.id, // Thay thế bằng user ID thực tế
+          product_id: id,
           body: editComment,
-          rating: editRating,
+
+          rating: rating,
         },
       });
 
       if (response.data.status === "success") {
-        setFeedbackMessage(response.data.message);
-        setFeedbackMessageClass(response.data.cssClass);
-        setShowToast(true);
+        setFeedbackMessage("Bình luận đã được gửi thành công.");
+        setFeedbackMessageClass("feedback-success");
         setFeedbackList(response.data.feedbackList);
-        setNewComment(""); // Reset the input field
-        setEditFeedbackId(null); // Reset the edit state
-        // Do not hide the message automatically
+        setNewComment(""); // Reset trường nhập bình luận
+        setEditFeedbackId(null); // Reset trạng thái chỉnh sửa
+        setRating(0);
       } else {
-        setFeedbackMessage(response.data.message);
-        setFeedbackMessageClass(response.data.cssClass);
-        setShowToast(true);
+        setFeedbackMessage(
+          "Bạn đã bình luận cho sản phẩm này rồi. Mỗi tài khoản chỉ có thể bình luận 1 lần cho mỗi sản phẩm"
+        );
+        setFeedbackMessageClass("feedback-error");
       }
     } catch (error) {
-      console.error("Error updating comment:", error);
+      console.error("Lỗi khi gửi bình luận:", error);
       setFeedbackMessage("Đã xảy ra lỗi khi gửi bình luận.");
-      setShowToast(true);
+      setFeedbackMessageClass("feedback-error");
     }
-  };
 
+    // Ẩn thông báo sau 3 giây
+    setTimeout(() => setShowToast(false), 3000);
+  };
   const newPrice = product?.percent_discount
     ? product.price - (product.price * product.percent_discount) / 100
     : product?.price;
@@ -304,13 +352,34 @@ const ProductDetails = () => {
                     <div className="bg-light p-2 mb-2">
                       <form id="commentForm" onSubmit={handleCommentSubmit}>
                         <div className="d-flex flex-row align-items-start">
+                          <img
+                            className="rounded-circle"
+                            src={`http://localhost/tech-shop/backend/public/uploads/profile.png`}
+                            width="40"
+                            alt="User"
+                          />
                           <textarea
                             className="form-control ml-1 shadow-none textarea"
                             placeholder="Viết bình luận của bạn..."
                             value={editComment}
                             onChange={(e) => setEditComment(e.target.value)}
+                            maxLength="255"
                           ></textarea>
                         </div>
+                        <div className="rating-stars">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <span
+                              key={star}
+                              className={`star ${
+                                rating >= star ? "selected" : ""
+                              }`}
+                              onClick={() => handleRatingChange(star)}
+                            >
+                              ★
+                            </span>
+                          ))}
+                        </div>
+
                         <div className="mt-2 text-right">
                           <button
                             className="btn btn-primary btn-sm shadow-none"
@@ -322,12 +391,14 @@ const ProductDetails = () => {
                             className="btn btn-outline-primary btn-sm ml-1 shadow-none"
                             type="button"
                             onClick={() => {
-                              setEditFeedbackId(null); // Reset edit state
-                              setEditComment(""); // Reset comment
-                              setEditRating(5); // Reset rating
+                              setNewComment(""); // Reset bình luận mới đang nhập
+                              setEditFeedbackId(null); // Xóa trạng thái chỉnh sửa nếu có
+                              setEditComment(""); // Reset lại nội dung chỉnh sửa
+                              setEditRating(5); // Đặt lại đánh giá mặc định
+                              setRating(0); // Đặt lại rating về 0
                             }}
                           >
-                            Hủy
+                            Clear
                           </button>
                         </div>
                       </form>
@@ -361,29 +432,43 @@ const ProductDetails = () => {
                               <span className="text-justify comment-text">
                                 {comment.comment}
                               </span>
-                            </div>
-
-                            {/* Các nút Sửa và Xóa */}
-                            <div className="comment-actions">
-                              <div className="comment-action-buttons">
-                                <button
-                                  onClick={() => handleEditFeedback(comment)}
-                                  className="btn-edit"
-                                  title="Sửa"
-                                >
-                                  <i className="fas fa-edit"></i>
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    handleDeleteFeedback(comment.id)
-                                  }
-                                  className="btn-delete"
-                                  title="Xóa"
-                                >
-                                  <i className="fas fa-trash-alt"></i>
-                                </button>
+                              <div className="comment-rating">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <span
+                                    key={star}
+                                    className={`star ${
+                                      comment.rating >= star ? "selected" : ""
+                                    }`}
+                                  >
+                                    ★
+                                  </span>
+                                ))}
                               </div>
                             </div>
+
+                            {/* Chỉ hiển thị nút Sửa và Xóa nếu người dùng là chủ của bình luận */}
+                            {user && user.id === comment.user_id && (
+                              <div className="comment-actions">
+                                <div className="comment-action-buttons">
+                                  <button
+                                    onClick={() => handleEditFeedback(comment)}
+                                    className="btn-edit"
+                                    title="Sửa"
+                                  >
+                                    <i className="fas fa-edit"></i>
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteFeedback(comment.id)
+                                    }
+                                    className="btn-delete"
+                                    title="Xóa"
+                                  >
+                                    <i className="fas fa-trash-alt"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ))
                       ) : (
