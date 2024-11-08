@@ -3,75 +3,29 @@ import axios from "axios";
 import EmtyCart from '../../assets/img/emty-cart.png';
 
 const Cart = () => {
-  // Sample data for cart items
-  const sampleCarts = [
-    {
-      id: 1,
-      product: {
-        id: 1,
-        name: "Áo Thun GenZ",
-        image: "product1.jpg",
-        price: 250000,
-        percent_discount: 10,
-      },
-      quantity: 2,
-      size: "M",
-      color: "Red",
-    },
-    {
-      id: 2,
-      product: {
-        id: 2,
-        name: "Quần Jean Nam",
-        image: "product2.jpg",
-        price: 500000,
-        percent_discount: 20,
-      },
-      quantity: 1,
-      size: "L",
-      color: "Blue",
-    },
-  ];
-
-  // Sample data for related products
-  const sampleRelatedProducts = [
-    {
-      id: 1,
-      name: "Giày Thể Thao",
-      image: "related1.jpg",
-      price: 800000,
-      percent_discount: 15,
-      quantity_sold: 200,
-    },
-    {
-      id: 2,
-      name: "Balo GenZ",
-      image: "related2.jpg",
-      price: 300000,
-      percent_discount: 5,
-      quantity_sold: 150,
-    },
-  ];
-
-  // Sample data for favorite products
-  const sampleFavoriteProducts = [
-    {
-      product_id: 201,
-      is_favorite: true,
-    },
-    {
-      product_id: 202,
-      is_favorite: false,
-    },
-  ];
-
-  const [cartItems, setCartItems] = useState(sampleCarts);
-  const [relatedProducts, setRelatedProducts] = useState(sampleRelatedProducts);
-  const [favoriteProducts, setFavoriteProducts] = useState(
-    sampleFavoriteProducts
-  );
+  const [cartItems, setCartItems] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+
+  // Lấy giỏ hàng từ API
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await fetch('http://localhost/tech-shop/backend/api/get_cart.php?userid=1'); // API path của bạn
+        const data = await response.json();
+        
+        // Kiểm tra nếu API trả về dữ liệu giỏ hàng hợp lệ
+        if (data && data.cartItems) {
+          setCartItems(data.cartItems); // Cập nhật giỏ hàng từ API
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm giỏ hàng:", error);
+      }
+    };
+  
+    fetchCartItems();
+  }, []);
 
   useEffect(() => {
     updateTotal();
@@ -80,15 +34,14 @@ const Cart = () => {
   const updateTotal = () => {
     let quantity = 0;
     let price = 0;
-
+  
     cartItems.forEach((cart) => {
       const newPrice =
-        cart.product.price -
-        (cart.product.price * cart.product.percent_discount) / 100;
+        cart.price - (cart.price * cart.percent_discount) / 100;
       quantity += cart.quantity;
       price += cart.quantity * newPrice;
     });
-
+  
     setTotalQuantity(quantity);
     setTotalPrice(price);
   };
@@ -108,6 +61,23 @@ const Cart = () => {
       prevCartItems.filter((cart) => cart.id !== id)
     );
   };
+
+  // Fetch related products (could be based on user data or product categories)
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      try {
+        const response = await fetch('http://localhost/tech-shop/backend/api/get_related_products.php');
+        const data = await response.json();
+        if (data && data.products) {
+          setRelatedProducts(data.products); // Set related products
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm liên quan:", error);
+      }
+    };
+  
+    fetchRelatedProducts();
+  }, []);
 
   return (
     <div className="app__container">
@@ -142,28 +112,24 @@ const Cart = () => {
                     <tbody>
                       {cartItems.map((cart) => {
                         const newPrice =
-                          cart.product.price -
-                          (cart.product.price * cart.product.percent_discount) /
-                            100;
+                          cart.price - (cart.price * cart.discount_percent) / 100;
                         return (
                           <tr key={cart.id} className="cart-item">
                             <td>
                               <img
-                                src="#"
-                                alt="Product Image"
+                                src={`http://localhost/tech-shop/backend/public/uploads/${cart.thumbnail}`} // Đảm bảo đường dẫn ảnh đúng
+                                alt="Product thumbnail"
                                 style={{ width: "100px" }}
                               />
                             </td>
-                            <td>{cart.product.name}</td>
-                            <td>{cart.product.id}</td>
+                            <td>{cart.name}</td>
+                            <td>{cart.id}</td>
                             <td>{cart.size}</td>
                             <td>{cart.color}</td>
                             <td>{newPrice.toLocaleString()}</td>
                             <td>
                               <button
-                                onClick={() =>
-                                  handleQuantityChange(cart.id, -1)
-                                }
+                                onClick={() => handleQuantityChange(cart.id, -1)}
                                 className="quantity-btn"
                               >
                                 <i className="fas fa-minus"></i>
@@ -191,16 +157,13 @@ const Cart = () => {
                         );
                       })}
                       <tr>
-                        <td colSpan="2">Tổng Số Lượng Sản Phẩm:</td>
-                        <td colSpan="2">{totalQuantity}</td>
-                        <td colSpan="2">Tổng Số Tiền:</td>
+                        <td colSpan="6">Tổng Số Lượng Sản Phẩm:</td>
+                        <td>{totalQuantity}</td>
                         <td colSpan="2">
                           <strong>{totalPrice.toLocaleString()}</strong>
                         </td>
                         <td>
-                          <button className="button checkout-btn">
-                            Thanh Toán
-                          </button>
+                          <button className="button checkout-btn">Thanh Toán</button>
                         </td>
                       </tr>
                     </tbody>
@@ -208,20 +171,15 @@ const Cart = () => {
                 )}
               </div>
             </section>
-            <div div />
 
+            {/* Section related products */}
             <section className="related-products">
               <div className="container">
                 <h2>Có thể bạn sẽ thích</h2>
                 <div className="grid__row">
                   {relatedProducts.map((product) => {
                     const newPrice =
-                      product.price -
-                      (product.price * product.percent_discount) / 100;
-                    const isFavorited = favoriteProducts.some(
-                      (fav) => fav.product_id === product.id && fav.is_favorite
-                    );
-
+                      product.price - (product.price * product.percent_discount) / 100;
                     return (
                       <div key={product.id} className="grid__column-2-4">
                         <a
@@ -231,7 +189,7 @@ const Cart = () => {
                           <div
                             className="home-product-item__img"
                             style={{
-                              backgroundImage: `url('/assets/img/${product.image}')`,
+                              backgroundthumbnail: `url('/assets/img/${product.thumbnail}')`,
                             }}
                           ></div>
                           <h4 className="home-product-item__name">
@@ -246,12 +204,6 @@ const Cart = () => {
                             </span>
                           </div>
                           <div className="home-product-item__action">
-                            {isFavorited && (
-                              <span className="home-product-item__like home-product-item__like--liked">
-                                <i className="fa-regular fa-heart"></i>
-                                <i className="fa-solid fa-heart"></i>
-                              </span>
-                            )}
                             <span className="home-product-item__sold">
                               {product.quantity_sold} Đã bán
                             </span>
