@@ -11,5 +11,13 @@ class Database
             self::$connection->set_charset(DB_CHARSET);
         }
     }
+    public static function getConnection()
+    {
+        // Kiểm tra kết nối và tạo nếu chưa có
+        if (!self::$connection) {
+            new self(); // Gọi constructor để tạo kết nối
+        }
+        return self::$connection;
+    }
 }
 ?>

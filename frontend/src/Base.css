@@ -96,7 +96,7 @@ html {
     left: 0;
     display: flex;
     animation: fadeIn linear 0.1s;
-    background: url('./assets//img/genzstore.png');
+    background: url('./assets//img/bg-login.png');
     background-size: cover;
     background-position: center;
 }

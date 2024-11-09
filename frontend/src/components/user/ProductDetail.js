@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import "../../assets/css/ProductDetail.css";
 import axios from "axios";
 import "../../assets/css/Feedback.css";
+import RelatedProducts from "./RelatedProducts";
 import { getUser, logout } from "../../api/Api";
 
 const ProductDetails = () => {
@@ -265,9 +266,8 @@ const ProductDetails = () => {
                             <button
                               key={index}
                               type="button"
-                              className={`color-btn ${
-                                selectedColor === color ? "selected" : ""
-                              }`}
+                              className={`color-btn ${selectedColor === color ? "selected" : ""
+                                }`}
                               onClick={() => setSelectedColor(color)}
                             >
                               {color}
@@ -394,8 +394,10 @@ const ProductDetails = () => {
                 </div>
               </div>
             </div>
+            <br />
           </div>
         </div>
+        <RelatedProducts productId={id} />
       </div>
     </div>
   );
