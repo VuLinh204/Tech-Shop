@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import EmtyCart from '../../assets/img/emty-cart.png';
+import EmtyCart from "../../assets/img/emty-cart.png";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -12,9 +12,11 @@ const Cart = () => {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await fetch('http://localhost/tech-shop/backend/api/get_cart.php?userid=1'); // API path của bạn
+        const response = await fetch(
+          "http://localhost/tech-shop/backend/api/get_cart.php?userid=1"
+        ); // API path của bạn
         const data = await response.json();
-        
+
         // Kiểm tra nếu API trả về dữ liệu giỏ hàng hợp lệ
         if (data && data.cartItems) {
           setCartItems(data.cartItems); // Cập nhật giỏ hàng từ API
@@ -23,7 +25,7 @@ const Cart = () => {
         console.error("Lỗi khi lấy sản phẩm giỏ hàng:", error);
       }
     };
-  
+
     fetchCartItems();
   }, []);
 
@@ -34,14 +36,13 @@ const Cart = () => {
   const updateTotal = () => {
     let quantity = 0;
     let price = 0;
-  
+
     cartItems.forEach((cart) => {
-      const newPrice =
-        cart.price - (cart.price * cart.percent_discount) / 100;
+      const newPrice = cart.price - (cart.price * cart.percent_discount) / 100;
       quantity += cart.quantity;
       price += cart.quantity * newPrice;
     });
-  
+
     setTotalQuantity(quantity);
     setTotalPrice(price);
   };
@@ -66,7 +67,9 @@ const Cart = () => {
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       try {
-        const response = await fetch('http://localhost/tech-shop/backend/api/get_related_products.php');
+        const response = await fetch(
+          "http://localhost/tech-shop/backend/api/get_related_products.php"
+        );
         const data = await response.json();
         if (data && data.products) {
           setRelatedProducts(data.products); // Set related products
@@ -75,7 +78,7 @@ const Cart = () => {
         console.error("Lỗi khi lấy sản phẩm liên quan:", error);
       }
     };
-  
+
     fetchRelatedProducts();
   }, []);
 
@@ -101,7 +104,6 @@ const Cart = () => {
                         <th>Hình Ảnh</th>
                         <th>Tên</th>
                         <th>Mã Sản Phẩm</th>
-                        <th>Size</th>
                         <th>Color</th>
                         <th>Đơn Giá (VND)</th>
                         <th>Số Lượng</th>
@@ -112,7 +114,8 @@ const Cart = () => {
                     <tbody>
                       {cartItems.map((cart) => {
                         const newPrice =
-                          cart.price - (cart.price * cart.discount_percent) / 100;
+                          cart.price -
+                          (cart.price * cart.discount_percent) / 100;
                         return (
                           <tr key={cart.id} className="cart-item">
                             <td>
@@ -124,12 +127,13 @@ const Cart = () => {
                             </td>
                             <td>{cart.name}</td>
                             <td>{cart.id}</td>
-                            <td>{cart.size}</td>
                             <td>{cart.color}</td>
                             <td>{newPrice.toLocaleString()}</td>
                             <td>
                               <button
-                                onClick={() => handleQuantityChange(cart.id, -1)}
+                                onClick={() =>
+                                  handleQuantityChange(cart.id, -1)
+                                }
                                 className="quantity-btn"
                               >
                                 <i className="fas fa-minus"></i>
@@ -163,7 +167,9 @@ const Cart = () => {
                           <strong>{totalPrice.toLocaleString()}</strong>
                         </td>
                         <td>
-                          <button className="button checkout-btn">Thanh Toán</button>
+                          <button className="button checkout-btn">
+                            Thanh Toán
+                          </button>
                         </td>
                       </tr>
                     </tbody>
@@ -179,7 +185,8 @@ const Cart = () => {
                 <div className="grid__row">
                   {relatedProducts.map((product) => {
                     const newPrice =
-                      product.price - (product.price * product.percent_discount) / 100;
+                      product.price -
+                      (product.price * product.percent_discount) / 100;
                     return (
                       <div key={product.id} className="grid__column-2-4">
                         <a
