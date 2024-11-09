@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../../assets/css/Header.css';
 import '../../assets/css/Alert.css';
 
 // Component Login
@@ -71,29 +70,6 @@ const Login = () => {
 
     return (
         <>
-            <header
-                className="header"
-                style={{ backgroundImage: 'linear-gradient(0, rgb(0 31 63 / 0%), rgb(0 0 0 / 19%))' }}
-            >
-                <div className="grid">
-                    <div className="header-with-search">
-                        <div className="header__logo-img" id="header__logo-out">
-                            <a href="/" className="header__logo-link">
-                                <i
-                                    className="fa-brands fa-shopify fa-2xl"
-                                    style={{ color: '#74C0FC', fontSize: '3em' }}
-                                ></i>
-                                <svg className="header__logo-img" viewBox="0 0 200 50">
-                                    <text x="12" y="40" fontFamily="Arial, sans-serif" fontSize="36" fill="#74C0FC">
-                                        GenZ Store
-                                    </text>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
             <div className="modal">
                 <div className="modal__overlay"></div>
                 <div className="modal__body">
@@ -161,6 +137,9 @@ const Login = () => {
                             </div>
 
                             <div className="auth-form__controls">
+                                <a href="/home" className="btn btn--normal auth-form__controls-back">
+                                    TRỞ LẠI
+                                </a>
                                 <button type="submit" className="btn btn--primary" disabled={isLoading}>
                                     {isLoading ? 'Đang đăng nhập...' : 'ĐĂNG NHẬP'}
                                 </button>

@@ -88,6 +88,11 @@
     background-color: #3a5a98;
 }
 
+.auth-form__socials--facebook:hover {
+    background-color: #3a5a98;
+    opacity: 0.7s;
+}
+
 .auth-form__socials--facebook .auth-form__socials-icon {
     color: var(--white-color);
 }
@@ -104,6 +109,12 @@
 .auth-form__socials--google {
     color: #666;
     background-color: var(--white-color);
+}
+
+.auth-form__socials--google:hover {
+    color: #666;
+    background-color: var(--white-color);
+    opacity: 0.7;
 }
 
 .auth-form__help {

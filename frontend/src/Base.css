@@ -131,11 +131,14 @@ html {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--white-color);
+}
+
+.btn.btn--normal {
+    background-color: #fff;
 }
 
 .btn.btn--normal:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .btn.btn--size-s {
