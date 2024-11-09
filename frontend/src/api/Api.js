@@ -91,9 +91,19 @@ export const createPassword = async (password) => {
     }
 };
 
-export const createUser = async (userData, $email, $password) => {
+export const createUser = async (userData, email, password) => {
     try {
-        const response = await axios.post(`${API_URL}/createUser.php`, userData, { $email, $password });
+        const response = await axios.post(`${API_URL}/createUser.php`, userData, { email, password });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const resetPassword = async (email, newPassword) => {
+    try {
+        const response = await axios.post(`${API_URL}/resetPassword.php`, { email, newPassword });
         return response.data;
     } catch (error) {
         console.error(error.message);
