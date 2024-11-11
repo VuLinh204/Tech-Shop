@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../assets/css/Cart.css";
-import { getUser, logout } from "../../api/Api";
+import { getUser } from "../../api/Api";
 
 const Cart = () => {
   const [carts, setCarts] = useState([]); // State lưu giỏ hàng
@@ -33,10 +33,12 @@ const Cart = () => {
   };
 
   // Gọi API giỏ hàng khi user đã được tải
-  useEffect(() => {
+  const fetchCart = () => {
     if (user && user.id) {
       const userId = user.id;
-      fetch(`http://localhost/tech-shop/backend/api/get_cart.php?userid=${userId}`)
+      fetch(
+        `http://localhost/tech-shop/backend/api/get_cart.php?userid=${userId}`
+      )
         .then((response) => response.json())
         .then((data) => {
           if (data && data.cartItems) {
@@ -44,13 +46,42 @@ const Cart = () => {
             setCartCount(data.cartItems.length); // Cập nhật số lượng giỏ hàng
           }
         })
-        .catch((error) => console.error('Lỗi khi lấy dữ liệu giỏ hàng:', error));
+        .catch((error) =>
+          console.error("Lỗi khi lấy dữ liệu giỏ hàng:", error)
+        );
     }
+  };
+
+  useEffect(() => {
+    fetchCart();
   }, [user]); // Chạy lại khi user thay đổi
+
+  // Hàm xử lý xóa sản phẩm khỏi giỏ hàng
+  const handleRemove = (cartId, event) => {
+    event.preventDefault();
+
+    fetch(`http://localhost/tech-shop/backend/api/remove_from_cart.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cartItemId: cartId }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          // Sau khi xóa thành công, gọi lại API giỏ hàng để tải lại dữ liệu
+          fetchCart();
+        } else {
+          console.error("Lỗi khi xóa sản phẩm:", data.message);
+        }
+      })
+      .catch((error) =>
+        console.error("Lỗi khi gửi yêu cầu xóa sản phẩm:", error)
+      );
+  };
 
   return (
     <div className="header__cart">
-      <a className="header__cart-click" href="/cart">
+      <div className="header__cart-click">
         <div className="header__cart-wrap">
           <i className="header__cart-icon fa-solid fa-cart-shopping"></i>
           <span className="header__cart-notice">{cartCount}</span>
@@ -64,34 +95,35 @@ const Cart = () => {
               />
             ) : (
               <>
-                <h4 className="header__cart-heading">Sản phẩm trong giỏ hàng</h4>
+                <h4 className="header__cart-heading">
+                  Sản phẩm trong giỏ hàng
+                </h4>
                 <ul className="header__cart-list-item">
                   {carts.map((cart) => {
+                    console.log(cart);
                     const newPrice = calculateNewPrice(
                       cart.price,
                       cart.discount_percent
                     );
                     return (
                       <li key={cart.id} className="header__cart-item">
-                        <a href={`/detail/${cart.id}`}>
-                          <img
-                            src={`http://localhost/tech-shop/backend/public/uploads/${cart.thumbnail}`} // Đảm bảo đường dẫn ảnh đúng
-                            alt={cart.name}
-                            className="header__cart-img"
-                          />
-                        </a>
+                        <img
+                          src={`http://localhost/tech-shop/backend/public/uploads/${cart.thumbnail}`} // Đảm bảo đường dẫn ảnh đúng
+                          alt={cart.name}
+                          className="header__cart-img"
+                        />
                         <div className="header__cart-item-info">
                           <div className="header__cart-item-head">
                             <h5 className="header__cart-item-name">
-                              <a href={`/detail/${cart.id}`}>
-                                {cart.name}
-                              </a>
+                              {cart.product_name}
                             </h5>
                             <div className="header__cart-item-price-wrap">
                               <span className="header__cart-item-price">
                                 {newPrice.toLocaleString()}đ
                               </span>
-                              <span className="header__cart-item-multiply">x</span>
+                              <span className="header__cart-item-multiply">
+                                x
+                              </span>
                               <span className="header__cart-item-qnt">
                                 {cart.quantity}
                               </span>
@@ -99,22 +131,25 @@ const Cart = () => {
                           </div>
                           <div className="header__cart-item-body">
                             <span className="header__cart-item-description">
-                              Phân loại: {cart.category}
+                              Phân loại: {cart.category_name}
                             </span>
-                            <form action={`/cart/remove/${cart.id}`} method="post">
-                              <button
-                                type="submit"
-                                className="header__cart-item-remove"
-                              >
-                                Xóa
-                              </button>
-                            </form>
+                            <button
+                              className="header__cart-item-remove"
+                              onClick={(event) =>
+                                handleRemove(cart.cart_item_id, event)
+                              }
+                            >
+                              Xóa
+                            </button>
                           </div>
                         </div>
                       </li>
                     );
                   })}
-                  <a href="/cart" className="header__cart-view-cart btn btn--primary">
+                  <a
+                    href="/cart"
+                    className="header__cart-view-cart btn btn--primary"
+                  >
                     Xem giỏ hàng
                   </a>
                 </ul>
@@ -122,7 +157,7 @@ const Cart = () => {
             )}
           </div>
         </div>
-      </a>
+      </div>
     </div>
   );
 };

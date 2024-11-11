@@ -20,6 +20,7 @@ const ProductDetails = () => {
   const [editComment, setEditComment] = useState(""); // Store the comment being edited
   const [editRating, setEditRating] = useState(5); // Store the rating being edited
   const [user, setUser] = useState(null);
+
   const fetchUser = async () => {
     const storedUser = JSON.parse(sessionStorage.getItem("user"));
     if (storedUser) {

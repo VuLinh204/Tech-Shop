@@ -12,7 +12,14 @@ class CartItem
         $database = new Database();
         $this->conn = $database::$connection;
     }
-
+    public function getCartItemById($cartItemId)
+    {
+        $query = "SELECT * FROM cart_item WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $cartItemId);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
     // Kiểm tra và lấy hoặc tạo giỏ hàng mới cho người dùng
     private function getOrCreateCartId($userId)
     {
@@ -60,25 +67,27 @@ class CartItem
     // Lấy danh sách sản phẩm trong giỏ hàng
     public function getCartItems($userId)
     {
-        $query = "
-            SELECT 
-                p.id AS product_id, 
-                p.name AS product_name, 
-                p.thumbnail, 
-                p.price, 
-                p.description,
-                ci.quantity, 
-                (ci.quantity * p.price) AS total_price, 
-                GROUP_CONCAT(DISTINCT col.name ORDER BY col.name ASC) AS color_names,
-                p.discount_percent
-            FROM cart_item ci
-            JOIN cart c ON ci.cart_id = c.id
-            JOIN product p ON ci.product_id = p.id
-            LEFT JOIN product_color pc ON p.id = pc.product_id
-            LEFT JOIN color col ON pc.color_id = col.id
-            WHERE c.user_id = ? AND c.status = 'active'
-            GROUP BY p.id, ci.quantity;
-        ";
+        $query = " SELECT 
+    p.id AS product_id, 
+    p.name AS product_name, 
+    p.thumbnail, 
+    p.price, 
+    p.description,
+    ci.id AS cart_item_id,          
+    ci.quantity, 
+    (ci.quantity * p.price) AS total_price, 
+    GROUP_CONCAT(DISTINCT col.name ORDER BY col.name ASC) AS color_names,
+    p.discount_percent,
+    cat.name AS category_name
+FROM cart_item ci
+JOIN cart c ON ci.cart_id = c.id
+JOIN product p ON ci.product_id = p.id
+LEFT JOIN product_color pc ON p.id = pc.product_id
+LEFT JOIN color col ON pc.color_id = col.id
+LEFT JOIN category cat ON p.category_id = cat.id
+WHERE c.user_id = ? AND c.status = 'active'
+GROUP BY p.id, ci.id, ci.quantity
+;";
 
         $stmt = $this->conn->prepare($query);
 
@@ -104,10 +113,19 @@ class CartItem
                 'total_price'   => $row['total_price'],
                 'color_names'   => $row['color_names'],
                 'discount_percent' => $row['discount_percent'] ?? 0,  // Mặc định 0 nếu không có chiết khấu
-                'stock_quantity'  => $row['stock_quantity'] ?? 0  // Mặc định 0 nếu không có thông tin tồn kho
+                'stock_quantity'  => $row['stock_quantity'] ?? 0,  // Mặc định 0 nếu không có thông tin tồn kho
+                'category_name' => $row['category_name'],
+                'cart_item_id' => $row['cart_item_id']
             ];
         }
 
         return $cartItems;
+    }
+    public function deleteCartItem($cartItemId)
+    {
+        $query = "DELETE FROM cart_item WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $cartItemId);
+        return $stmt->execute();
     }
 }

@@ -45,4 +45,20 @@ class CartController
             ]);
         }
     }
+    public function deleteCartItem($cartItemId)
+    {
+        // Kiểm tra nếu sản phẩm tồn tại
+        $result = $this->cartItem->getCartItemById($cartItemId);
+
+        if ($result->num_rows === 0) {
+            return ['status' => 'error', 'message' => 'Sản phẩm không tồn tại trong giỏ hàng.'];
+        }
+
+        // Xóa sản phẩm
+        if ($this->cartItem->deleteCartItem($cartItemId)) {
+            return ['status' => 'success', 'message' => 'Xóa sản phẩm thành công.'];
+        } else {
+            return ['status' => 'error', 'message' => 'Lỗi khi xóa sản phẩm khỏi giỏ hàng.'];
+        }
+    }
 }
