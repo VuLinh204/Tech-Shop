@@ -5,14 +5,14 @@ require_once '../controllers/CartController.php';
 // Kiểm tra phương thức yêu cầu
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Kiểm tra xem các tham số có được truyền vào không
-    if (isset($_POST['cart_id']) && isset($_POST['product_id']) && isset($_POST['quantity'])) {
-        $cartId = $_POST['cart_id'];
+    if (isset($_POST['user_id']) && isset($_POST['product_id']) && isset($_POST['quantity'])) {
+        $userId = $_POST['user_id'];
         $productId = $_POST['product_id'];
         $quantity = $_POST['quantity'];
 
         // Gọi controller để xử lý thêm sản phẩm vào giỏ hàng
         $cartController = new CartController();
-        $cartController->addToCart($cartId, $productId, $quantity);
+        $cartController->addToCart($userId, $productId, $quantity);
     } else {
         // Nếu thiếu tham số, trả về lỗi
         echo json_encode(['success' => false, 'message' => 'Thiếu thông tin cần thiết']);

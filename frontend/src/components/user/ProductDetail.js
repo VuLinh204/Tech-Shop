@@ -142,7 +142,7 @@ const ProductDetails = () => {
       return;
     }
 
-    const cartId = user.id; // Truy cập ID người dùng từ sessionStorage
+    const userId = user.id; // Truy cập ID người dùng từ sessionStorage
     const productId = product.id; // Lấy ID sản phẩm từ dữ liệu đã fetch
     const quantityToAdd = quantity; // Lấy số lượng sản phẩm từ input
 
@@ -151,7 +151,7 @@ const ProductDetails = () => {
       const response = await axios.post(
         "http://localhost/tech-shop/backend/api/Add_to_cart.php", // Đường dẫn API của bạn
         new URLSearchParams({
-          cart_id: cartId,
+          user_id: userId, // Gửi user_id thay cho cart_id
           product_id: productId,
           quantity: quantityToAdd,
         })

@@ -16,13 +16,13 @@ class CartController
         return $this->cartItem->getCartItems($userId);
     }
 
-    // Thêm sản phẩm vào giỏ hàng (không cần POST)
-    public function addToCart($cartId, $productId, $quantity)
+    // Thêm sản phẩm vào giỏ hàng
+    public function addToCart($userId, $productId, $quantity)
     {
-        // Kiểm tra xem dữ liệu có hợp lệ không
-        if ($cartId && $productId && $quantity > 0) {
-            // Thêm sản phẩm vào giỏ hàng thông qua model
-            $result = $this->cartItem->addToCart($cartId, $productId, $quantity);
+        // Kiểm tra dữ liệu hợp lệ
+        if ($userId && $productId && $quantity > 0) {
+            // Gọi hàm addToCart trong model để thêm sản phẩm vào giỏ hàng
+            $result = $this->cartItem->addToCart($userId, $productId, $quantity);
 
             // Nếu thêm thành công
             if ($result) {
