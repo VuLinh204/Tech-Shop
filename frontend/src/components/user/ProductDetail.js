@@ -112,16 +112,24 @@ const ProductDetails = () => {
 
   const fetchColors = async () => {
     try {
+      // Truyền product_id vào URL
       const response = await axios.get(
-        "http://localhost/tech-shop/backend/api/ColorApi.php"
+        `http://localhost/tech-shop/backend/api/ColorApi.php?product_id=${id}`
       );
-      const colorData = Array.isArray(response.data)
-        ? response.data.map((item) => item.name || item.color || item)
-        : [];
-      setColors(colorData);
+      // Kiểm tra nếu response.data có đúng định dạng và chứa mảng
+      if (Array.isArray(response.data.data)) {
+        // Nếu có, lấy các màu sắc từ mảng data trả về
+        const colorData = response.data.data.map(
+          (item) => item.name || item.color || item
+        );
+        setColors(colorData); // Cập nhật dữ liệu màu sắc
+      } else {
+        // Nếu không có dữ liệu màu sắc, trả về mảng rỗng
+        setColors([]);
+      }
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu màu sắc:", error);
-      setColors([]);
+      setColors([]); // Cập nhật trạng thái màu sắc khi có lỗi
     }
   };
 
@@ -151,27 +159,41 @@ const ProductDetails = () => {
   const decrementQuantity = () => {
     setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };
-
   const handleAddToCart = async (e) => {
     e.preventDefault();
+
+    // Kiểm tra nếu người dùng đã đăng nhập (dữ liệu người dùng được lưu trong sessionStorage)
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    if (!user) {
+      alert("Vui lòng đăng nhập trước khi thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
+
+    const userId = user.id; // Truy cập ID người dùng từ sessionStorage
+    const productId = product.id; // Lấy ID sản phẩm từ dữ liệu đã fetch
+    const quantityToAdd = quantity; // Lấy số lượng sản phẩm từ input
+
     try {
+      // Gọi API để thêm sản phẩm vào giỏ hàng
       const response = await axios.post(
-        "http://localhost/tech-shop/backend/api/CartApi.php",
-        {
-          user_id: user.id, // Sử dụng user_id thích hợp
-          product_id: id,
-          quantity,
-        }
+        "http://localhost/tech-shop/backend/api/Add_to_cart.php", // Đường dẫn API của bạn
+        new URLSearchParams({
+          user_id: userId, // Gửi user_id thay cho cart_id
+          product_id: productId,
+          quantity: quantityToAdd,
+        })
       );
 
       if (response.data.success) {
-        setFeedbackMessage("Sản phẩm đã được thêm vào giỏ hàng.");
-        setTimeout(() => setFeedbackMessage(""), 3000);
+        alert("Sản phẩm đã được thêm vào giỏ hàng!");
+        // Cập nhật lại giỏ hàng hoặc làm gì đó sau khi thêm thành công
       } else {
-        console.error("Lỗi:", response.data.message);
+        alert("Lỗi khi thêm sản phẩm vào giỏ hàng.");
       }
     } catch (error) {
-      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+      alert("Đã xảy ra lỗi, vui lòng thử lại.");
     }
   };
 
@@ -195,9 +217,9 @@ const ProductDetails = () => {
     }
 
     const url = editFeedbackId
-      ? "http://localhost/tech-shop/backend/api/FeedbackApi.php" // URL chỉnh sửa
-      : "http://localhost/tech-shop/backend/api/FeedbackApi.php"; // URL thêm mới bình luận
-    const method = editFeedbackId ? "PUT" : "POST";
+      ? "http://localhost/tech-shop/backend/api/FeedbackApi.php" // Edit URL
+      : "http://localhost/tech-shop/backend/api/FeedbackApi.php"; // Add new comment URL
+    const method = editFeedbackId ? "PUT" : "POST"; // PUT for editing, POST for adding
 
     try {
       const response = await axios({
@@ -309,19 +331,22 @@ const ProductDetails = () => {
                         </div>
                         <br />
                         <div className="color-options">
-                          {colors.map((color, index) => (
-                            <button
-                              key={index}
-                              type="button"
-                              className={`color-btn ${
-                                selectedColor === color ? "selected" : ""
-                              }`}
-                              onClick={() => setSelectedColor(color)}
-                            >
-                              {color}
-                            </button>
-                          ))}
+                          <select
+                            className="color-select"
+                            value={selectedColor}
+                            onChange={(e) => setSelectedColor(e.target.value)}
+                          >
+                            <option value="" disabled>
+                              Chọn màu
+                            </option>
+                            {colors.map((color, index) => (
+                              <option key={index} value={color}>
+                                {color} {/* Hiển thị tên màu */}
+                              </option>
+                            ))}
+                          </select>
                         </div>
+
                         <br />
                         <button
                           type="submit"

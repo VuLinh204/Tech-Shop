@@ -10,12 +10,43 @@ $colorController = new ColorController();
 
 switch ($method) {
     case 'GET':
-        // Lấy danh sách tất cả màu sắc
-        $colors = $colorController->getAllColors();
-        echo json_encode($colors);
+        // Kiểm tra xem có truyền product_id qua query string không
+        if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
+            // Lấy product_id từ query string
+            $product_id = $_GET['product_id'];
+
+            // Lấy danh sách màu sắc cho product_id
+            $response = $colorController->getAllColors($product_id);
+
+            // Kiểm tra kết quả và trả về phản hồi thích hợp
+            if ($response['status'] === 'success') {
+                echo json_encode([
+                    'status' => 'success',
+                    'data' => $response['data']
+                ]);
+            } else {
+                http_response_code(404); // Nếu không có màu sắc, trả về lỗi 404
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => $response['message']
+                ]);
+            }
+        } else {
+            // Nếu không có product_id, trả về lỗi 400
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Product ID is required.'
+            ]);
+        }
         break;
+
     default:
-        http_response_code(405);
-        echo json_encode(['message' => 'Phương thức không được hỗ trợ']);
+        // Nếu phương thức không phải GET
+        http_response_code(405); // Method Not Allowed
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Method Not Allowed'
+        ]);
         break;
 }
