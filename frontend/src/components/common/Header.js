@@ -35,7 +35,7 @@ const Header = () => {
         if (response.status === 'success') {
             sessionStorage.removeItem('user');
             setUser(null);
-            navigate('/login');
+            navigate('/home');
         } else {
             console.error(response.message);
             alert('Có lỗi xảy ra khi đăng xuất: ' + response.message);
