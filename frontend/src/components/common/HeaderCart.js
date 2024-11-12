@@ -3,33 +3,6 @@ import "../../assets/css/Cart.css";
 import { getUser } from "../../api/Api";
 
 const Cart = () => {
-    const [carts, setCarts] = useState([]); // State lưu giỏ hàng
-    const [cartCount, setCartCount] = useState(0); // State lưu số lượng sản phẩm trong giỏ hàng
-    const [user, setUser] = useState(null);
-
-    // Hàm lấy thông tin người dùng
-    const fetchUser = async () => {
-        const storedUser = JSON.parse(sessionStorage.getItem('user'));
-        if (storedUser) {
-            setUser(storedUser);
-        } else {
-            const data = await getUser();
-            if (data.status === 'success') {
-                setUser(data.user);
-                sessionStorage.setItem('user', JSON.stringify(data.user));
-            }
-        }
-    };
-
-    useEffect(() => {
-        fetchUser();
-    }, []); // Chạy 1 lần khi component được mount
-
-    // Hàm tính giá mới sau khi giảm giá
-    const calculateNewPrice = (price, discount) => {
-        return price - (price * discount) / 100;
-    };
-
   const [carts, setCarts] = useState([]); // State lưu giỏ hàng
   const [cartCount, setCartCount] = useState(0); // State lưu số lượng sản phẩm trong giỏ hàng
   const [user, setUser] = useState(null);
