@@ -138,3 +138,14 @@ export const getProducts = async () => {
         return { status: 'error', message: 'Có lỗi xảy ra khi lấy danh sách sản phẩm.' };
     }
 };
+
+export const getProductsSearch = async (searchQuery = '') => {
+    try {
+        const response = await fetch(`http://localhost/Tech-Shop/backend/api/products.php?search=${searchQuery}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return [];
+    }
+};
