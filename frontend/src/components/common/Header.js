@@ -37,7 +37,7 @@ const Header = () => {
     if (response.status === "success") {
       sessionStorage.removeItem("user");
       setUser(null);
-      navigate("/login");
+      navigate("/home");
     } else {
       console.error(response.message);
       alert("Có lỗi xảy ra khi đăng xuất: " + response.message);
@@ -120,7 +120,7 @@ const Header = () => {
                 <>
                   <div
                     className="header__navbar-user-img"
-                    // style={{ backgroundImage: `url(${user.avatar})` }} // Uncomment this line if user.avatar is available
+                  // style={{ backgroundImage: `url(${user.avatar})` }} // Uncomment this line if user.avatar is available
                   ></div>
                   <span className="header__navbar-user-name">
                     {user.username}
@@ -142,18 +142,25 @@ const Header = () => {
                       <a href="/voucher">Mã Giảm Giá</a>
                     </li>
                     <li className="header__navbar-user-item">
-                      <button className="btn-logout" onClick={handleLogout}>
+                      <a className="btn-logout" onClick={handleLogout}>
                         Đăng xuất
-                      </button>
+                      </a>
                     </li>
                   </ul>
                 </>
               ) : (
-                <span>
-                  <a className="header__navbar-item-link" href="/login">
-                    Đăng nhập
-                  </a>
-                </span>
+                <>
+                  <li className="header__navbar-item header__navbar-item--strong header__navbar-item--separate">
+                    <a className="header__navbar-item-link" href="/register">
+                      Đăng kí
+                    </a>
+                  </li>
+                  <li className="header__navbar-item header__navbar-item--strong">
+                    <a className="header__navbar-item-link" href="/login">
+                      Đăng nhập
+                    </a>
+                  </li>
+                </>
               )}
             </li>
           </ul>

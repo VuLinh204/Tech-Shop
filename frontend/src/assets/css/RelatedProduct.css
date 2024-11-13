@@ -1,36 +1,73 @@
 .related-products {
-    margin: 20px 0;
-    max-height: 400px; /* Giới hạn chiều cao để có thể cuộn */
-    overflow-y: auto;  /* Tạo thanh cuộn dọc */
-  }
-  
-  .product-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: flex-start;
-  }
-  
-  .product-card {
-    width: 160px;
-    height: auto;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-  }
-  
-  .product-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-  }
-  
-  .product-card .product-info {
-    padding: 10px;
-    font-size: 14px;
-  }
-  
-  .product-card:hover {
-    transform: scale(1.05);
-  }
-  
+  padding: 20px;
+}
+
+.related-products h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.slick-slider {
+  position: relative;
+}
+
+.slick-slide {
+  display: flex;
+  justify-content: center;
+}
+
+.product-list .slick-list {
+  margin: 0 -10px; /* Adjust spacing between products */
+}
+
+/* Customized slick arrows with light blue color */
+.related-products .slick-prev, .related-products .slick-next {
+  width: 66px !important;
+  height: 66px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  z-index: 1 !important;
+  background: none; /* Remove background color */
+}
+
+.related-products .slick-prev {
+  left: -25px !important; /* Positioning the left arrow */
+}
+
+.related-products .slick-next {
+  right: -25px !important; /* Positioning the right arrow */
+}
+
+/* Style for the arrow icons */
+.related-products .slick-prev:before, .related-products .slick-next:before {
+  font-size: 7.5rem !important;
+  color: rgba(94, 191, 221, 0.8) !important; /* Initial light blue color */
+}
+
+/* Hover and active (click) states for arrow icons */
+.related-products .slick-prev:hover:before, 
+.related-products .slick-next:hover:before,
+.related-products .slick-prev:active:before, 
+.related-products .slick-next:active:before {
+  color: rgb(2 132 199) !important; /* Darker color on hover and click */
+}
+
+.related-products .slick-slide div .grid__column-2-4{
+  width: 100%  !important;
+}
+
+/* Custom styling for ProductCard items */
+.product-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+}

@@ -61,52 +61,58 @@ const ForgotPassword = () => {
             </header>
 
             <div className="modal">
-                <div className="modal__overlay"></div>
-                <div className="modal__body">
-                    <form onSubmit={handleSubmit} className="auth-form">
-                        <div className="auth-form__container">
-                            <div className="auth-form__header">
-                                <h3 className="auth-form__heading">Quên mật khẩu</h3>
-                                <a href="/login" className="auth-form__switch-btn">
-                                    Đăng nhập
-                                </a>
-                            </div>
-                            {errors.length > 0 && (
-                                <div
-                                    className="alert alert-danger"
-                                    style={{ maxHeight: '50px', display: 'flex', alignItems: 'center' }}
-                                >
-                                    {errors.map((error, index) => (
-                                        <p key={index}>{error}</p>
-                                    ))}
-                                    <button className="close" onClick={() => setErrors([])}>
-                                        &times;
+                <div class="area">
+                    <ul className="circles">
+                        {[...Array(10)].map((_, i) => (
+                            <li key={i}></li>
+                        ))}
+                    </ul>
+                    <div className="modal__body">
+                        <form onSubmit={handleSubmit} className="auth-form">
+                            <div className="auth-form__container">
+                                <div className="auth-form__header">
+                                    <h3 className="auth-form__heading">Quên mật khẩu</h3>
+                                    <a href="/login" className="auth-form__switch-btn">
+                                        Đăng nhập
+                                    </a>
+                                </div>
+                                {errors.length > 0 && (
+                                    <div
+                                        className="alert alert-danger"
+                                        style={{ maxHeight: '50px', display: 'flex', alignItems: 'center' }}
+                                    >
+                                        {errors.map((error, index) => (
+                                            <p key={index}>{error}</p>
+                                        ))}
+                                        <button className="close" onClick={() => setErrors([])}>
+                                            &times;
+                                        </button>
+                                    </div>
+                                )}
+                                <div className="auth-form__form">
+                                    <div className="auth-form__group">
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            className="auth-form__input"
+                                            placeholder="Email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="auth-form__controls" style={{ marginBottom: '24px' }}>
+                                    <a href="/login" className="btn btn--normal auth-form__controls-back">
+                                        TRỞ LẠI
+                                    </a>
+                                    <button type="submit" className="btn btn--primary">
+                                        GỬI YÊU CẦU
                                     </button>
                                 </div>
-                            )}
-                            <div className="auth-form__form">
-                                <div className="auth-form__group">
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        className="auth-form__input"
-                                        placeholder="Email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
-                                    />
-                                </div>
                             </div>
-                            <div className="auth-form__controls" style={{ marginBottom: '24px' }}>
-                                <a href="/login" className="btn btn--normal auth-form__controls-back">
-                                    TRỞ LẠI
-                                </a>
-                                <button type="submit" className="btn btn--primary">
-                                    GỬI YÊU CẦU
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </>

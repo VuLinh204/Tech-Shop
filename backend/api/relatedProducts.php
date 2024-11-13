@@ -8,7 +8,7 @@ $conn = Database::getConnection();
 if (isset($_GET['product_id'])) {
     $productId = $_GET['product_id'];
     $page = isset($_GET['page']) ? $_GET['page'] : 1;  // Trang hiện tại
-    $limit = 2;  // Số lượng sản phẩm mỗi trang
+    $limit = 5;  // Số lượng sản phẩm mỗi trang
     $offset = ($page - 1) * $limit;  // Tính toán offset
 
     // Lấy category_id của sản phẩm từ product_id

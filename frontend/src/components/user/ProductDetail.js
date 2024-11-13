@@ -266,8 +266,9 @@ const ProductDetails = () => {
                             <button
                               key={index}
                               type="button"
-                              className={`color-btn ${selectedColor === color ? "selected" : ""
-                                }`}
+                              className={`color-btn ${
+                                selectedColor === color ? "selected" : ""
+                              }`}
                               onClick={() => setSelectedColor(color)}
                             >
                               {color}
@@ -277,9 +278,15 @@ const ProductDetails = () => {
                         <br />
                         <button
                           type="submit"
-                          className="btn product-add-to-cart"
+                          className="product-add-to-cart"
                         >
                           Thêm Vào Giỏ Hàng
+                        </button>
+                        <button
+                          type="submit"
+                          className="product-buy-now"
+                        >
+                          Mua Ngay
                         </button>
                       </form>
                       <hr />
@@ -394,9 +401,9 @@ const ProductDetails = () => {
                 </div>
               </div>
             </div>
-            <br />
           </div>
         </div>
+        <br />
         <RelatedProducts productId={id} />
       </div>
     </div>
