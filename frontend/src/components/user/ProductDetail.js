@@ -217,10 +217,9 @@ const ProductDetails = () => {
     }
 
     const url = editFeedbackId
-      ? "http://localhost/tech-shop/backend/api/FeedbackApi.php" // Edit URL
-      : "http://localhost/tech-shop/backend/api/FeedbackApi.php"; // Add new comment URL
-    const method = editFeedbackId ? "PUT" : "POST"; // PUT for editing, POST for adding
-
+      ? "http://localhost/tech-shop/backend/api/FeedbackApi.php"
+      : "http://localhost/tech-shop/backend/api/FeedbackApi.php";
+    const method = editFeedbackId ? "PUT" : "POST";
     try {
       const response = await axios({
         method: method,
