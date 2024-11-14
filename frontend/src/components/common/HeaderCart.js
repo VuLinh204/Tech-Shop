@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../assets/css/Cart.css";
 import { getUser } from "../../api/Api";
+import noCart from "../../assets/img/no-cart.webp";
 
 const Cart = () => {
   const [carts, setCarts] = useState([]); // State lưu giỏ hàng
@@ -89,7 +90,7 @@ const Cart = () => {
           <div className="header__cart-list">
             {cartCount === 0 ? (
               <img
-                src="assets/img/no-cart.webp"
+                src={noCart}
                 alt="Giỏ hàng trống"
                 className="header__cart-no-cart-img"
               />

@@ -22,6 +22,7 @@ class ProductSeeder extends AbstractSeed
                 'name' => 'iPhone 14',
                 'price' => 999.99,
                 'description' => 'Điện thoại iPhone 14 với công nghệ mới nhất.',
+                'discount_percent' => '25',
                 'thumbnail' => 'Iphone14.jpg',
                 'category_id' => rand(1, 10), // Category ID from 1 to 10
                 'created_at' => date('Y-m-d H:i:s'),
@@ -31,6 +32,7 @@ class ProductSeeder extends AbstractSeed
                 'name' => 'MacBook Pro 16"',
                 'price' => 2399.99,
                 'description' => 'Laptop MacBook Pro 16 inch, hiệu năng mạnh mẽ.',
+                'discount_percent' => '35',
                 'thumbnail' => 'Laptop-MacBook-Pro16.png',
                 'category_id' => rand(1, 10), // Category ID from 1 to 10
                 'created_at' => date('Y-m-d H:i:s'),
@@ -40,6 +42,7 @@ class ProductSeeder extends AbstractSeed
                 'name' => 'Tai nghe không dây',
                 'price' => 149.99,
                 'description' => 'Phụ kiện tai nghe không dây chất lượng cao.',
+                'discount_percent' => '40',
                 'thumbnail' => 'Tai-nghe-không-dây.png',
                 'category_id' => rand(1, 10), // Category ID from 1 to 10
                 'created_at' => date('Y-m-d H:i:s'),
@@ -49,6 +52,7 @@ class ProductSeeder extends AbstractSeed
                 'name' => 'Samsung Galaxy S23',
                 'price' => 899.99,
                 'description' => 'Điện thoại Samsung Galaxy S23, thiết kế sang trọng.',
+                'discount_percent' => '67',
                 'thumbnail' => 'Samsung-Galaxy-TabS8.jpg',
                 'category_id' => rand(1, 10), // Category ID from 1 to 10
                 'created_at' => date('Y-m-d H:i:s'),
@@ -58,6 +62,7 @@ class ProductSeeder extends AbstractSeed
                 'name' => 'Sony WH-1000XM5',
                 'price' => 349.99,
                 'description' => 'Tai nghe Sony WH-1000XM5, chống ồn chủ động.',
+                'discount_percent' => '56',
                 'thumbnail' => 'Sony-WH-1000XM5.jpg',
                 'category_id' => rand(1, 10), // Category ID from 1 to 10
                 'created_at' => date('Y-m-d H:i:s'),
@@ -67,6 +72,7 @@ class ProductSeeder extends AbstractSeed
                 'name' => 'iPad Pro 11"',
                 'price' => 799.99,
                 'description' => 'Máy tính bảng iPad Pro 11 inch, hiệu năng cao.',
+                'discount_percent' => '34',
                 'thumbnail' => 'iPad-Pro11.png',
                 'category_id' => rand(1, 10), // Category ID from 1 to 10
                 'created_at' => date('Y-m-d H:i:s'),
