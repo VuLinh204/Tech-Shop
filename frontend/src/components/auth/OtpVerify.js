@@ -1,40 +1,38 @@
 import React, { useState } from 'react';
 
-// Component ResetPassword
-const ResetPassword = () => {
-    const [password, setPassword] = useState('');
-    const [passwordConfirmation, setPasswordConfirmation] = useState('');
+// Component OtpVerify
+const OtpVerify = () => {
+    const [otp, setOtp] = useState('');
     const [errors, setErrors] = useState([]);
-    const email = new URLSearchParams(window.location.search).get('email'); // Lấy email từ query string
-    const otp = new URLSearchParams(window.location.search).get('otp'); // Lấy otp từ query string
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Gửi thông tin đến backend
+        // Gửi thông tin OTP tới backend
         try {
-            const response = await fetch('/reset_password', {
+            const response = await fetch('/users/signup_verify', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // CSRF token
                 },
-                body: JSON.stringify({ email, otp, password, password_confirmation: passwordConfirmation }),
+                body: JSON.stringify({ otp }),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                // Xử lý thành công
+                setSuccessMessage(data.message || 'Xác thực thành công!');
                 setErrors([]);
-                alert('Mật khẩu đã được đặt lại thành công!');
-                // Có thể redirect hoặc reset form nếu cần
+                setOtp(''); // Reset otp
             } else {
-                // Xử lý lỗi
-                setErrors(data.errors || ['Đặt lại mật khẩu thất bại, vui lòng thử lại.']);
+                setErrors(data.errors || ['Xác thực thất bại, vui lòng thử lại.']);
+                setSuccessMessage('');
             }
         } catch (error) {
             setErrors(['Có lỗi xảy ra. Vui lòng thử lại.']);
+            setSuccessMessage('');
         }
     };
 
@@ -74,7 +72,7 @@ const ResetPassword = () => {
                         <form onSubmit={handleSubmit} className="auth-form">
                             <div className="auth-form__container">
                                 <div className="auth-form__header">
-                                    <h3 className="auth-form__heading">Đặt lại mật khẩu</h3>
+                                    <h3 className="auth-form__heading">Xác thực OTP</h3>
                                     <a href="/signin" className="auth-form__switch-btn">
                                         Đăng nhập
                                     </a>
@@ -82,50 +80,36 @@ const ResetPassword = () => {
                                 {errors.length > 0 && (
                                     <div
                                         className="alert alert-danger"
-                                        style={{ maxHeight: '100px', display: 'flex', alignItems: 'center' }}
+                                        style={{ maxHeight: '50px', display: 'flex', alignItems: 'center' }}
                                     >
-                                        <ul>
-                                            {errors.map((error, index) => (
-                                                <li key={index}>{error}</li>
-                                            ))}
-                                        </ul>
+                                        {errors.map((error, index) => (
+                                            <p key={index}>{error}</p>
+                                        ))}
                                         <button className="close" onClick={() => setErrors([])}>
                                             &times;
                                         </button>
                                     </div>
                                 )}
-                                <input type="hidden" name="email" value={email} />
-                                <input type="hidden" name="otp" value={otp} />
                                 <div className="auth-form__form">
                                     <div className="auth-form__group">
                                         <input
-                                            type="password"
-                                            name="password"
+                                            type="text"
                                             className="auth-form__input"
-                                            placeholder="Mật khẩu mới"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="auth-form__group">
-                                        <input
-                                            type="password"
-                                            name="password_confirmation"
-                                            className="auth-form__input"
-                                            placeholder="Xác nhận mật khẩu"
-                                            value={passwordConfirmation}
-                                            onChange={(e) => setPasswordConfirmation(e.target.value)}
+                                            id="otp"
+                                            name="otp"
+                                            placeholder="Nhập OTP"
+                                            value={otp}
+                                            onChange={(e) => setOtp(e.target.value)}
                                             required
                                         />
                                     </div>
                                 </div>
                                 <div className="auth-form__controls" style={{ marginBottom: '24px' }}>
-                                    <a href="/forgot_password_verify" className="btn btn--normal auth-form__controls-back">
+                                    <a href="/forgot_password" className="btn btn--normal auth-form__controls-back">
                                         TRỞ LẠI
                                     </a>
                                     <button type="submit" className="btn btn--primary">
-                                        ĐẶT LẠI MẬT KHẨU
+                                        XÁC THỰC OTP
                                     </button>
                                 </div>
                             </div>
@@ -137,4 +121,4 @@ const ResetPassword = () => {
     );
 };
 
-export default ResetPassword;
+export default OtpVerify;

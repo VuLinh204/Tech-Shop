@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import "../../assets/css/ProductDetail.css";
 import axios from "axios";
 import "../../assets/css/Feedback.css";
+import RelatedProducts from "./RelatedProducts";
 import { getUser, logout } from "../../api/Api";
 
 const ProductDetails = () => {
@@ -347,9 +348,15 @@ const ProductDetails = () => {
                         <br />
                         <button
                           type="submit"
-                          className="btn product-add-to-cart"
+                          className="product-add-to-cart"
                         >
                           Thêm Vào Giỏ Hàng
+                        </button>
+                        <button
+                          type="submit"
+                          className="product-buy-now"
+                        >
+                          Mua Ngay
                         </button>
                       </form>
                       <hr />
@@ -503,6 +510,8 @@ const ProductDetails = () => {
             </div>
           </div>
         </div>
+        <br />
+        <RelatedProducts productId={id} />
       </div>
     </div>
   );
