@@ -284,20 +284,18 @@ const ProductDetails = () => {
                         </div>
                         <br />
                         <div className="color-options">
-                          <select
-                            className="color-select"
-                            value={selectedColor}
-                            onChange={(e) => setSelectedColor(e.target.value)}
-                          >
-                            <option value="" disabled>
-                              Chọn màu
-                            </option>
-                            {colors.map((color, index) => (
-                              <option key={index} value={color}>
-                                {color} {/* Hiển thị tên màu */}
-                              </option>
-                            ))}
-                          </select>
+                          {colors.map((color, index) => (
+                            <button
+                              key={index}
+                              type="button"
+                              className={`color-btn ${
+                                selectedColor === color ? "selected" : ""
+                              }`}
+                              onClick={() => setSelectedColor(color)}
+                            >
+                              {color}
+                            </button>
+                          ))}
                         </div>
 
                         <br />
