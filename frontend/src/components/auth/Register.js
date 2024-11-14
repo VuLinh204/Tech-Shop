@@ -107,13 +107,8 @@ const Register = () => {
             </header>
 
             <div className="modal">
-                <div class="area">
-                    <ul className="circles">
-                        {[...Array(10)].map((_, i) => (
-                            <li key={i}></li>
-                        ))}
-                    </ul>
-                    <div className="modal__body">
+                <div className="modal__overlay"></div>
+                <div className="modal__body">
                         <form onSubmit={isOtpSent ? handleVerifyOtp : handleSendOtp} className="auth-form">
                             <div className="auth-form__container">
                                 <div className="auth-form__header">
