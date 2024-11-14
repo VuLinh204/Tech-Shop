@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Seed\AbstractSeed;
 
-class FeedbackSeeder extends AbstractSeed
+class xFeedbackSeeder extends AbstractSeed
 {
     /**
      * Run Method.

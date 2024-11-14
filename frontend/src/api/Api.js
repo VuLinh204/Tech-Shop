@@ -104,3 +104,52 @@ export const getProducts = async () => {
         return { status: 'error', message: 'Có lỗi xảy ra khi lấy danh sách sản phẩm.' };
     }
 };
+
+
+export const createProduct = async (productData) => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/product_api.php`, productData
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error create product: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi tạo sản phẩm.' };
+    }
+};
+
+export const getDetailProduct = async (id) => {
+    try {
+        const response = await axios.get(
+            `${API_URL}/product_api.php?action=view&id=${id}`,
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error create product: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi sửa tạo sản phẩm.' };
+    }
+};
+
+export const updateProduct = async (productData) => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/product_api.php`, productData
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error update product: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi sửa sản phẩm.' };
+    }
+};
+
+export const deleteProduct = async (data) => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/product_api.php`, data,
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error create product: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi xóa tạo sản phẩm.' };
+    }
+};

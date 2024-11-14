@@ -120,17 +120,20 @@ const Header = () => {
                 <>
                   <div
                     className="header__navbar-user-img"
-                    // style={{ backgroundImage: `url(${user.avatar})` }} // Uncomment this line if user.avatar is available
+                  // style={{ backgroundImage: `url(${user.avatar})` }} // Uncomment this line if user.avatar is available
                   ></div>
                   <span className="header__navbar-user-name">
                     {user.username}
                   </span>
                   <ul className="header__navbar-user-menu">
+                    {user.role_id === 1 && (
+                      <li className="header__navbar-user-item">
+                        <a href="/profile">Tài Khoản Của Tôi</a>
+                      </li>
+                    )}
+
                     <li className="header__navbar-user-item">
-                      <a href="/profile">Tài Khoản Của Tôi</a>
-                    </li>
-                    <li className="header__navbar-user-item">
-                      <a href="/categories/manages">Quản lý</a>
+                      <a href="/admin">Quản lý</a>
                     </li>
                     <li className="header__navbar-user-item">
                       <a href="/password">Mật Khẩu</a>
@@ -216,7 +219,7 @@ const Header = () => {
           <HeaderCart />
         </div>
       </div>
-    </header>
+    </header >
   );
 };
 
