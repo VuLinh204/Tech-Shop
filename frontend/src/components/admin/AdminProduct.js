@@ -25,7 +25,9 @@ const AdminProduct = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const { Option } = Select;
     const [colorInput, setColorInput] = useState([]);
+    const [fileList, setFileList] = useState([""]);
     const [form] = Form.useForm();
+
 
 
 
@@ -50,12 +52,17 @@ const AdminProduct = () => {
         const data = await getDetailProduct(productId);
         if (data && data.status === 'success') {
             const { product } = data;
-            console.log(product);
             setCategoryId(product.category_id);
             setProductDetails({
                 ...product,
                 colors: data.product.color.join(", "),
-                thumbnail_url: `http://localhost/tech-shop/backend/public/uploads/${product.thumbnail}`
+                thumbnail: {
+                    uid: "-1",
+                    name: product.thumbnail,
+                    status: "done",
+                    url: `http://localhost/tech-shop/backend/public/uploads/${product.thumbnail}`,
+                    action: "none"
+                }
             });
 
         } else {
@@ -68,19 +75,18 @@ const AdminProduct = () => {
     };
 
     const handleSubmit = async (values) => {
-        const productData = {
-            action: "create",
-            name: values?.name,
-            description: values?.description,
-            category_id: values?.category_id,
-            price: values?.price,
-            quantity: values?.quantity,
-            discount_percent: values?.discount_percent,
-            color: colorInput,
-            thumbnail: values?.thumbnail?.file?.name
-        };
+        const formData = new FormData();
+        formData.append("action", "create");
+        formData.append("name", values?.name);
+        formData.append("description", values?.description);
+        formData.append("category_id", values?.category_id);
+        formData.append("price", values?.price);
+        formData.append("quantity", values?.quantity);
+        formData.append("discount_percent", values?.discount_percent);
+        formData.append("color", colorInput);
+        formData.append("thumbnail", values?.thumbnail?.file);
         try {
-            const data = await createProduct(productData);
+            const data = await createProduct(formData);
             if (data && data.status === 'success') {
                 notification.success({
                     message: 'Thêm sản phẩm thành công!',
@@ -168,13 +174,12 @@ const AdminProduct = () => {
 
 
     const handleDeleted = async (productId) => {
-        const data = {
-            action: "delete",
-            id: productId
-        }
+        const data = new FormData();
+        data.append("action", "delete");
+        data.append("id", productId);
         try {
             const response = await deleteProduct(data);
-            if (response.status === 'success') {
+            if (response && response.status === 'success') {
                 notification.success({
                     message: 'Xóa sản phẩm thành công!',
                     description: 'Sản phẩm đã được xóa khỏi hệ thống.',
@@ -202,6 +207,7 @@ const AdminProduct = () => {
 
     useEffect(() => {
         form.setFieldsValue(productDetails);
+        setFileList([productDetails.thumbnail])
     }, [productDetails]);
 
 
@@ -352,6 +358,7 @@ const AdminProduct = () => {
                         remember: true,
                     }}
                     autoComplete="off"
+                    encType="multipart/form-data"
                 >
                     <Form.Item
                         label="Tên sản phẩm"
@@ -507,7 +514,6 @@ const AdminProduct = () => {
                             },
                             {
                                 validator: (_, value) => {
-                                    console.log(value);
                                     const isJpgOrPng = value.file.type === 'image/jpeg' || value.file.type === 'image/png';
                                     if (!isJpgOrPng) {
                                         return Promise.reject("Bạn chỉ có thể tải lên tệp JPG/PNG!");
@@ -527,7 +533,8 @@ const AdminProduct = () => {
                         <Upload
                             name="thumbnail"
                             listType="picture"
-                            beforeUpload={() => false} // Không upload tự động
+                            beforeUpload={() => false}
+                            maxCount={1}
                         >
                             <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
                         </Upload>
@@ -735,19 +742,13 @@ const AdminProduct = () => {
                         <Upload
                             name="thumbnail"
                             listType="picture"
-                            beforeUpload={() => false}                >
+                            fileList={fileList}
+                            beforeUpload={() => false}
+                            maxCount={1}
+                        >
                             <Button icon={<UploadOutlined />}>Chọn hình ảnh mới</Button>
                         </Upload>
-                        {productDetails.thumbnail_url && (
-                            <div style={{ marginTop: '10px' }}>
-                                <span>Hình ảnh hiện tại:</span>
-                                <img
-                                    src={productDetails.thumbnail_url}
-                                    alt="Hình ảnh hiện tại"
-                                    style={{ width: '150px', marginTop: '5px' }}
-                                />
-                            </div>
-                        )}
+
                     </Form.Item>
 
                     <Form.Item

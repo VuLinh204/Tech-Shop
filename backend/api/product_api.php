@@ -36,18 +36,46 @@ if ($method === 'GET' && isset($_GET['action'])) {
             break;
     }
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $data = json_decode(file_get_contents("php://input"), true);
-
-    if (!isset($data['action']) || empty($data['action'])) {
-        echo json_encode(['success' => false, 'error' => 'Tham số action không được cung cấp']);
-        exit;  // Dừng xử lý khi không có action
-    }
-    $action = $data['action'];
+    $action = $_POST['action'] ?? null;
     switch ($action) {
         case 'create':
-            if (isset($data['name'], $data['description'], $data['category_id'], $data['price'], $data['quantity'], $data['discount_percent'], $data['thumbnail'], $data['color'])) {
-                $response = $productController->createProduct($data);
+            // Kiểm tra và xử lý các tham số khác
+            $name = $_POST['name'] ?? '';
+            $description = $_POST['description'] ?? '';
+            $category_id = $_POST['category_id'] ?? '';
+            $price = $_POST['price'] ?? '';
+            $quantity = $_POST['quantity'] ?? '';
+            $discount_percent = $_POST['discount_percent'] ?? '';
+            $color = $_POST['color'] ?? '';
+
+            // Xử lý upload file
+            if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === 0) {
+                $targetDir = "../public/uploads/";
+                $fileName = basename($_FILES['thumbnail']['name']);
+                $targetFilePath = $targetDir . $fileName;
+
+                if (move_uploaded_file($_FILES['thumbnail']['tmp_name'], $targetFilePath)) {
+                    // File upload thành công, xử lý thêm nếu cần
+                    $data['thumbnail'] = $fileName; // Đường dẫn ảnh đã lưu
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Không thể lưu ảnh.']);
+                    exit;
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'File ảnh không hợp lệ.']);
+                exit;
+            }
+            if (isset($action)) {
+                $response = $productController->createProduct([
+                    'name' => $name,
+                    'description' => $description,
+                    'category_id' => $category_id,
+                    'price' => $price,
+                    'quantity' => $quantity,
+                    'discount_percent' => $discount_percent,
+                    'color' => $color,
+                    'thumbnail' => $data['thumbnail'] ?? null,
+                ]);
                 echo $response;
             } else {
                 echo json_encode(['error' => 'Thông tin sản phẩm không đầy đủ']);
@@ -63,8 +91,11 @@ if ($method === 'GET' && isset($_GET['action'])) {
             }
             break;
         case 'delete':
-            if (isset($data['id'])) {
-                $response = $productController->deleteProduct($data['id']);
+            $id = $_POST['id'];
+            if (isset($id)) {
+
+
+                $response = $productController->deleteProduct($id);
                 echo $response;
             } else {
                 echo json_encode(['error' => 'ID sản phẩm không được cung cấp']);

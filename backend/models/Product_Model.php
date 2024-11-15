@@ -70,40 +70,6 @@ class Product_Model extends Database
         }
     }
 
-    //Validate product
-    // public function validateProduct($product)
-    // {
-    //     $errors = [];
-
-    //     // Kiểm tra tên sản phẩm
-    //     if (empty($product->name)) {
-    //         $errors[] = "Tên sản phẩm không được để trống.";
-    //     } elseif (strlen($product->name) < 3) {
-    //         $errors[] = "Tên sản phẩm phải có ít nhất 3 ký tự.";
-    //     } elseif (strlen($product->name) > 100) {
-    //         $errors[] = "Tên sản phẩm không vượt quá 100 ký tự.";
-    //     } elseif (!preg_match('/^[a-zA-Z0-9\s]+$/u', $product->name)) {
-    //         $errors[] = "Tên sản phẩm chứa ký tự không hợp lệ.";
-    //     }
-
-    //     // Kiểm tra giá sản phẩm
-    //     if (!is_numeric($product->price) || $product->price < 0) {
-    //         $errors[] = "Giá sản phẩm phải là số dương hợp lệ.";
-    //     }
-
-    //     // Kiểm tra mô tả sản phẩm
-    //     if (empty($product->description)) {
-    //         $errors[] = "Mô tả sản phẩm không được để trống.";
-    //     }
-
-    //     // Kiểm tra danh mục sản phẩm
-    //     if (empty($product->category_id)) {
-    //         $errors[] = "Vui lòng chọn danh mục cho sản phẩm.";
-    //     }
-
-    //     return $errors;
-    // }
-
     //Kiểm tra color và thêm color
     public function addColorsToProduct($productId, $colors)
     {
@@ -208,12 +174,19 @@ class Product_Model extends Database
         }
     }
 
+    // Xóa ảnh trong thư mục
+    function deleteProductImage($imageName)
+    {
+        $target_dir = "../public/uploads/";
+        unlink($target_dir . $imageName);
+    }
+
 
     //Xóa sản phẩm
     public function deleteProduct($id)
     {
         //kiểm tra sản phẩm có tồn tại hay không
-        $selectIdProduct = "SELECT id FROM product WHERE id = ?";
+        $selectIdProduct = "SELECT id, thumbnail FROM product WHERE id = ?";
         $stmt = self::$connection->prepare($selectIdProduct);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -222,6 +195,10 @@ class Product_Model extends Database
         if ($result->num_rows === 0) {
             return ["status" => "error", "message" => "Sản phẩm không tồn tại"];
         }
+        $product = $result->fetch_assoc();
+        $thumbnail = $product['thumbnail'];
+        $this->deleteProductImage($thumbnail);
+
         $query = "DELETE FROM product WHERE id = ?";
         $stmt = self::$connection->prepare($query);
         $stmt->bind_param("i", $id);

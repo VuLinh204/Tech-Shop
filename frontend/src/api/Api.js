@@ -140,17 +140,20 @@ export const getProducts = async () => {
 };
 
 
-export const createProduct = async (productData) => {
+export const createProduct = async (formData) => {
     try {
-        const response = await axios.post(
-            `${API_URL}/product_api.php`, productData
-        );
-        return response.data;
+        const response = await fetch(`${API_URL}/product_api.php`, {
+            method: "POST",
+            body: formData,
+        });
+        const result = await response.json();
+        return result;
     } catch (error) {
-        console.error('Error create product: ', error);
+        console.error('Error creating product:', error);
         return { status: 'error', message: 'Có lỗi xảy ra khi tạo sản phẩm.' };
     }
 };
+
 
 export const getDetailProduct = async (id) => {
     try {
@@ -178,10 +181,13 @@ export const updateProduct = async (productData) => {
 
 export const deleteProduct = async (data) => {
     try {
-        const response = await axios.post(
-            `${API_URL}/product_api.php`, data,
-        );
-        return response.data;
+        const response = await fetch(`${API_URL}/product_api.php`, {
+            method: "POST",
+            body: data,
+        });
+        const result = await response.json();
+        console.log(result)
+        return result;
     } catch (error) {
         console.error('Error create product: ', error);
         return { status: 'error', message: 'Có lỗi xảy ra khi xóa tạo sản phẩm.' };
