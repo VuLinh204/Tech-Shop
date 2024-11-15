@@ -126,13 +126,13 @@ const Header = () => {
                   <ul className="header__navbar-user-menu">
                     {user.role_id === 1 && (
                       <li className="header__navbar-user-item">
-                        <a href="/profile">Tài Khoản Của Tôi</a>
+                        <a href="/admin">Quản lý</a>
                       </li>
                     )}
-
                     <li className="header__navbar-user-item">
-                      <a href="/admin">Quản lý</a>
+                      <a href="/profile">Tài Khoản Của Tôi</a>
                     </li>
+
                     <li className="header__navbar-user-item">
                       <a href="/password">Mật Khẩu</a>
                     </li>
