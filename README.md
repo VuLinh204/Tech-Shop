@@ -37,6 +37,9 @@ npm install axios
 
 npm install react-slick slick-carousel
 
+
+
+
 lệnh chạy localhost:3000
 cd frontend
 npm start -> run

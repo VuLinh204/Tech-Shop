@@ -10,25 +10,25 @@ import googlePlay from '../../assets/img/google_play.png';
 import appStore from '../../assets/img/app_store.png';
 
 const Header = () => {
-    const [user, setUser] = useState(null);
-    const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            const storedUser = JSON.parse(sessionStorage.getItem('user'));
-            if (storedUser) {
-                setUser(storedUser);
-            } else {
-                const data = await getUser();
-                if (data.status === 'success') {
-                    setUser(data.user);
-                    sessionStorage.setItem('user', JSON.stringify(data.user));
-                }
-            }
-        };
+  useEffect(() => {
+    const fetchUser = async () => {
+      const storedUser = JSON.parse(sessionStorage.getItem('user'));
+      if (storedUser) {
+        setUser(storedUser);
+      } else {
+        const data = await getUser();
+        if (data.status === 'success') {
+          setUser(data.user);
+          sessionStorage.setItem('user', JSON.stringify(data.user));
+        }
+      }
+    };
 
-        fetchUser();
-    }, []);
+    fetchUser();
+  }, []);
 
   const handleLogout = async () => {
     const response = await logout();
@@ -124,11 +124,14 @@ const Header = () => {
                     {user.username}
                   </span>
                   <ul className="header__navbar-user-menu">
+                    {user.role_id === 1 && (
+                      <li className="header__navbar-user-item">
+                        <a href="/profile">Tài Khoản Của Tôi</a>
+                      </li>
+                    )}
+
                     <li className="header__navbar-user-item">
-                      <a href="/profile">Tài Khoản Của Tôi</a>
-                    </li>
-                    <li className="header__navbar-user-item">
-                      <a href="/categories/manages">Quản lý</a>
+                      <a href="/admin">Quản lý</a>
                     </li>
                     <li className="header__navbar-user-item">
                       <a href="/password">Mật Khẩu</a>
@@ -210,19 +213,19 @@ const Header = () => {
                                         ) : (
                                             <li className="header__search-history-item">Không có lịch sử tìm kiếm.</li>
                                         )} */}
-                                    </ul>
-                                </div>
-                            </form>
-                        </div>
-                        <button type="submit" className="header__search-btn">
-                            <i className="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </div>
-                    <HeaderCart />
+                  </ul>
                 </div>
+              </form>
             </div>
-        </header>
-    );
+            <button type="submit" className="header__search-btn">
+              <i className="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+          <HeaderCart />
+        </div>
+      </div>
+    </header >
+  );
 };
 
 export default Header;

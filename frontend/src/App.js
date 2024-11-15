@@ -9,22 +9,28 @@ import "./App.css";
 import "./Base.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-import Main from "./components/common/Main";
-import ProductDetail from "./components/user/ProductDetail";
-import Login from "./components/auth/Login";
-import Register from "./components/auth/Register";
-import Cart from "./components/user/Cart";
-import CategoryList from "./components/user/CategoryList";
-import ForgotPassword from "./components/auth/ForgotPassword";
-import Profile from "./components/user/Profile";
-import Password from "./components/user/Password";
-import OrderList from "./components/user/OrderList";
-import VoucherList from "./components/user/VoucherList";
-import Order from "./components/user/Order";
-import Payment from "./components/user/Payment";
-import CategoriesManage from "./components/admin/CategoriesManage";
-import ControlPanel from "./components/admin/ControlPanel";
-import AuthLayout from "./components/common/AuthLayout";
+import Main from './components/common/Main';
+import ProductDetail from './components/user/ProductDetail';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import Cart from './components/user/Cart';
+import CategoryList from './components/user/CategoryList';
+import ForgotPassword from './components/auth/ForgotPassword';
+import Profile from './components/user/Profile';
+import Password from './components/user/Password';
+import OrderList from './components/user/OrderList';
+import VoucherList from './components/user/VoucherList';
+import Order from './components/user/Order';
+import Payment from './components/user/Payment';
+import CategoriesManage from './components/admin/CategoriesManage';
+import ControlPanel from './components/admin/ControlPanel';
+import AuthLayout from './components/common/AuthLayout';
+import AdminPage from './components/admin/AdminPage';
+
+// const isAuthenticated = () => {
+//     const user = JSON.parse(localStorage.getItem('user'));
+//     return user && user.role_id;
+// };
 
 const ProtectedRoute = ({ element, allowedRoles }) => {
   const user = JSON.parse(sessionStorage.getItem("user"));
@@ -96,21 +102,23 @@ function App() {
 
             {/* Routes dành riêng cho admin */}
             <Route
-              path="/categories/manages"
-              element={
-                <ProtectedRoute
-                  element={<CategoriesManage />}
-                  allowedRoles={[1]}
-                />
-              }
+              path="/admin"
+              element={<ProtectedRoute element={<AdminPage />} allowedRoles={[1]} />}
             />
-            <Route
-              path="/categories/controlpanel"
-              element={
-                <ProtectedRoute element={<ControlPanel />} allowedRoles={[1]} />
-              }
-            />
+            {/* <Route
+                            path="/admin/manages"
+                            element={<ProtectedRoute element={<CategoriesManage />} allowedRoles={[1]} />}
+                        />
+                        <Route
+                            path="/admin/controlPanel"
+                            element={<ProtectedRoute element={<ControlPanel />} allowedRoles={[1]} />}
+                        />
+                        <Route
+                            path="/admin/categoriesManage"
+                            element={<ProtectedRoute element={<CategoriesManage />} allowedRoles={[1]} />}
+                        /> */}
           </Route>
+
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </div>

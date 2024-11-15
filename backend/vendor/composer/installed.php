@@ -3,7 +3,7 @@
         'name' => 'tech-store/backend',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'c20f63b261120c727a0043b565088d3ea3751823',
+        'reference' => '6707744b8d4dc6e58639bb6a58d8525cd7e7c3da',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -133,8 +133,8 @@
         'psr/container-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '^2.0',
-                1 => '^1.0',
+                0 => '^1.0',
+                1 => '^2.0',
             ),
         ),
         'psr/http-client' => array(
@@ -317,7 +317,7 @@
         'tech-store/backend' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'c20f63b261120c727a0043b565088d3ea3751823',
+            'reference' => '6707744b8d4dc6e58639bb6a58d8525cd7e7c3da',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

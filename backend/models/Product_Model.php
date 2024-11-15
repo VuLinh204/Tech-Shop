@@ -1,6 +1,6 @@
 <?php
 require_once '../config/database.php';
-class ProductModel extends Database
+class Product_Model extends Database
 {
     //Lấy tất cả thông tin sản phẩm
     public function getAllProduct()
@@ -38,11 +38,11 @@ class ProductModel extends Database
     }
 
     //lấy sản phẩm theo id
-    public function getProductById($id)
+    public function getProductByIdModel($id)
     {
         $query = "SELECT p.id, p.name, p.price, p.description, p.quantity,
                      GROUP_CONCAT(cl.name SEPARATOR ', ') as color, p.discount_percent,
-                     p.thumbnail, c.name AS category_name FROM product p
+                     p.thumbnail, c.name AS category_name, c.id AS category_id FROM product p
               LEFT JOIN category c on p.category_id = c.id
               LEFT JOIN product_color pc on p.id = pc.product_id
               LEFT JOIN color cl on pc.color_id = cl.id
@@ -54,62 +54,55 @@ class ProductModel extends Database
             $stmt->bind_param("i", $id); // Truyền tham số `id` vào câu truy vấn
             $stmt->execute();
             $result = $stmt->get_result();
-            if ($result) {
-                $product = $result->fetch_assoc();
 
-                if ($product) {
-                    if (empty($product['color'])) {
-                        $product['color'] = [];
-                    } else {
-                        // Tách chuỗi màu sắc thành mảng
-                        $product['color'] = explode(', ', $product['color']);
-                    }
-                    return json_encode($product, JSON_UNESCAPED_UNICODE);
-                } else {
-                    return json_encode(["status" => "not found", "message" => "Product not found"]);
-                }
+            if ($result->num_rows === 0) {
+                return ["status" => "error", "message" => "Sản phẩm không tồn tại"];
             } else {
-                return json_encode([]);
+                $product = $result->fetch_assoc();
+                if (!empty($product)) {
+                    // Tách chuỗi màu sắc thành mảng nếu có giá trị
+                    $product['color'] = empty($product['color']) ? [] : explode(', ', $product['color']);
+                    return ["status" => "success", "product" => $product];
+                }
             }
         } catch (Exception $e) {
-            return json_encode(["status" => "error", "message" => $e->getMessage()]);
+            return ["status" => "error", "message" => $e->getMessage()];
         }
     }
-
 
     //Validate product
-    public function validateProduct($product)
-    {
-        $errors = [];
+    // public function validateProduct($product)
+    // {
+    //     $errors = [];
 
-        // Kiểm tra tên sản phẩm
-        if (empty($product->name)) {
-            $errors[] = "Tên sản phẩm không được để trống.";
-        } elseif (strlen($product->name) < 3) {
-            $errors[] = "Tên sản phẩm phải có ít nhất 3 ký tự.";
-        } elseif (strlen($product->name) > 100) {
-            $errors[] = "Tên sản phẩm không vượt quá 100 ký tự.";
-        } elseif (!preg_match('/^[a-zA-Z0-9\s]+$/u', $product->name)) {
-            $errors[] = "Tên sản phẩm chứa ký tự không hợp lệ.";
-        }
+    //     // Kiểm tra tên sản phẩm
+    //     if (empty($product->name)) {
+    //         $errors[] = "Tên sản phẩm không được để trống.";
+    //     } elseif (strlen($product->name) < 3) {
+    //         $errors[] = "Tên sản phẩm phải có ít nhất 3 ký tự.";
+    //     } elseif (strlen($product->name) > 100) {
+    //         $errors[] = "Tên sản phẩm không vượt quá 100 ký tự.";
+    //     } elseif (!preg_match('/^[a-zA-Z0-9\s]+$/u', $product->name)) {
+    //         $errors[] = "Tên sản phẩm chứa ký tự không hợp lệ.";
+    //     }
 
-        // Kiểm tra giá sản phẩm
-        if (!is_numeric($product->price) || $product->price < 0) {
-            $errors[] = "Giá sản phẩm phải là số dương hợp lệ.";
-        }
+    //     // Kiểm tra giá sản phẩm
+    //     if (!is_numeric($product->price) || $product->price < 0) {
+    //         $errors[] = "Giá sản phẩm phải là số dương hợp lệ.";
+    //     }
 
-        // Kiểm tra mô tả sản phẩm
-        if (empty($product->description)) {
-            $errors[] = "Mô tả sản phẩm không được để trống.";
-        }
+    //     // Kiểm tra mô tả sản phẩm
+    //     if (empty($product->description)) {
+    //         $errors[] = "Mô tả sản phẩm không được để trống.";
+    //     }
 
-        // Kiểm tra danh mục sản phẩm
-        if (empty($product->category_id)) {
-            $errors[] = "Vui lòng chọn danh mục cho sản phẩm.";
-        }
+    //     // Kiểm tra danh mục sản phẩm
+    //     if (empty($product->category_id)) {
+    //         $errors[] = "Vui lòng chọn danh mục cho sản phẩm.";
+    //     }
 
-        return $errors;
-    }
+    //     return $errors;
+    // }
 
     //Kiểm tra color và thêm color
     public function addColorsToProduct($productId, $colors)
@@ -144,43 +137,40 @@ class ProductModel extends Database
     }
 
     //Thêm sản phẩm
-    public function createProduct($product)
+    public function createProductModel($product)
     {
-        //gọi hàm validate product
-        $error = $this->validateProduct($product);
-        if (!empty($error)) {
-            return ['status' => 'error', 'errors' => $error];
-        }
         $query = "INSERT INTO product (name, description, category_id, price, quantity, discount_percent, thumbnail)
-                VALUES(?,?,?,?,?,?,?)";
+              VALUES(?,?,?,?,?,?,?)";
         try {
             $stmt = self::$connection->prepare($query);
             $stmt->bind_param(
                 "ssidiis",
-                $product->name,
-                $product->description,
-                $product->category_id,
-                $product->price,
-                $product->quantity,
-                $product->discount_percent,
-                $product->thumbnail
+                $product['name'],
+                $product['description'],
+                $product['category_id'],
+                $product['price'],
+                $product['quantity'],
+                $product['discount_percent'],
+                $product['thumbnail']
             );
-            if ($stmt->execute()) {
-                //lấy id sản phẩm vừa được thêm
-                $productId = self::$connection->insert_id;
-                //lấy màu cần thêm
-                $productColor = $product->color;
-                //kiểm tra và thêm màu
-                $this->addColorsToProduct($productId, $productColor);
 
-                return json_encode(["status" => "success", "message" => "Sản phẩm đã được thêm thành công"]);
+            if ($stmt->execute()) {
+                $productId = self::$connection->insert_id;
+                $productColor = $product['color'];
+                // Thêm màu sắc sản phẩm nếu có
+                if (!empty($productColor)) {
+                    $this->addColorsToProduct($productId, $productColor);
+                }
+                return ["status" => "success", "message" => "Sản phẩm đã được thêm thành công"];
             } else {
-                return json_encode(["status" => "error", "message" => "Thêm sản phẩm thất bại" . $stmt->error]);
+                // Trả về lỗi nếu câu lệnh không thực thi thành công
+                return ["status" => "error", "message" => "Không thể thêm sản phẩm"];
             }
         } catch (Exception $e) {
             return ["status" => "error", "message" => $e->getMessage()];
         }
     }
+
 
     //Sửa sản phẩm
     public function updateProduct($product)
@@ -189,7 +179,6 @@ class ProductModel extends Database
         discount_percent = ?, thumbnail = ? WHERE id = ?";
 
         if ($stmt = self::$connection->prepare($query)) {
-            // Ràng buộc các tham số để bảo mật và tránh
             $stmt->bind_param(
                 "ssidiisi",
                 $product->name,
@@ -203,7 +192,6 @@ class ProductModel extends Database
             );
 
             if ($stmt->execute()) {
-                // Xóa các bản ghi màu sắc cũ trong `product_color` liên quan đến sản phẩm
                 $deleteColorQuery = "DELETE FROM product_color WHERE product_id = ?";
                 $deleteColorStmt = self::$connection->prepare($deleteColorQuery);
                 $deleteColorStmt->bind_param("i", $product->id);
@@ -268,5 +256,18 @@ class ProductModel extends Database
 
 }
 
-$p = new ProductModel();
-print_r($p->getAllProduct());
+// $product = new stdClass();
+
+// Gán giá trị cho các thuộc tính của đối tượng
+// $product->id = 1;
+// $product->name = 'Điện thoại Samsung Galaxy';
+// $product->price = 15000000;
+// $product->description = 'Điện thoại thông minh với nhiều tính năng nổi bật';
+// $product->category_id = 1;
+// $product->quantity = 50;
+// $product->discount_percent = 10;
+// $product->color = ['Đen', 'Trắng', 'Xanh'];
+// $product->thumbnail = "ip.jpg";
+
+// $p = new Product_Model();
+// print_r($p->updateProduct($product));
