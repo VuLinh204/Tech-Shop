@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
 
-// Component ResetPassword
-const ResetPassword = () => {
+// Component CreatePassword
+const CreatePassword = () => {
     const [password, setPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const [errors, setErrors] = useState([]);
-    const email = new URLSearchParams(window.location.search).get('email'); // Lấy email từ query string
-    const otp = new URLSearchParams(window.location.search).get('otp'); // Lấy otp từ query string
+    const [successMessage, setSuccessMessage] = useState('');
+    const email = new URLSearchParams(window.location.search).get('email');
+    const otp = new URLSearchParams(window.location.search).get('otp');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         // Gửi thông tin đến backend
         try {
-            const response = await fetch('/reset_password', {
+            const response = await fetch('/signup_create_password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // CSRF token
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 },
                 body: JSON.stringify({ email, otp, password, password_confirmation: passwordConfirmation }),
             });
@@ -25,16 +26,17 @@ const ResetPassword = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Xử lý thành công
+                setSuccessMessage(data.message || 'Mật khẩu đã được tạo thành công!');
                 setErrors([]);
-                alert('Mật khẩu đã được đặt lại thành công!');
-                // Có thể redirect hoặc reset form nếu cần
+                setPassword('');
+                setPasswordConfirmation('');
             } else {
-                // Xử lý lỗi
                 setErrors(data.errors || ['Đặt lại mật khẩu thất bại, vui lòng thử lại.']);
+                setSuccessMessage('');
             }
         } catch (error) {
             setErrors(['Có lỗi xảy ra. Vui lòng thử lại.']);
+            setSuccessMessage('');
         }
     };
 
@@ -121,11 +123,11 @@ const ResetPassword = () => {
                                     </div>
                                 </div>
                                 <div className="auth-form__controls" style={{ marginBottom: '24px' }}>
-                                    <a href="/forgot_password_verify" className="btn btn--normal auth-form__controls-back">
+                                    <a href="/signup_verify" className="btn btn--normal auth-form__controls-back">
                                         TRỞ LẠI
                                     </a>
                                     <button type="submit" className="btn btn--primary">
-                                        ĐẶT LẠI MẬT KHẨU
+                                        TẠO MẬT KHẨU
                                     </button>
                                 </div>
                             </div>
@@ -137,4 +139,4 @@ const ResetPassword = () => {
     );
 };
 
-export default ResetPassword;
+export default CreatePassword;

@@ -53,12 +53,13 @@
     font-size: 1.2rem;
     line-height: 1.8rem;
     text-align: center;
-    padding: 0 12px;
+    padding: 0 8px;
 }
 
 .auth-form__text-link {
     color: var(--primary-color);
     text-decoration: none;
+    padding: 0 3px;
 }
 
 .auth-form__controls {
@@ -88,6 +89,10 @@
     background-color: #3a5a98;
 }
 
+.auth-form__socials--facebook:hover {
+    background-color: rgb(147 197 253);
+}
+
 .auth-form__socials--facebook .auth-form__socials-icon {
     color: var(--white-color);
 }
@@ -106,6 +111,10 @@
     background-color: var(--white-color);
 }
 
+.auth-form__socials--google:hover {
+    background-color: rgb(254 226 226);
+}
+
 .auth-form__help {
     display: flex;
     justify-content: flex-end;
@@ -114,7 +123,7 @@
 .auth-form__help-link {
     font-size: 1.4rem;
     text-decoration: none;
-    color: #939393;
+    color: rgb(68 64 60);
 }
 
 .auth-form__help-separate {
@@ -125,7 +134,11 @@
 }
 
 .auth-form__help-forgot {
-    color: var(--primary-color);
+    color: rgb(30 64 175);
+}
+
+.auth-form__help-forgot:hover {
+    color: rgb(56 189 248);
 }
 
 /* Menubar */
@@ -595,36 +608,6 @@ li.sidebar__menu-item {
 
 .checkout-btn:hover {
     background-color: #218838;
-}
-
-/* Thiết lập chung cho nút điều hướng */
-.slick-prev,
-.slick-next {
-    background: rgb(115, 131, 209) !important;
-    border: 1px solid rgb(0, 0, 0) !important;
-    border-radius: 50%;
-    width: 21px;
-    height: 21px;
-    cursor: pointer;
-    z-index: 1;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    color: white;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.slick-prev {
-    left: -25px;
-}
-.slick-next {
-    right: -25px;
-}
-.slick-prev:hover,
-.slick-next:hover {
-    background-color: rgb(85, 101, 179) !important;
 }
 
 /* orther */

@@ -6,35 +6,41 @@ header("Content-Type: application/json");
 // Khởi tạo CartController
 $cartController = new CartController();
 
-// Lấy phương thức HTTP từ yêu cầu (GET hoặc POST)
+// Xác định phương thức yêu cầu HTTP
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-// Kiểm tra phương thức yêu cầu
 if ($requestMethod === 'GET' && isset($_GET['userid'])) {
-    // Lấy danh sách sản phẩm trong giỏ hàng
+    // Lấy ID người dùng từ tham số yêu cầu
     $userId = intval($_GET['userid']);
-    $cartItems = $cartController->getCartItems($userId);
 
-    // Kiểm tra nếu có dữ liệu giỏ hàng
-    if ($cartItems) {
-        echo json_encode(['cartItems' => $cartItems]);
-    } else {
-        echo json_encode(['message' => 'Không có sản phẩm trong giỏ hàng']);
-    }
-} elseif ($requestMethod === 'POST') {
-    // Đọc dữ liệu JSON từ yêu cầu POST
-    $data = json_decode(file_get_contents("php://input"), true);
+    try {
+        // Lấy danh sách sản phẩm trong giỏ hàng
+        $cartItems = $cartController->getCartItems($userId);
 
-    if (isset($data['userid'], $data['productid'], $data['quantity'])) {
-        $userId = intval($data['userid']);
-        $productId = intval($data['productid']);
-        $quantity = intval($data['quantity']);
-        
-        $cartController->addToCart($userId, $productId, $quantity);
-    } else {
-        echo json_encode(["message" => "Thiếu dữ liệu cần thiết"]);
+        if ($cartItems) {
+            // Trả về danh sách sản phẩm trong giỏ hàng nếu có
+            echo json_encode([
+                'status' => 'success',
+                'cartItems' => $cartItems
+            ]);
+        } else {
+            // Trả về thông báo nếu giỏ hàng trống
+            echo json_encode([
+                'status' => 'empty',
+                'message' => 'Không có sản phẩm trong giỏ hàng'
+            ]);
+        }
+    } catch (Exception $e) {
+        // Trả về thông báo lỗi nếu có lỗi trong quá trình truy xuất dữ liệu
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Lỗi khi lấy dữ liệu giỏ hàng: ' . $e->getMessage()
+        ]);
     }
 } else {
-    echo json_encode(["message" => "Phương thức không được hỗ trợ"]);
+    // Trả về thông báo nếu phương thức yêu cầu không hợp lệ
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Phương thức yêu cầu không hợp lệ'
+    ]);
 }
-

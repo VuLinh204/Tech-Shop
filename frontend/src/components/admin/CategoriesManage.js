@@ -6,6 +6,7 @@ import ControlPanel from "./ControlPanel";
 import Manages from "./Manages";
 import "../../assets/css/CategoriesManage.css";
 import axios from "axios";
+import Pagination from "../common/Pagination_admin";
 
 const CategoriesManage = () => {
   const [activeItem, setActiveItem] = useState("Danh mục");
@@ -13,6 +14,8 @@ const CategoriesManage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editCategoryData, setEditCategoryData] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const fetchCategories = async () => {
     try {
@@ -80,7 +83,13 @@ const CategoriesManage = () => {
     setIsEditing(false);
     fetchCategories();
   };
+  const offset = (currentPage - 1) * itemsPerPage;
+  const currentItems = categories.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(categories.length / itemsPerPage);
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
   return (
     <div className="categories-manage app__container">
       <div className="app__container">
@@ -122,8 +131,8 @@ const CategoriesManage = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {categories.length > 0 ? (
-                          categories.map((category) => (
+                        {currentItems.length > 0 ? (
+                          currentItems.map((category) => (
                             <tr key={category.id}>
                               <td>{category.id}</td>
                               <td>{category.name}</td>
@@ -162,9 +171,12 @@ const CategoriesManage = () => {
                       </tbody>
                     </table>
                     <div className="pagination">
-                      <button className="btn-pagination">1</button>
-                      <button className="btn-pagination">2</button>
-                      <button className="btn-pagination">3</button>
+                      <Pagination
+                        totalPages={pageCount}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        onPageChange={handlePageChange}
+                      />
                     </div>
                   </div>
                 )}

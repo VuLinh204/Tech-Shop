@@ -16,24 +16,25 @@ class ProductVSColorSeeder extends AbstractSeed
      */
     public function run(): void
     {
-        $data = [
-            [
-                'product_id' => 1, // iPhone 14
-                'color_id' => 1    // Đen
-            ],
-            [
-                'product_id' => 1, // iPhone 14
-                'color_id' => 2    // Trắng
-            ],
-            [
-                'product_id' => 2, // MacBook Pro 16"
-                'color_id' => 1    // Đen
-            ],
-            [
-                'product_id' => 2, // MacBook Pro 16"
-                'color_id' => 3    // Đỏ
-            ],
-        ];
+        // Danh sách các mã màu có sẵn
+        $availableColors = [1, 2, 3, 4, 5];
+        $data = [];
+
+        // Lặp qua từng sản phẩm với id từ 1 đến 20
+        for ($productId = 1; $productId <= 20; $productId++) {
+            // Tạo số lượng màu ngẫu nhiên (từ 2 đến 4) cho mỗi sản phẩm
+            $colorCount = rand(2, 4);
+            // Chọn ngẫu nhiên các mã màu không bị trùng lặp
+            $selectedColors = array_rand(array_flip($availableColors), $colorCount);
+
+            // Thêm từng mã màu vào mảng dữ liệu cho sản phẩm hiện tại
+            foreach ((array) $selectedColors as $colorId) {
+                $data[] = [
+                    'product_id' => $productId,
+                    'color_id' => $colorId,
+                ];
+            }
+        }
 
         // Thêm dữ liệu vào bảng `product_color`
         $productColorTable = $this->table('product_color');

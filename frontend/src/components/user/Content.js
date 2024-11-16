@@ -68,7 +68,7 @@ function Content() {
                                 height: '50px',
                             }}
                         >
-                            FlashSale
+                            Flash Sale
                         </div>
                         <FlashSale />
                         <div

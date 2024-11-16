@@ -1,43 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { getUser, logout } from "../../api/Api";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { getUser, logout } from '../../api/Api';
+import { useNavigate } from 'react-router-dom';
 
-import HeaderCart from "../../components/common/HeaderCart";
-import "../../assets/css/Header.css";
+import HeaderCart from '../../components/common/HeaderCart';
+import '../../assets/css/Header.css';
 
-import qrCode from "../../assets/img/qr_code.png";
-import googlePlay from "../../assets/img/google_play.png";
-import appStore from "../../assets/img/app_store.png";
+import qrCode from '../../assets/img/qr_code.png';
+import googlePlay from '../../assets/img/google_play.png';
+import appStore from '../../assets/img/app_store.png';
 
 const Header = () => {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const storedUser = JSON.parse(sessionStorage.getItem("user"));
-      if (storedUser) {
-        setUser(storedUser);
-      } else {
-        const data = await getUser();
-        if (data.status === "success") {
-          setUser(data.user);
-          sessionStorage.setItem("user", JSON.stringify(data.user));
-        } else {
-          console.error(data.message);
-        }
-      }
-    };
+    useEffect(() => {
+        const fetchUser = async () => {
+            const storedUser = JSON.parse(sessionStorage.getItem('user'));
+            if (storedUser) {
+                setUser(storedUser);
+            } else {
+                const data = await getUser();
+                if (data.status === 'success') {
+                    setUser(data.user);
+                    sessionStorage.setItem('user', JSON.stringify(data.user));
+                }
+            }
+        };
 
-    fetchUser();
-  }, []);
+        fetchUser();
+    }, []);
 
   const handleLogout = async () => {
     const response = await logout();
     if (response.status === "success") {
       sessionStorage.removeItem("user");
       setUser(null);
-      navigate("/login");
+      navigate("/home");
     } else {
       console.error(response.message);
       alert("Có lỗi xảy ra khi đăng xuất: " + response.message);
@@ -120,7 +118,7 @@ const Header = () => {
                 <>
                   <div
                     className="header__navbar-user-img"
-                    // style={{ backgroundImage: `url(${user.avatar})` }} // Uncomment this line if user.avatar is available
+                  // style={{ backgroundImage: `url(${user.avatar})` }} // Uncomment this line if user.avatar is available
                   ></div>
                   <span className="header__navbar-user-name">
                     {user.username}
@@ -142,18 +140,25 @@ const Header = () => {
                       <a href="/voucher">Mã Giảm Giá</a>
                     </li>
                     <li className="header__navbar-user-item">
-                      <button className="btn-logout" onClick={handleLogout}>
+                      <a className="btn-logout" onClick={handleLogout}>
                         Đăng xuất
-                      </button>
+                      </a>
                     </li>
                   </ul>
                 </>
               ) : (
-                <span>
-                  <a className="header__navbar-item-link" href="/login">
-                    Đăng nhập
-                  </a>
-                </span>
+                <>
+                  <li className="header__navbar-item header__navbar-item--strong header__navbar-item--separate">
+                    <a className="header__navbar-item-link" href="/register">
+                      Đăng kí
+                    </a>
+                  </li>
+                  <li className="header__navbar-item header__navbar-item--strong">
+                    <a className="header__navbar-item-link" href="/login">
+                      Đăng nhập
+                    </a>
+                  </li>
+                </>
               )}
             </li>
           </ul>
@@ -205,19 +210,19 @@ const Header = () => {
                                         ) : (
                                             <li className="header__search-history-item">Không có lịch sử tìm kiếm.</li>
                                         )} */}
-                  </ul>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                        <button type="submit" className="header__search-btn">
+                            <i className="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                    <HeaderCart />
                 </div>
-              </form>
             </div>
-            <button type="submit" className="header__search-btn">
-              <i className="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
-            </button>
-          </div>
-          <HeaderCart />
-        </div>
-      </div>
-    </header>
-  );
+        </header>
+    );
 };
 
 export default Header;
