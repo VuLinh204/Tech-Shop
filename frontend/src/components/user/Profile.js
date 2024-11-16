@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
+    const [formData, setFormData] = useState({});
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -10,12 +12,52 @@ const Profile = () => {
         if (!storedUser) {
             navigate('/login');
         } else {
-            setUser(storedUser); // Lưu thông tin người dùng vào state
+            setUser(storedUser);
+            setFormData({
+                user_id: storedUser.id,
+                username: storedUser.username,
+                phone_number: storedUser.phone_number,
+                address: storedUser.address,
+            });
         }
     }, [navigate]);
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(
+                'http://localhost/tech-shop/backend/api/update_profile.php',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            const result = response.data;
+            if (result.success) {
+                alert(result.message);
+                sessionStorage.setItem('user', JSON.stringify({ ...user, ...formData }));
+                setUser({ ...user, ...formData });
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi cập nhật.');
+        }
+    };
+
     if (!user) {
-        return <div>Loading...</div>; // Có thể hiển thị thông báo tải dữ liệu
+        return <div>Loading...</div>;
     }
 
     return (
@@ -50,7 +92,7 @@ const Profile = () => {
                         </nav>
                     </div>
                     <div className="grid__column-10">
-                        <form className="profile">
+                        <form className="profile" onSubmit={handleSubmit}>
                             <h1>Thông Tin Tài Khoản</h1>
                             <div className="form-group">
                                 <label htmlFor="email">Email:</label>
@@ -61,9 +103,9 @@ const Profile = () => {
                                 <input
                                     type="text"
                                     id="name"
-                                    name="name"
-                                    value={user.username}
-                                    // onChange={handleChange}
+                                    name="username"
+                                    value={formData.username || ''}
+                                    onChange={handleChange}
                                     required
                                 />
                             </div>
@@ -72,9 +114,9 @@ const Profile = () => {
                                 <input
                                     type="text"
                                     id="phone"
-                                    name="phone"
-                                    value={user.phone_number}
-                                    // onChange={handleChange}
+                                    name="phone_number"
+                                    value={formData.phone_number || ''}
+                                    onChange={handleChange}
                                     required
                                 />
                             </div>
@@ -84,23 +126,11 @@ const Profile = () => {
                                     type="text"
                                     id="address"
                                     name="address"
-                                    value={user.address}
-                                    // onChange={handleChange}
+                                    value={formData.address || ''}
+                                    onChange={handleChange}
                                     required
                                 />
                             </div>
-                            {/* <div className="form-group">
-                                <label htmlFor="image">Ảnh Đại Diện:</label>
-                                {imageUrl ? (
-                                    <div
-                                        className="profile__avatar"
-                                        style={{ backgroundImage: `url(${imageUrl})` }}
-                                    ></div>
-                                ) : (
-                                    <p>Không có ảnh đại diện</p>
-                                )}
-                                <input type="file" id="image" name="image" onChange={handleChange} />
-                            </div> */}
                             <button className="btn btn--primary" type="submit">
                                 Cập Nhật Thông Tin
                             </button>
