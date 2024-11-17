@@ -28,9 +28,6 @@ const AdminProduct = () => {
     const [fileList, setFileList] = useState([""]);
     const [form] = Form.useForm();
 
-
-
-
     // Hàm gọi API để lấy danh sách sản phẩm và danh mục
     const fetchData = async () => {
         try {
@@ -59,9 +56,7 @@ const AdminProduct = () => {
                 thumbnail: {
                     uid: "-1",
                     name: product.thumbnail,
-                    status: "done",
                     url: `http://localhost/tech-shop/backend/public/uploads/${product.thumbnail}`,
-                    action: "none"
                 }
             });
 
@@ -83,13 +78,11 @@ const AdminProduct = () => {
         formData.append("price", values?.price);
         formData.append("quantity", values?.quantity);
         formData.append("discount_percent", values?.discount_percent);
-        formData.append("color", colorInput);
+        formData.append("color", values?.colors);
         formData.append("thumbnail", values?.thumbnail?.file);
 
-        console.log(formData);
         try {
             const data = await createProduct(formData);
-            console.log(data);
             if (data && data.status === 'success') {
                 notification.success({
                     message: 'Thêm sản phẩm thành công!',
@@ -131,20 +124,26 @@ const AdminProduct = () => {
 
     // Hàm cập nhật sản phẩm
     const handleUpdate = async (values) => {
-        const updatedProductData = {
-            id: productDetails.id,
-            action: "update",
-            name: values.name,
-            description: values.description,
-            category_id: categoryId,
-            price: values.price,
-            quantity: values.quantity,
-            discount_percent: values.discount_percent,
-            color: colorInput,
-            thumbnail: values.thumbnail?.file?.name || productDetails.thumbnail,
-        };
+        const formUpdatData = new FormData();
+        formUpdatData.append("action", "update");
+        formUpdatData.append("id", productDetails?.id);
+        formUpdatData.append("name", values?.name);
+        formUpdatData.append("description", values?.description);
+        formUpdatData.append("category_id", categoryId);
+        formUpdatData.append("price", values?.price);
+        formUpdatData.append("quantity", values?.quantity);
+        formUpdatData.append("discount_percent", values?.discount_percent);
+        formUpdatData.append("color", values?.colors);
+        // Kiểm tra nếu người dùng chọn ảnh mới
+        if (values?.thumbnail?.file) {
+            // Thêm ảnh mới vào FormData
+            formUpdatData.append("thumbnail", values?.thumbnail?.file);
+        } else {
+            // Nếu không có ảnh mới, chỉ gửi giá trị ảnh cũ
+            formUpdatData.append("thumbnail", productDetails?.thumbnail); // Giả sử productDetails chứa ảnh cũ
+        }
         try {
-            const response = await updateProduct(updatedProductData);
+            const response = await updateProduct(formUpdatData);
             console.log(response);
 
             if (response && response.status === 'success') {
@@ -241,6 +240,13 @@ const AdminProduct = () => {
         setColorInput(colorsArray);
     };
 
+
+    // Xử lý khi người dùng chọn ảnh mới trong update
+    const handleUpdateImgChange = ({ fileList }) => {
+        setFileList(fileList);
+    };
+
+
     const showDeleteConfirm = (productId) => {
         Modal.confirm({
             title: 'Cảnh báo',
@@ -307,7 +313,7 @@ const AdminProduct = () => {
                                             <td>{product.description}</td>
                                             <td>{product.quantity}</td>
                                             <td>{product.color}</td>
-                                            <td>{product.price}</td>
+                                            <td>{Number(product.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                             <td>{product.discount_percent}</td>
                                             <td>{product.category_name}</td>
                                             <td>
@@ -482,7 +488,6 @@ const AdminProduct = () => {
                     >
                         <Input
                             placeholder="Nhập các màu, phân tách bằng dấu phẩy"
-                            onChange={(e) => handleColorChange(e.target.value)}
                         />
                     </Form.Item>
 
@@ -721,20 +726,22 @@ const AdminProduct = () => {
                         name="thumbnail"
                         rules={[
                             {
-                                required: true,
+                                required: !productDetails?.thumbnail, // Chỉ yêu cầu ảnh nếu không có ảnh cũ
                                 message: 'Vui lòng chọn hình ảnh cho sản phẩm!',
                             },
                             {
                                 validator: (_, value) => {
-                                    console.log(value);
-                                    const isJpgOrPng = value.file.type === 'image/jpeg' || value.file.type === 'image/png';
-                                    if (!isJpgOrPng) {
-                                        return Promise.reject("Bạn chỉ có thể tải lên tệp JPG/PNG!");
-                                    }
+                                    // Nếu có ảnh mới
+                                    if (value && value.file) {
+                                        const isJpgOrPng = value.file.type === 'image/jpeg' || value.file.type === 'image/png';
+                                        if (!isJpgOrPng) {
+                                            return Promise.reject("Bạn chỉ có thể tải lên tệp JPG/PNG!");
+                                        }
 
-                                    const isLt2M = value.file.size / 1024 / 1024 < 2;
-                                    if (!isLt2M) {
-                                        return Promise.reject("Hình ảnh phải nhỏ hơn 2MB!");
+                                        const isLt2M = value.file.size / 1024 / 1024 < 2;
+                                        if (!isLt2M) {
+                                            return Promise.reject("Hình ảnh phải nhỏ hơn 2MB!");
+                                        }
                                     }
 
                                     return Promise.resolve();
@@ -748,6 +755,7 @@ const AdminProduct = () => {
                             fileList={fileList}
                             beforeUpload={() => false}
                             maxCount={1}
+                            onChange={handleUpdateImgChange}
                         >
                             <Button icon={<UploadOutlined />}>Chọn hình ảnh mới</Button>
                         </Upload>

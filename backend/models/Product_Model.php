@@ -1,5 +1,6 @@
 <?php
 require_once '../config/database.php';
+require_once 'Product.php';
 class Product_Model extends Database
 {
     //Lấy tất cả thông tin sản phẩm
@@ -145,24 +146,35 @@ class Product_Model extends Database
         discount_percent = ?, thumbnail = ? WHERE id = ?";
 
         if ($stmt = self::$connection->prepare($query)) {
+            // Khai báo các biến
+            $name = $product->getName();
+            $description = $product->getDescription();
+            $category_id = $product->getCategoryId();
+            $price = $product->getPrice();
+            $quantity = $product->getQuantity();
+            $discount_percent = $product->getDiscountPercent();
+            $thumbnail = $product->getThumbnail();
+            $id = $product->getId();
+            $color = $product->getColor();
+
             $stmt->bind_param(
                 "ssidiisi",
-                $product->name,
-                $product->description,
-                $product->category_id,
-                $product->price,
-                $product->quantity,
-                $product->discount_percent,
-                $product->thumbnail,
-                $product->id
+                $name,
+                $description,
+                $category_id,
+                $price,
+                $quantity,
+                $discount_percent,
+                $thumbnail,
+                $id
             );
 
             if ($stmt->execute()) {
                 $deleteColorQuery = "DELETE FROM product_color WHERE product_id = ?";
                 $deleteColorStmt = self::$connection->prepare($deleteColorQuery);
-                $deleteColorStmt->bind_param("i", $product->id);
+                $deleteColorStmt->bind_param("i", $id);
                 $deleteColorStmt->execute();
-                $this->addColorsToProduct($product->id, $product->color);
+                $this->addColorsToProduct($id, $color);
                 return ["status" => "success", "message" => "Sản phẩm đã được cập nhật thành công"];
             } else {
                 // Thông báo lỗi rõ ràng nếu việc cập nhật thất bại

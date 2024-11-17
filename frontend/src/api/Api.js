@@ -169,10 +169,12 @@ export const getDetailProduct = async (id) => {
 
 export const updateProduct = async (productData) => {
     try {
-        const response = await axios.post(
-            `${API_URL}/product_api.php`, productData
-        );
-        return response.data;
+        const response = await fetch(`${API_URL}/product_api.php`, {
+            method: "POST",
+            body: productData,
+        });
+        const result = await response.json();
+        return result;
     } catch (error) {
         console.error('Error update product: ', error);
         return { status: 'error', message: 'Có lỗi xảy ra khi sửa sản phẩm.' };
