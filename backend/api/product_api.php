@@ -36,18 +36,22 @@ if ($method === 'GET' && isset($_GET['action'])) {
             break;
     }
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? null;
+
+    // Kiểm tra và xử lý các tham số khác
+    $name = $_POST['name'] ?? '';
+    $description = $_POST['description'] ?? '';
+    $category_id = $_POST['category_id'] ?? '';
+    $price = $_POST['price'] ?? '';
+    $quantity = $_POST['quantity'] ?? '';
+    $discount_percent = $_POST['discount_percent'] ?? '';
+    $color = $_POST['color'] ?? '';
+    if (!isset($_POST['action']) || empty($_POST['action'])) {
+        echo json_encode(['success' => false, 'error' => 'Tham số action không được cung cấp']);
+        exit;  // Dừng xử lý khi không có action
+    }
+    $action = $_POST['action'];
     switch ($action) {
         case 'create':
-            // Kiểm tra và xử lý các tham số khác
-            $name = $_POST['name'] ?? '';
-            $description = $_POST['description'] ?? '';
-            $category_id = $_POST['category_id'] ?? '';
-            $price = $_POST['price'] ?? '';
-            $quantity = $_POST['quantity'] ?? '';
-            $discount_percent = $_POST['discount_percent'] ?? '';
-            $color = $_POST['color'] ?? '';
-
             // Xử lý upload file
             if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === 0) {
                 $targetDir = "../public/uploads/";

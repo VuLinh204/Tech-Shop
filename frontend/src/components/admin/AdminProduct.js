@@ -85,8 +85,11 @@ const AdminProduct = () => {
         formData.append("discount_percent", values?.discount_percent);
         formData.append("color", colorInput);
         formData.append("thumbnail", values?.thumbnail?.file);
+
+        console.log(formData);
         try {
             const data = await createProduct(formData);
+            console.log(data);
             if (data && data.status === 'success') {
                 notification.success({
                     message: 'Thêm sản phẩm thành công!',

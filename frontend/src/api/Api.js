@@ -140,11 +140,11 @@ export const getProducts = async () => {
 };
 
 
-export const createProduct = async (formData) => {
+export const createProduct = async (productData) => {
     try {
         const response = await fetch(`${API_URL}/product_api.php`, {
             method: "POST",
-            body: formData,
+            body: productData,
         });
         const result = await response.json();
         return result;
