@@ -7,6 +7,7 @@ import Manages from "./Manages";
 import "../../assets/css/CategoriesManage.css";
 import axios from "axios";
 import Pagination from "../common/Pagination_admin";
+import Dashboard from "./Dashboard";
 
 const CategoriesManage = () => {
   const [activeItem, setActiveItem] = useState("Danh mục");
@@ -28,7 +29,7 @@ const CategoriesManage = () => {
     }
   };
 
-  const deleteCategory = async (id) => {
+  const deleteCategory = async (encryptedId) => {
     const confirmDelete = window.confirm(
       "Bạn có chắc chắn muốn xóa danh mục này không?"
     );
@@ -41,7 +42,7 @@ const CategoriesManage = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            data: { id: id },
+            data: { id: encryptedId }, // Gửi ID đã mã hóa
           }
         );
         fetchCategories();
@@ -102,7 +103,7 @@ const CategoriesManage = () => {
             <div className="grid__column-10">
               <div className="category-manager">
                 {activeItem === "Bảng điều khiển" ? (
-                  <ControlPanel />
+                  <Dashboard />
                 ) : isAdding ? (
                   <AddCategory onAddSuccess={handleAddSuccess} />
                 ) : isEditing ? (
@@ -124,7 +125,6 @@ const CategoriesManage = () => {
                     <table className="category-table">
                       <thead>
                         <tr>
-                          <th>ID</th>
                           <th>Tên danh mục</th>
                           <th>Thumbnail</th>
                           <th>Thao tác</th>
@@ -134,11 +134,10 @@ const CategoriesManage = () => {
                         {currentItems.length > 0 ? (
                           currentItems.map((category) => (
                             <tr key={category.id}>
-                              <td>{category.id}</td>
                               <td>{category.name}</td>
                               <td>
                                 <img
-                                  src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`} // Cập nhật đường dẫn đến hình ảnh
+                                  src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`}
                                   alt="Hình ảnh"
                                   style={{ width: "100px" }}
                                 />
@@ -154,7 +153,7 @@ const CategoriesManage = () => {
                                   <i className="fas fa-edit"></i>
                                 </button>
                                 <button
-                                  onClick={() => deleteCategory(category.id)}
+                                  onClick={() => deleteCategory(category.id)} // Sử dụng ID mã hóa để xóa
                                   className="btn-delete"
                                   title="Xóa"
                                 >
@@ -169,6 +168,7 @@ const CategoriesManage = () => {
                           </tr>
                         )}
                       </tbody>
+                      ;
                     </table>
                     <div className="pagination">
                       <Pagination

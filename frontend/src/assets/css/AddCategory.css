@@ -98,3 +98,38 @@
 .error {
   border: 2px solid red; /* Đổi màu viền thành đỏ khi không hợp lệ */
 }
+.popup-success {
+  position: fixed;
+  top: 10%;
+  right: 10%;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  animation: fade-in-out 3s;
+}
+
+@keyframes fade-in-out {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
+}
+.message {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 15px;
+}
