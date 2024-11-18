@@ -26,6 +26,8 @@ final class CreateFeedbackTable extends AbstractMigration
             ->addForeignKey('product_id', 'product', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->addColumn('comment', 'text', ['null' => false])
             ->addColumn('rating', 'integer', ['limit' => 6, 'null' => false])
+            ->addColumn('parent_id', 'integer', ['null' => true, 'signed' => false, 'default' => null]) // Bình luận cha
+            ->addForeignKey('parent_id', 'feedback', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->addTimestamps()
             ->create();
     }
