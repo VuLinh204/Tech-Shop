@@ -191,7 +191,7 @@ i.home__product-item__like-icon-fill {
 
 /*Slider FlashSale*/
 /* Tùy chỉnh nút điều hướng slick với kích thước lớn và hiệu ứng mờ */
-.slick-prev, .slick-next {
+.home__product .slick-prev, .home__product .slick-next {
     width: 45px !important;         
     height: 75px!important;         
     background-color: rgba(0, 0, 0, 0.5)!important;          
@@ -204,26 +204,26 @@ i.home__product-item__like-icon-fill {
 }
 
 /*slider flashsale*/
-.slick-prev {
+.home__product .slick-prev {
     left: -6px !important;
 }
 
-.slick-next {
+.home__product .slick-next {
     right: -6px !important; 
 }
 /* Căn chỉnh biểu tượng mũi tên vào giữa nút */
-.slick-prev:before, .slick-next:before  {
+.home__product .slick-prev:before, .home__product .slick-next:before  {
     font-size: 28px !important;
     color: rgba(0, 0, 0, 0.5) !important; 
     background: none !important; 
     border: none !important; 
     opacity: .5 !important;
 }
-.slick-prev:hover, .slick-next:hover {
+.home__product .slick-prev:hover, .home__product .slick-next:hover {
     opacity: 1 !important;
     background-color: #7c7a7a !important;
 }
 
-.slick-slide div .grid__column-2-4{
+.home__product .slick-slide div .grid__column-2-4{
     width: 100%  !important;
 }

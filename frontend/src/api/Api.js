@@ -91,9 +91,19 @@ export const createPassword = async (password) => {
     }
 };
 
-export const createUser = async (userData, $email, $password) => {
+export const createUser = async (userData, email, password) => {
     try {
-        const response = await axios.post(`${API_URL}/createUser.php`, userData, { $email, $password });
+        const response = await axios.post(`${API_URL}/createUser.php`, userData, { email, password });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const resetPassword = async (email, newPassword) => {
+    try {
+        const response = await axios.post(`${API_URL}/resetPassword.php`, { email, newPassword });
         return response.data;
     } catch (error) {
         console.error(error.message);
@@ -126,5 +136,16 @@ export const getProducts = async () => {
     } catch (error) {
         console.error('Error fetching products: ', error);
         return { status: 'error', message: 'Có lỗi xảy ra khi lấy danh sách sản phẩm.' };
+    }
+};
+
+export const getProductsSearch = async (searchQuery = '') => {
+    try {
+        const response = await fetch(`http://localhost/Tech-Shop/backend/api/products.php?search=${searchQuery}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return [];
     }
 };

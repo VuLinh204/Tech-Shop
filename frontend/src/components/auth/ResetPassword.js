@@ -64,67 +64,73 @@ const ResetPassword = () => {
             </header>
 
             <div className="modal">
-                <div className="modal__overlay"></div>
-                <div className="modal__body">
-                    <form onSubmit={handleSubmit} className="auth-form">
-                        <div className="auth-form__container">
-                            <div className="auth-form__header">
-                                <h3 className="auth-form__heading">Đặt lại mật khẩu</h3>
-                                <a href="/signin" className="auth-form__switch-btn">
-                                    Đăng nhập
-                                </a>
-                            </div>
-                            {errors.length > 0 && (
-                                <div
-                                    className="alert alert-danger"
-                                    style={{ maxHeight: '100px', display: 'flex', alignItems: 'center' }}
-                                >
-                                    <ul>
-                                        {errors.map((error, index) => (
-                                            <li key={index}>{error}</li>
-                                        ))}
-                                    </ul>
-                                    <button className="close" onClick={() => setErrors([])}>
-                                        &times;
+                <div class="area">
+                    <ul className="circles">
+                        {[...Array(10)].map((_, i) => (
+                            <li key={i}></li>
+                        ))}
+                    </ul>
+                    <div className="modal__body">
+                        <form onSubmit={handleSubmit} className="auth-form">
+                            <div className="auth-form__container">
+                                <div className="auth-form__header">
+                                    <h3 className="auth-form__heading">Đặt lại mật khẩu</h3>
+                                    <a href="/signin" className="auth-form__switch-btn">
+                                        Đăng nhập
+                                    </a>
+                                </div>
+                                {errors.length > 0 && (
+                                    <div
+                                        className="alert alert-danger"
+                                        style={{ maxHeight: '100px', display: 'flex', alignItems: 'center' }}
+                                    >
+                                        <ul>
+                                            {errors.map((error, index) => (
+                                                <li key={index}>{error}</li>
+                                            ))}
+                                        </ul>
+                                        <button className="close" onClick={() => setErrors([])}>
+                                            &times;
+                                        </button>
+                                    </div>
+                                )}
+                                <input type="hidden" name="email" value={email} />
+                                <input type="hidden" name="otp" value={otp} />
+                                <div className="auth-form__form">
+                                    <div className="auth-form__group">
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            className="auth-form__input"
+                                            placeholder="Mật khẩu mới"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="auth-form__group">
+                                        <input
+                                            type="password"
+                                            name="password_confirmation"
+                                            className="auth-form__input"
+                                            placeholder="Xác nhận mật khẩu"
+                                            value={passwordConfirmation}
+                                            onChange={(e) => setPasswordConfirmation(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="auth-form__controls" style={{ marginBottom: '24px' }}>
+                                    <a href="/forgot_password_verify" className="btn btn--normal auth-form__controls-back">
+                                        TRỞ LẠI
+                                    </a>
+                                    <button type="submit" className="btn btn--primary">
+                                        ĐẶT LẠI MẬT KHẨU
                                     </button>
                                 </div>
-                            )}
-                            <input type="hidden" name="email" value={email} />
-                            <input type="hidden" name="otp" value={otp} />
-                            <div className="auth-form__form">
-                                <div className="auth-form__group">
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        className="auth-form__input"
-                                        placeholder="Mật khẩu mới"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="auth-form__group">
-                                    <input
-                                        type="password"
-                                        name="password_confirmation"
-                                        className="auth-form__input"
-                                        placeholder="Xác nhận mật khẩu"
-                                        value={passwordConfirmation}
-                                        onChange={(e) => setPasswordConfirmation(e.target.value)}
-                                        required
-                                    />
-                                </div>
                             </div>
-                            <div className="auth-form__controls" style={{ marginBottom: '24px' }}>
-                                <a href="/forgot_password_verify" className="btn btn--normal auth-form__controls-back">
-                                    TRỞ LẠI
-                                </a>
-                                <button type="submit" className="btn btn--primary">
-                                    ĐẶT LẠI MẬT KHẨU
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </>

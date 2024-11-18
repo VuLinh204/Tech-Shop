@@ -64,6 +64,22 @@ class UserModel
         }
     }
 
+    public function updatePassword(string $email, string $hashedPassword): bool
+    {
+        $user = $this->emailExists($email);
+
+        if ($user) {
+            $userId = $user['id'];
+            $sql = "UPDATE user SET password = ? WHERE id = ?";
+            $stmt = $this->mysqli->prepare($sql);
+            $stmt->bind_param("si", $hashedPassword, $userId);
+
+            return $stmt->execute();
+        }
+
+        return false;
+    }
+
     public function logout()
     {
         session_start();

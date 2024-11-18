@@ -63,7 +63,7 @@ class AuthController
     // Phương thức tạo mật khẩu mới sau khi xác thực OTP
     public function createPassword(string $password): array
     {
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $_SESSION['user_password'] = $hashedPassword;
         return [
@@ -83,7 +83,7 @@ class AuthController
             ];
         }
         // Hash lại mật khẩu trước khi lưu vào cơ sở dữ liệu
-        $hashedPassword = password_hash($hashedPassword, PASSWORD_BCRYPT);
+        $hashedPassword = password_hash($hashedPassword, PASSWORD_DEFAULT);
 
         $result = $this->userModel->createUser($email, $hashedPassword);
 
@@ -97,6 +97,20 @@ class AuthController
                 'success' => false,
                 'errors' => ['Có lỗi xảy ra khi tạo người dùng. Vui lòng thử lại.']
             ];
+        }
+    }
+
+    public function updatePassword(string $email, string $newPassword): array
+    {
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+
+        $result = $this->userModel->updatePassword($email, $hashedPassword);
+
+        if ($result) {
+            return ['success' => true, 'message' => 'Mật khẩu cập nhật thành công.'];
+        } else {
+            return ['success' => false, 'errors' => ['Mật khẩu cập nhật thất bại.']];
         }
     }
 }
