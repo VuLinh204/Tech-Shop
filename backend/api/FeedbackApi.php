@@ -30,31 +30,27 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $productId = $data['product_id'] ?? null;
         $comment = $data['body'] ?? '';
         $rating = $data['rating'] ?? 5;
+        $parentId = $data['parent_id'] ?? null; // Nhận thêm parent_id từ client
 
         if ($userId && $productId && $comment) {
-            $result = $feedbackController->addFeedback($userId, $productId, $comment, $rating);
+            $result = $feedbackModel->addFeedback($userId, $productId, $comment, $rating, $parentId);
 
             if ($result) {
-                // Sau khi thêm thành công, lấy lại danh sách bình luận mới nhất
+                // Lấy lại danh sách bình luận mới nhất
                 $feedback = $feedbackController->getFeedback($productId);
                 echo json_encode([
                     'status' => 'success',
                     'message' => 'Cảm ơn bạn đã để lại bình luận',
-                    'feedbackList' => $feedback,
-                    'cssClass' => 'feedback-success' // Thêm class cho thông báo thành công
+                    'feedbackList' => $feedback
                 ]);
             } else {
-                // Nếu đã có bình luận rồi thì sẽ trả về thông báo lỗi
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => 'Bạn đã bình luận cho sản phẩm này rồi. Mỗi tài khoản chỉ có thể bình luận 1 lần cho mỗi sản phẩm.',
-                    'cssClass' => 'feedback-error' // Thêm class cho thông báo thất bại
-                ]);
+                echo json_encode(['error' => 'Không thể thêm bình luận']);
             }
         } else {
             echo json_encode(["error" => "Invalid input data."]);
         }
         break;
+
     case 'PUT':
         // Sửa feedback
         $data = json_decode(file_get_contents('php://input'), true);
