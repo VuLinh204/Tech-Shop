@@ -4,6 +4,9 @@ import { createProduct, deleteProduct, getDetailProduct, updateProduct } from '.
 import { UploadOutlined } from '@ant-design/icons';
 import '../../assets/css/CategoriesManage.css';
 import axios from 'axios';
+import Pagination from "../common/Pagination_admin";
+
+
 
 const AdminProduct = () => {
     const [products, setProducts] = useState([]);
@@ -24,9 +27,12 @@ const AdminProduct = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const { Option } = Select;
-    const [colorInput, setColorInput] = useState([]);
     const [fileList, setFileList] = useState([""]);
     const [form] = Form.useForm();
+    const [currentPage, setCurrentPage] = useState(1);
+
+
+
 
     // Hàm gọi API để lấy danh sách sản phẩm và danh mục
     const fetchData = async () => {
@@ -233,17 +239,19 @@ const AdminProduct = () => {
     };
 
 
-    //hàm xử lí màu sắc
-    const handleColorChange = (value) => {
-        setColorInput("");
-        const colorsArray = value.split(',').map(color => color.trim());
-        setColorInput(colorsArray);
-    };
-
 
     // Xử lý khi người dùng chọn ảnh mới trong update
     const handleUpdateImgChange = ({ fileList }) => {
         setFileList(fileList);
+    };
+
+    const itemsPerPage = 10;
+    const offset = (currentPage - 1) * itemsPerPage;
+    const currentItems = products.slice(offset, offset + itemsPerPage);
+    const pageCount = Math.ceil(products.length / itemsPerPage);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
     };
 
 
@@ -268,12 +276,30 @@ const AdminProduct = () => {
     };
 
     return (
+
         <div className="grid__column-10">
             <div className="category-manager">
                 <div>
-                    <div className="category-manager__header">
-                        <h1>Danh sách các sản phẩm</h1>
-                        <button className="btn btn--primary" onClick={showModal}>
+                    <div className="category-manager__header" >
+                        <h1 style={{ marginRight: "100px" }}>Danh sách các sản phẩm</h1>
+                        <div className="header__search" style={{ width: "30%", border: "1px solid #000" }}>
+                            <div className="header__search-input-wrap">
+                                <form action="#" method="GET">
+                                    <input
+                                        type="text"
+                                        name="query"
+                                        className="header__search-input"
+                                        placeholder="Tìm kiếm"
+                                        style={{}}
+                                    />
+
+                                </form>
+                            </div>
+                            <button type="submit" className="header__search-btn">
+                                <i className="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                        <button className="btn btn--primary" onClick={showModal} style={{ marginLeft: "140px" }}>
                             + Thêm sản phẩm
                         </button>
                     </div>
@@ -299,7 +325,7 @@ const AdminProduct = () => {
                             </thead>
                             <tbody>
                                 {products.length > 0 ? (
-                                    products.map((product) => (
+                                    currentItems.map((product) => (
                                         <tr key={product.id}>
                                             <td>{product.id}</td>
                                             <td>{product.name}</td>
@@ -314,7 +340,7 @@ const AdminProduct = () => {
                                             <td>{product.quantity}</td>
                                             <td>{product.color}</td>
                                             <td>{Number(product.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                                            <td>{product.discount_percent}</td>
+                                            <td>{product.discount_percent}%</td>
                                             <td>{product.category_name}</td>
                                             <td>
                                                 <button
@@ -341,10 +367,13 @@ const AdminProduct = () => {
                                 )}
                             </tbody>
                         </table>)}
-                    <div className="pagination">
-                        <button className="btn-pagination">1</button>
-                        <button className="btn-pagination">2</button>
-                        <button className="btn-pagination">3</button>
+                    <div>
+                        <Pagination
+                            totalPages={pageCount}
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            onPageChange={handlePageChange}
+                        />
                     </div>
                 </div>
             </div>
@@ -696,7 +725,6 @@ const AdminProduct = () => {
                     >
                         <Input
                             placeholder="Nhập các màu, phân tách bằng dấu phẩy"
-                            onChange={(e) => handleColorChange(e.target.value)}
                         />
                     </Form.Item>
 
