@@ -139,13 +139,59 @@ export const getProducts = async () => {
     }
 };
 
-export const getProductsSearch = async (searchQuery = '') => {
+
+export const createProduct = async (productData) => {
     try {
-        const response = await fetch(`http://localhost/Tech-Shop/backend/api/products.php?search=${searchQuery}`);
-        const data = await response.json();
-        return data;
+        const response = await fetch(`${API_URL}/product_api.php`, {
+            method: "POST",
+            body: productData,
+        });
+        const result = await response.json();
+        return result;
     } catch (error) {
-        console.error('Error fetching products:', error);
-        return [];
+        console.error('Error creating product:', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi tạo sản phẩm.' };
+    }
+};
+
+
+export const getDetailProduct = async (id) => {
+    try {
+        const response = await axios.get(
+            `${API_URL}/product_api.php?action=view&id=${id}`,
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error create product: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi sửa tạo sản phẩm.' };
+    }
+};
+
+export const updateProduct = async (productData) => {
+    try {
+        const response = await fetch(`${API_URL}/product_api.php`, {
+            method: "POST",
+            body: productData,
+        });
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Error update product: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi sửa sản phẩm.' };
+    }
+};
+
+export const deleteProduct = async (data) => {
+    try {
+        const response = await fetch(`${API_URL}/product_api.php`, {
+            method: "POST",
+            body: data,
+        });
+        const result = await response.json();
+        console.log(result)
+        return result;
+    } catch (error) {
+        console.error('Error create product: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi xóa tạo sản phẩm.' };
     }
 };
