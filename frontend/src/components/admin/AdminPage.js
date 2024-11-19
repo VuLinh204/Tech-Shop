@@ -5,12 +5,13 @@ import { Menu } from 'antd';
 import CategoriesManage from "./CategoriesManage";
 import AdminProduct from "./AdminProduct";
 import ControlPanel from './ControlPanel';
+import Dashboard from "./Dashboard";
 
 const renderPage = (key) => {
   switch (key) {
     case 'Dasboard':
       return (
-        <ControlPanel />
+        <Dashboard />
       )
     case 'Category':
       return (

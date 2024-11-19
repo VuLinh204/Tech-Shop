@@ -1,10 +1,15 @@
 // src/components/CategoriesManage.js
-import React, { useState, useEffect } from 'react';
-import AddCategory from './AddCategory';
-import EditCategory from './EditCategory';
-import ControlPanel from './ControlPanel';
-import '../../assets/css/CategoriesManage.css';
-import axios from 'axios';
+
+import React, { useState, useEffect } from "react";
+import AddCategory from "./AddCategory";
+import EditCategory from "./EditCategory";
+import ControlPanel from "./ControlPanel";
+import "../../assets/css/CategoriesManage.css";
+import axios from "axios";
+import Pagination from "../common/Pagination_admin";
+import Dashboard from "./Dashboard";
+
+
 
 const CategoriesManage = () => {
   const [activeItem, setActiveItem] = useState("Danh mục");
@@ -84,22 +89,32 @@ const CategoriesManage = () => {
   const offset = (currentPage - 1) * itemsPerPage;
   const currentItems = categories.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(categories.length / itemsPerPage);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
 
+
     <div className="grid__column-10">
       <div className="category-manager">
-        {activeItem === 'Bảng điều khiển' ? (
-          <ControlPanel />
+        {activeItem === "Bảng điều khiển" ? (
+          <Dashboard />
         ) : isAdding ? (
           <AddCategory onAddSuccess={handleAddSuccess} />
         ) : isEditing ? (
-          <EditCategory categoryData={editCategoryData} onEditSuccess={handleEditSuccess} />
+          <EditCategory
+            categoryData={editCategoryData}
+            onEditSuccess={handleEditSuccess}
+          />
         ) : (
           <div>
             <div className="category-manager__header">
               <h1>Danh sách các danh mục</h1>
-              <button className="btn btn--primary" onClick={handleAddCategoryClick}>
+              <button
+                className="btn btn--primary"
+                onClick={handleAddCategoryClick}
+              >
                 + Thêm
               </button>
             </div>
@@ -113,28 +128,30 @@ const CategoriesManage = () => {
                 </tr>
               </thead>
               <tbody>
-                {categories.length > 0 ? (
-                  categories.map((category) => (
+                {currentItems.length > 0 ? (
+                  currentItems.map((category) => (
                     <tr key={category.id}>
-                      <td>{category.id}</td>
+                      <td>{category.original_id}</td>
                       <td>{category.name}</td>
                       <td>
                         <img
-                          src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`} // Cập nhật đường dẫn đến hình ảnh
+                          src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`}
                           alt="Hình ảnh"
-                          style={{ width: '100px' }}
+                          style={{ width: "100px" }}
                         />
                       </td>
                       <td>
                         <button
-                          onClick={() => handleEditCategoryClick(category)}
+                          onClick={() =>
+                            handleEditCategoryClick(category)
+                          }
                           className="btn-edit"
                           title="Sửa"
                         >
                           <i className="fas fa-edit"></i>
                         </button>
                         <button
-                          onClick={() => deleteCategory(category.id)}
+                          onClick={() => deleteCategory(category.id)} // Sử dụng ID mã hóa để xóa
                           className="btn-delete"
                           title="Xóa"
                         >
@@ -149,16 +166,23 @@ const CategoriesManage = () => {
                   </tr>
                 )}
               </tbody>
+              ;
             </table>
             <div className="pagination">
-              <button className="btn-pagination">1</button>
-              <button className="btn-pagination">2</button>
-              <button className="btn-pagination">3</button>
+              <Pagination
+                totalPages={pageCount}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                onPageChange={handlePageChange}
+              />
             </div>
           </div>
+
+
+
         )}
       </div>
-    </div>
+    </div >
 
   );
 };
