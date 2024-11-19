@@ -57,7 +57,7 @@ const EditCategory = ({ categoryData, onEditSuccess }) => {
   };
 
   const handleUpdateCategory = async () => {
-    if (!isNameValid || !name || !thumbnail) {
+    if (!isNameValid || !name) {
       setError("Vui lòng điền đầy đủ thông tin hợp lệ!");
       return;
     }
@@ -65,11 +65,18 @@ const EditCategory = ({ categoryData, onEditSuccess }) => {
     const formData = new FormData();
     formData.append("id", categoryData.id);
     formData.append("name", name);
-    formData.append("thumbnail", thumbnail);
-    formData.append("action", "update"); // Thêm thông tin để xác định là cập nhật
+
+    // Kiểm tra xem người dùng có thay đổi ảnh hay không
+    if (typeof thumbnail === "string") {
+      formData.append("current_thumbnail", thumbnail); // Gửi lại ảnh cũ nếu không chọn ảnh mới
+    } else {
+      formData.append("thumbnail", thumbnail); // Gửi tệp ảnh mới
+    }
+
+    formData.append("action", "update");
 
     try {
-      await axios.post(
+      const response = await axios.post(
         "http://localhost/tech-shop/backend/api/CategoryApi.php",
         formData,
         {
@@ -79,9 +86,18 @@ const EditCategory = ({ categoryData, onEditSuccess }) => {
         }
       );
 
-      setMessage("Cập nhật danh mục thành công!");
-      setError("");
-      onEditSuccess();
+      if (response.status === 200 && response.data.success) {
+        setMessage("Cập nhật danh mục thành công!");
+        setError("");
+
+        // Hiển thị thông báo và trì hoãn việc chuyển trang
+        setTimeout(() => {
+          onEditSuccess(); // Gọi hàm chuyển trang sau khi thông báo hiển thị xong
+        }, 3000);
+      } else {
+        setError(response.data.error || "Có lỗi xảy ra khi cập nhật danh mục.");
+        setMessage("");
+      }
     } catch (error) {
       console.error("Lỗi khi cập nhật danh mục:", error);
       setError("Đã xảy ra lỗi khi cập nhật danh mục.");

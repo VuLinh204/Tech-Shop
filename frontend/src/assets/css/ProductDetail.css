@@ -112,7 +112,7 @@ h1 {
   transition: all 0.1s;
 }
 
-.product-add-to-cart:active{
+.product-add-to-cart:active {
   box-shadow: 0px 2px 0px rgb(3 105 161);
   position: relative;
   top: 2px;
@@ -258,4 +258,143 @@ h1 {
 }
 .star.selected {
   color: gold;
+}
+.btn-reply {
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.btn-reply:hover {
+  text-decoration: underline;
+}
+
+.reply-form {
+  margin-top: 10px;
+}
+/* CSS cho bình luận chính */
+.comment {
+  background-color: #f8f9fa; /* Màu nền nhạt */
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* CSS cho phần phản hồi (cấp con) */
+.reply {
+  background-color: #ffffff; /* Nền trắng cho phản hồi */
+  padding: 10px 15px;
+  margin-top: 10px;
+  margin-left: 20px; /* Thụt lề cấp con */
+  border-left: 3px solid #007bff; /* Viền trái để phân biệt */
+  border-radius: 6px;
+}
+
+/* Hình đại diện */
+.comment img,
+.reply img {
+  border: 2px solid #dee2e6; /* Viền ngoài avatar */
+  object-fit: cover;
+}
+
+/* Tên người dùng */
+.comment h6,
+.reply h6 {
+  margin: 0;
+  font-weight: bold;
+  color: #343a40; /* Màu chữ chính */
+}
+
+/* Thời gian */
+.comment small,
+.reply small {
+  color: #868e96; /* Màu xám nhạt */
+  font-size: 12px;
+}
+
+/* Nội dung bình luận */
+.comment p,
+.reply p {
+  margin: 10px 0 0;
+  color: #495057; /* Màu chữ nội dung */
+  font-size: 14px;
+}
+
+/* Phần đánh giá bằng sao */
+.comment-rating i {
+  margin-right: 2px;
+  font-size: 16px;
+}
+
+.comment-rating .fa-star {
+  color: #ffc107; /* Màu vàng cho sao */
+}
+
+.comment-rating .text-secondary {
+  color: #d6d8db; /* Màu xám cho sao chưa chọn */
+}
+
+/* Phần nút hành động */
+.comment-actions button,
+.reply-actions button {
+  font-size: 12px;
+  padding: 2px 6px;
+  border: none;
+  background: none;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.comment-actions button:hover,
+.reply-actions button:hover {
+  text-decoration: underline;
+}
+
+/* Form trả lời */
+.reply-form textarea {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  resize: none;
+}
+
+.reply-form button {
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+/* Button gửi */
+.reply-form .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+
+.reply-form .btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+/* Button hủy */
+.reply-form .btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+
+.reply-form .btn-secondary:hover {
+  background-color: #545b62;
+  border-color: #434a51;
+}
+
+/* Không có bình luận */
+.no-comments {
+  text-align: center;
+  color: #6c757d;
+  font-size: 16px;
+  padding: 10px 0;
 }
