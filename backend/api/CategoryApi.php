@@ -28,7 +28,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
         // Lấy tất cả danh mục
         $categories = $categoryController->getAllCategories();
         foreach ($categories as &$category) {
-            $category['id'] = encryptId($category['id']); // Mã hóa lại ID trước khi gửi về frontend
+            $originalId = $category['id']; // ID gốc
+            $category['id'] = encryptId($originalId); // Mã hóa ID
+            $category['original_id'] = $originalId; // Lưu lại ID gốc
         }
         header('Content-Type: application/json');
         echo json_encode($categories);

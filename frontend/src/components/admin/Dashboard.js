@@ -1,21 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../assets/css/Dashboard.css";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-
 import { Pie } from "react-chartjs-2"; // Thêm thư viện `react-chartjs-2` cho biểu đồ.
+import axios from "axios";
 ChartJS.register(ArcElement, Tooltip, Legend);
+
 const Dashboard = () => {
-  // Dữ liệu demo
-  const totalProducts = 120;
-  const favoriteProducts = 15;
-  const totalCategories = 10;
-  const favoriteCategory = "Đồ Điện Tử";
+  const [categories, setCategories] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [favoriteProducts, setFavoriteProducts] = useState(0);
+  const [favoriteCategory, setFavoriteCategory] = useState("");
+
+  const fetchCategories = async () => {
+    try {
+      // Gọi API để lấy danh mục
+      const categoryResponse = await axios.get(
+        "http://localhost/tech-shop/backend/api/CategoryApi.php"
+      );
+
+      // Gọi API để lấy danh sách sản phẩm
+      const productResponse = await axios.get(
+        "http://localhost/tech-shop/backend/api/getProducts.php"
+      );
+
+      const categories = categoryResponse.data; // Dữ liệu danh mục
+      const products = productResponse.data; // Dữ liệu sản phẩm
+
+      // Cập nhật state
+      setCategories(categories);
+      setTotalProducts(products.total_products); // Tổng số sản phẩm từ API `getProduct.php`
+      setFavoriteCategory(categories[0]?.name || ""); // Danh mục đầu tiên (nếu có)
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  // Gọi hàm fetchCategories khi component được tải
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const chartData = {
-    labels: ["Đồ Điện Tử", "Thời Trang", "Gia Dụng", "Thể Thao", "Khác"],
+    labels: categories.map((category) => category.name), // Lấy tên danh mục từ state
     datasets: [
       {
-        data: [40, 25, 20, 10, 5], // % mỗi danh mục
+        data: categories.map(() => Math.random() * 100), // Dữ liệu ngẫu nhiên cho biểu đồ
         backgroundColor: [
           "#FF6384",
           "#36A2EB",
@@ -51,7 +80,7 @@ const Dashboard = () => {
           <p>Sản Phẩm Được Yêu Thích</p>
         </div>
         <div className="summary-box">
-          <h3>{totalCategories}</h3>
+          <h3>{categories.length}</h3>
           <p>Tổng Số Danh Mục</p>
         </div>
         <div className="summary-box">

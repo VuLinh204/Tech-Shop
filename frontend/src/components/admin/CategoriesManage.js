@@ -125,6 +125,7 @@ const CategoriesManage = () => {
                     <table className="category-table">
                       <thead>
                         <tr>
+                          <th>ID</th>
                           <th>Tên danh mục</th>
                           <th>Thumbnail</th>
                           <th>Thao tác</th>
@@ -134,6 +135,7 @@ const CategoriesManage = () => {
                         {currentItems.length > 0 ? (
                           currentItems.map((category) => (
                             <tr key={category.id}>
+                              <td>{category.original_id}</td>
                               <td>{category.name}</td>
                               <td>
                                 <img
