@@ -1,9 +1,7 @@
 // src/components/CategoriesManage.js
-
 import React, { useState, useEffect } from "react";
 import AddCategory from "./AddCategory";
 import EditCategory from "./EditCategory";
-import ControlPanel from "./ControlPanel";
 import "../../assets/css/CategoriesManage.css";
 import axios from "axios";
 import Pagination from "../common/Pagination_admin";

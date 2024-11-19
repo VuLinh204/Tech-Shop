@@ -4,7 +4,6 @@ import { BarChartOutlined, UnorderedListOutlined, ProductOutlined, DownSquareOut
 import { Menu } from 'antd';
 import CategoriesManage from "./CategoriesManage";
 import AdminProduct from "./AdminProduct";
-import ControlPanel from './ControlPanel';
 import Dashboard from "./Dashboard";
 
 const renderPage = (key) => {

@@ -23,7 +23,6 @@ import VoucherList from './components/user/VoucherList';
 import Order from './components/user/Order';
 import Payment from './components/user/Payment';
 import CategoriesManage from './components/admin/CategoriesManage';
-import ControlPanel from './components/admin/ControlPanel';
 import AuthLayout from './components/common/AuthLayout';
 import AdminPage from './components/admin/AdminPage';
 
