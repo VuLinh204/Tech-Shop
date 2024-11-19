@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import EmtyCart from "../../assets/img/emty-cart.png";
 import { getUser } from "../../api/Api";
+import { useNavigate } from "react-router-dom"; // Thêm import
 
 const Cart = () => {
+  const navigate = useNavigate(); // Sử dụng hook điều hướng
   const [cartItems, setCartItems] = useState([]);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
@@ -23,7 +25,9 @@ const Cart = () => {
       }
     }
   };
-
+  const handleCheckout = () => {
+    navigate("/payment", { state: { cartItems } }); // Điều hướng đến Payment và truyền giỏ hàng
+  };
   // Lấy thông tin giỏ hàng từ API
   const fetchCartItems = async (userId) => {
     try {
@@ -222,7 +226,7 @@ const Cart = () => {
                           <strong>{totalPrice.toLocaleString()}</strong>
                         </td>
                         <td>
-                          <button className="button checkout-btn">
+                          <button className="button checkout-btn" onClick={handleCheckout}>
                             Thanh Toán
                           </button>
                         </td>

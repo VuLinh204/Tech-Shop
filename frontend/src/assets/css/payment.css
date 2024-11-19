@@ -1,0 +1,97 @@
+.customer-info {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.customer-info h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.customer-info form div,
+.customer-info div {
+    margin-bottom: 15px;
+}
+
+.customer-info label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.customer-info input[type="text"],
+.customer-info input[type="email"],
+.customer-info textarea,
+.customer-info select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.customer-info input[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.customer-info textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.customer-info button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.customer-info button:hover {
+    background-color: #0056b3;
+}
+
+.customer-info .summary {
+    margin-top: 20px;
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.customer-info .summary p {
+    margin: 5px 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.customer-info .checkout-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #28a745;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.customer-info .checkout-btn:hover {
+    background-color: #218838;
+}
