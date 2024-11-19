@@ -19,4 +19,3 @@ if ($products) {
 } else {
     echo json_encode([]); // Trả về mảng rỗng nếu không có sản phẩm
 }
-    

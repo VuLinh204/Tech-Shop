@@ -37,4 +37,9 @@ class ProductController
     {
         return $this->product->getProductById($id);
     }
+    // Lấy tổng số sản phẩm
+    public function getTotalProducts()
+    {
+        return $this->product->getTotal();
+    }
 }
