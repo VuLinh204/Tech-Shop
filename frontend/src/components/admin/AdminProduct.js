@@ -343,8 +343,6 @@ const AdminProduct = () => {
                     <div className="category-manager__header" >
                         <h1 style={{ marginRight: "100px" }}>Danh sách các sản phẩm</h1>
                         <div style={{ width: 400, margin: '50px auto' }}>
-
-
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <AutoComplete
                                     style={{
