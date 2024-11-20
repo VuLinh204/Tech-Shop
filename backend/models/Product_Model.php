@@ -219,11 +219,10 @@ class Product_Model extends Database
         } else {
             return ["status" => "error", "message" => "Xóa sản phẩm thất bại"];
         }
-
     }
 
     //Tìm kiếm sản phẩm theo tên và theo mô tả
-    public function seachProduct($key)
+    public function searchProductAd($key)
     {
         $query = "SELECT p.id, p.name, p.price, p.description, p.quantity,
         GROUP_CONCAT(DISTINCT cl.name SEPARATOR ', ') as color, p.discount_percent,
@@ -243,6 +242,25 @@ class Product_Model extends Database
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    //Tìm kiếm sản phẩm theo tên và theo mô tả
+    public function searchProduct($key)
+    {
+        $query = "SELECT p.id, p.name, p.price, p.description, p.quantity,
+                  GROUP_CONCAT(DISTINCT cl.name SEPARATOR ', ') as color, p.discount_percent,
+                  p.thumbnail, c.name AS category_name
+                  FROM product p
+                  LEFT JOIN category c on p.category_id = c.id
+                  LEFT JOIN product_color pc on p.id = pc.product_id
+                  LEFT JOIN color cl on pc.color_id = cl.id
+                  WHERE p.name LIKE ? OR p.description LIKE ?
+                  GROUP BY p.id";
+        $stmt = self::$connection->prepare($query);
+        $keyword = "%{$key}%";
+        $stmt->bind_param("ss", $keyword, $keyword);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return json_encode($result->fetch_all(MYSQLI_ASSOC));
+    }
 }
 
 // $product = new stdClass();

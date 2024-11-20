@@ -71,11 +71,8 @@ class Product_Controller
     }
 
     //tìm kiếm sản phẩm
-    public function searchProduct($keyword)
+    public function searchProduct($key)
     {
-        $products = $this->product->seachProduct($keyword);
-        echo json_encode($products);
+        echo $this->product->searchProduct($key);
     }
 }
-
-

@@ -11,7 +11,6 @@ export const Login = async (email, password) => {
     }
 };
 
-// Hàm gọi API lấy thông tin người dùng
 export const getUser = async () => {
     try {
         const response = await axios.get(`${API_URL}/getUser.php`, {
@@ -36,7 +35,6 @@ export const updateUser = async () => {
     }
 };
 
-// Hàm gọi API để đổi mật khẩu
 export const changePassword = async (oldPassword, newPassword, email) => {
     try {
         const response = await axios.post(
@@ -57,7 +55,6 @@ export const changePassword = async (oldPassword, newPassword, email) => {
     }
 };
 
-// Hàm gọi API gửi OTP
 export const sendOtp = async (email) => {
     try {
         const response = await axios.post(`${API_URL}/sendOtp.php`, { email }, { withCredentials: true });
@@ -67,7 +64,6 @@ export const sendOtp = async (email) => {
     }
 };
 
-// Hàm gọi API xác thực OTP
 export const verifyOtp = async (email, otp) => {
     try {
         const response = await axios.post(
@@ -81,7 +77,6 @@ export const verifyOtp = async (email, otp) => {
     }
 };
 
-// Hàm gọi API để tạo mật khẩu mới sau khi xác thực OTP
 export const createPassword = async (password) => {
     try {
         const response = await axios.post(`${API_URL}/createPassword.php`, { password });
@@ -111,7 +106,6 @@ export const resetPassword = async (email, newPassword) => {
     }
 };
 
-// Ví dụ hàm đăng xuất
 export const logout = async () => {
     try {
         const response = await axios.post(
@@ -128,7 +122,6 @@ export const logout = async () => {
     }
 };
 
-// Ví dụ hàm lấy danh sách sản phẩm
 export const getProducts = async () => {
     try {
         const response = await axios.get(`${API_URL}/getProducts.php`);
@@ -139,11 +132,44 @@ export const getProducts = async () => {
     }
 };
 
+export const getProductsSearch = async (query) => {
+    try {
+        const response = await axios.get(`${API_URL}/search.php`, {
+            params: { query: query },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error;
+    }
+};
+
+export const getCategories = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/CategoryApi.php`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching categories: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi lấy danh sách sản phẩm.' };
+    }
+};
+
+export const getProductsByCategory = async (categoryIds) => {
+    try {
+        const response = await axios.post(`${API_URL}/getProductsByCategories.php`, {
+            categoryIds: categoryIds,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Lỗi khi gọi API getProductsByCategory:', error);
+        throw error;
+    }
+};
 
 export const createProduct = async (productData) => {
     try {
         const response = await fetch(`${API_URL}/product_api.php`, {
-            method: "POST",
+            method: 'POST',
             body: productData,
         });
         const result = await response.json();
@@ -154,12 +180,9 @@ export const createProduct = async (productData) => {
     }
 };
 
-
 export const getDetailProduct = async (id) => {
     try {
-        const response = await axios.get(
-            `${API_URL}/product_api.php?action=view&id=${id}`,
-        );
+        const response = await axios.get(`${API_URL}/product_api.php?action=view&id=${id}`);
         return response.data;
     } catch (error) {
         console.error('Error create product: ', error);
@@ -170,7 +193,7 @@ export const getDetailProduct = async (id) => {
 export const updateProduct = async (productData) => {
     try {
         const response = await fetch(`${API_URL}/product_api.php`, {
-            method: "POST",
+            method: 'POST',
             body: productData,
         });
         const result = await response.json();
@@ -184,11 +207,11 @@ export const updateProduct = async (productData) => {
 export const deleteProduct = async (data) => {
     try {
         const response = await fetch(`${API_URL}/product_api.php`, {
-            method: "POST",
+            method: 'POST',
             body: data,
         });
         const result = await response.json();
-        console.log(result)
+        console.log(result);
         return result;
     } catch (error) {
         console.error('Error create product: ', error);
