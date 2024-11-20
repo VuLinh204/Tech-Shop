@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Input, Select, Upload, message, notification, Drawer } from 'antd';
-import { createProduct, deleteProduct, getDetailProduct, updateProduct } from '../../api/Api'
+import { Modal, Button, Form, Input, Select, Upload, message, notification, Drawer, AutoComplete } from 'antd';
+import { createProduct, deleteProduct, getDetailProduct, updateProduct, searchProduct } from '../../api/Api'
 import { UploadOutlined } from '@ant-design/icons';
 import '../../assets/css/CategoriesManage.css';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import Pagination from "../common/Pagination_admin";
 
 const AdminProduct = () => {
     const [products, setProducts] = useState([]);
+    const [allProducts, setAllProducts] = useState([]);
     const [productDetails, setProductDetails] = useState({
         id: '',
         name: '',
@@ -32,8 +33,6 @@ const AdminProduct = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
 
-
-
     // Hàm gọi API để lấy danh sách sản phẩm và danh mục
     const fetchData = async () => {
         try {
@@ -43,6 +42,7 @@ const AdminProduct = () => {
             ]);
 
             setProducts(productResponse.data);
+            setAllProducts(productResponse.data);
             setCategories(categoryResponse.data);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -209,9 +209,61 @@ const AdminProduct = () => {
         }
     }
 
+    const [options, setOptions] = useState([]);
+
+    const handleSearch = async (keyword) => {
+        if (!keyword) {
+            setOptions([]);
+            return;
+        }
+        try {
+            const response = await searchProduct(keyword);
+            console.log(response.status);
+            if (response.status === 'success') {
+                const suggestions = response.data.map((product) => ({
+                    value: product.name, // Tên sản phẩm
+                    label: product.name, // Hiển thị tên sản phẩm
+                }));
+                setOptions(suggestions);
+            } else {
+                setOptions([]);
+            }
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+        }
+    };
+
     useEffect(() => {
         fetchData();
-    })
+    }, [])
+
+    const handleSearchClick = async (value) => {
+        if (!value.trim()) {
+            setProducts(allProducts);
+            notification.warning({
+                message: 'Cảnh báo',
+                description: 'Vui lòng nhập từ khóa tìm kiếm.',
+                placement: 'topRight',
+            });
+            return;
+        }
+        try {
+            const response = await searchProduct(value); // Gọi API tìm kiếm với từ khóa
+
+            if (response.status === 'success' && response.data.length > 0) {
+                setProducts(response.data);
+            } else {
+                setProducts([]); // Đặt danh sách rỗng khi không tìm thấy
+                notification.info({
+                    message: 'Không tìm thấy sản phẩm',
+                    description: `Không có sản phẩm nào phù hợp với từ khóa "${value}".`,
+                    placement: 'topRight',
+                });
+            }
+        } catch (error) {
+            console.error('Error searching products:', error);
+        }
+    };
 
     useEffect(() => {
         form.setFieldsValue(productDetails);
@@ -239,15 +291,23 @@ const AdminProduct = () => {
     };
 
 
-
     // Xử lý khi người dùng chọn ảnh mới trong update
     const handleUpdateImgChange = ({ fileList }) => {
         setFileList(fileList);
     };
 
+    const handleShowProduct = () => {
+        setProducts(allProducts);
+        notification.success({
+            message: 'Đã hiện tất cả sản phẩm',
+            placement: 'topRight',
+            duration: 3,
+        });
+    }
+
     const itemsPerPage = 10;
     const offset = (currentPage - 1) * itemsPerPage;
-    const currentItems = products.slice(offset, offset + itemsPerPage);
+    var currentItems = products.slice(offset, offset + itemsPerPage);
     const pageCount = Math.ceil(products.length / itemsPerPage);
 
     const handlePageChange = (page) => {
@@ -282,22 +342,32 @@ const AdminProduct = () => {
                 <div>
                     <div className="category-manager__header" >
                         <h1 style={{ marginRight: "100px" }}>Danh sách các sản phẩm</h1>
-                        <div className="header__search" style={{ width: "30%", border: "1px solid #000" }}>
-                            <div className="header__search-input-wrap">
-                                <form action="#" method="GET">
-                                    <input
-                                        type="text"
-                                        name="query"
-                                        className="header__search-input"
-                                        placeholder="Tìm kiếm"
-                                        style={{}}
-                                    />
+                        <div style={{ width: 400, margin: '50px auto' }}>
 
-                                </form>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <AutoComplete
+                                    style={{
+                                        width: 300,
+                                    }}
+                                    options={options}
+                                    onSearch={handleSearch}
+                                    onSelect={handleSearchClick}
+                                >
+                                    <Input.Search
+                                        size="large"
+                                        placeholder="Tìm kiếm sản phẩm..."
+                                        enterButton
+                                        onSearch={handleSearchClick}
+                                    />
+                                </AutoComplete>
+                                <Button
+                                    type="default"
+                                    onClick={handleShowProduct}
+                                >
+                                    Hiển thị tất cả
+                                </Button>
                             </div>
-                            <button type="submit" className="header__search-btn">
-                                <i className="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
-                            </button>
                         </div>
                         <button className="btn btn--primary" onClick={showModal} style={{ marginLeft: "140px" }}>
                             + Thêm sản phẩm
@@ -377,6 +447,9 @@ const AdminProduct = () => {
                     </div>
                 </div>
             </div>
+
+
+
             <Modal title="Tạo sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={[
                 <Button key="cancel" onClick={handleCancel}>
                     Hủy
