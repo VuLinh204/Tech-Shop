@@ -73,7 +73,7 @@ class Product_Controller
     // Hàm xử lý tìm kiếm sản phẩm
     public function searchProduct($key)
     {
-        $products = $this->product->seachProduct($key);
+        $products = $this->product->searchProductAd($key);
 
         // Kiểm tra nếu có kết quả
         if ($products) {

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Input, Select, Upload, message, notification, Drawer, AutoComplete } from 'antd';
 import { createProduct, deleteProduct, getDetailProduct, updateProduct, searchProduct } from '../../api/Api'
@@ -5,6 +6,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import '../../assets/css/CategoriesManage.css';
 import axios from 'axios';
 import Pagination from "../common/Pagination_admin";
+
+
 
 const AdminProduct = () => {
   const [products, setProducts] = useState([]);
@@ -35,13 +38,12 @@ const AdminProduct = () => {
   const fetchData = async () => {
     try {
       const [productResponse, categoryResponse] = await Promise.all([
-        axios.get(
-          "http://localhost/tech-shop/backend/api/product_api.php?action=list"
-        ),
-        axios.get("http://localhost/tech-shop/backend/api/CategoryApi.php"),
+        axios.get('http://localhost/tech-shop/backend/api/product_api.php?action=list'),
+        axios.get('http://localhost/tech-shop/backend/api/CategoryApi.php')
       ]);
 
       setProducts(productResponse.data);
+      setAllProducts(productResponse.data);
       setCategories(categoryResponse.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -49,171 +51,163 @@ const AdminProduct = () => {
       setLoading(false);
     }
   };
-  setProducts(productResponse.data);
-  setAllProducts(productResponse.data);
-  setCategories(categoryResponse.data);
-} catch (error) {
-  console.error("Error fetching data:", error);
-} finally {
-  setLoading(false);
-}
-    };
 
-const fetchGetDetailProduct = async (productId) => {
-  const data = await getDetailProduct(productId);
-  if (data && data.status === "success") {
-    const { product } = data;
-    setCategoryId(product.category_id);
-    setProductDetails({
-      ...product,
-      colors: data.product.color.join(", "),
-      thumbnail: {
-        uid: "-1",
-        name: product.thumbnail,
-        url: `http://localhost/tech-shop/backend/public/uploads/${product.thumbnail}`,
-      },
-    });
-  } else {
-    notification.error({
-      message: "Lỗi",
-      description: "Không thể tải chi tiết sản phẩm.",
-      placement: "topRight",
-    });
-  }
-};
-
-const handleSubmit = async (values) => {
-  const formData = new FormData();
-  formData.append("action", "create");
-  formData.append("name", values?.name);
-  formData.append("description", values?.description);
-  formData.append("category_id", values?.category_id);
-  formData.append("price", values?.price);
-  formData.append("quantity", values?.quantity);
-  formData.append("discount_percent", values?.discount_percent);
-  formData.append("color", values?.colors);
-  formData.append("thumbnail", values?.thumbnail?.file);
-
-  try {
-    const data = await createProduct(formData);
-    if (data && data.status === "success") {
-      notification.success({
-        message: "Thêm sản phẩm thành công!",
-        description: "Sản phẩm của bạn đã được thêm vào hệ thống.",
-        placement: "topRight", // Đặt vị trí của thông báo
-        duration: 3, // Thời gian hiển thị thông báo
-        style: {
-          backgroundColor: "#27a745",
-          color: "#fff",
-          fontWeight: "bold",
-          borderRadius: "5px",
-          padding: "15px",
-        },
+  const fetchGetDetailProduct = async (productId) => {
+    const data = await getDetailProduct(productId);
+    if (data && data.status === 'success') {
+      const { product } = data;
+      setCategoryId(product.category_id);
+      setProductDetails({
+        ...product,
+        colors: data.product.color.join(", "),
+        thumbnail: {
+          uid: "-1",
+          name: product.thumbnail,
+          url: `http://localhost/tech-shop/backend/public/uploads/${product.thumbnail}`,
+        }
       });
-      setIsModalOpen(false);
-      form.resetFields();
-      fetchData();
+
     } else {
       notification.error({
-        message: "Thêm sản phẩm thât bại!",
-        placement: "topRight", // Đặt vị trí của thông báo
-        duration: 3, // Thời gian hiển thị thông báo
-        style: {
-          backgroundColor: "#e83b46",
-          color: "#fff", // Màu chữ trắng
-          fontWeight: "bold",
-          borderRadius: "5px",
-          padding: "15px",
-        },
+        message: 'Lỗi',
+        description: 'Không thể tải chi tiết sản phẩm.',
+        placement: 'topRight',
       });
-      console.error(
-        "Error details:",
-        data.message || "Không có thông tin chi tiết."
-      );
     }
-  } catch (error) {
-    console.error("Error adding product:", error);
-    message.error("Có lỗi xảy ra khi thêm sản phẩm.");
-  }
-};
+  };
 
-// Hàm cập nhật sản phẩm
-const handleUpdate = async (values) => {
-  const formUpdatData = new FormData();
-  formUpdatData.append("action", "update");
-  formUpdatData.append("id", productDetails?.id);
-  formUpdatData.append("name", values?.name);
-  formUpdatData.append("description", values?.description);
-  formUpdatData.append("category_id", categoryId);
-  formUpdatData.append("price", values?.price);
-  formUpdatData.append("quantity", values?.quantity);
-  formUpdatData.append("discount_percent", values?.discount_percent);
-  formUpdatData.append("color", values?.colors);
-  // Kiểm tra nếu người dùng chọn ảnh mới
-  if (values?.thumbnail?.file) {
-    // Thêm ảnh mới vào FormData
-    formUpdatData.append("thumbnail", values?.thumbnail?.file);
-  } else {
-    // Nếu không có ảnh mới, chỉ gửi giá trị ảnh cũ
-    formUpdatData.append("thumbnail", productDetails?.thumbnail); // Giả sử productDetails chứa ảnh cũ
-  }
-  try {
-    const response = await updateProduct(formUpdatData);
-    console.log(response);
+  const handleSubmit = async (values) => {
+    const formData = new FormData();
+    formData.append("action", "create");
+    formData.append("name", values?.name);
+    formData.append("description", values?.description);
+    formData.append("category_id", values?.category_id);
+    formData.append("price", values?.price);
+    formData.append("quantity", values?.quantity);
+    formData.append("discount_percent", values?.discount_percent);
+    formData.append("color", values?.colors);
+    formData.append("thumbnail", values?.thumbnail?.file);
 
-    if (response && response.status === "success") {
-      notification.success({
-        message: "Cập nhật sản phẩm thành công!",
-        description: "Sản phẩm đã được cập nhật trong hệ thống.",
-        placement: "topRight",
-        duration: 3,
-      });
-      setIsDrawerOpen(false);
-      fetchData(); // Tải lại danh sách sản phẩm sau khi cập nhật
-      form.resetFields(); // Reset form sau khi hoàn thành
+    try {
+      const data = await createProduct(formData);
+      if (data && data.status === 'success') {
+        notification.success({
+          message: 'Thêm sản phẩm thành công!',
+          description: 'Sản phẩm của bạn đã được thêm vào hệ thống.',
+          placement: 'topRight', // Đặt vị trí của thông báo
+          duration: 3, // Thời gian hiển thị thông báo
+          style: {
+            backgroundColor: '#27a745',
+            color: '#fff',
+            fontWeight: 'bold',
+            borderRadius: '5px',
+            padding: '15px',
+          },
+        });
+        setIsModalOpen(false);
+        form.resetFields();
+        fetchData();
+      } else {
+        notification.error({
+          message: 'Thêm sản phẩm thât bại!',
+          placement: 'topRight', // Đặt vị trí của thông báo
+          duration: 3, // Thời gian hiển thị thông báo
+          style: {
+            backgroundColor: '#e83b46',
+            color: '#fff', // Màu chữ trắng
+            fontWeight: 'bold',
+            borderRadius: '5px',
+            padding: '15px',
+          },
+        });
+        console.error("Error details:", data.message || "Không có thông tin chi tiết.");
+      }
+    } catch (error) {
+      console.error("Error adding product:", error);
+      message.error('Có lỗi xảy ra khi thêm sản phẩm.');
+    }
+
+  };
+
+  // Hàm cập nhật sản phẩm
+  const handleUpdate = async (values) => {
+    const formUpdatData = new FormData();
+    formUpdatData.append("action", "update");
+    formUpdatData.append("id", productDetails?.id);
+    formUpdatData.append("name", values?.name);
+    formUpdatData.append("description", values?.description);
+    formUpdatData.append("category_id", categoryId);
+    formUpdatData.append("price", values?.price);
+    formUpdatData.append("quantity", values?.quantity);
+    formUpdatData.append("discount_percent", values?.discount_percent);
+    formUpdatData.append("color", values?.colors);
+    // Kiểm tra nếu người dùng chọn ảnh mới
+    if (values?.thumbnail?.file) {
+      // Thêm ảnh mới vào FormData
+      formUpdatData.append("thumbnail", values?.thumbnail?.file);
     } else {
-      notification.error({
-        message: "Cập nhật sản phẩm thất bại!",
-        description: response.data.message || "Không thể cập nhật sản phẩm.",
-        placement: "topRight",
-        duration: 3,
-      });
+      // Nếu không có ảnh mới, chỉ gửi giá trị ảnh cũ
+      formUpdatData.append("thumbnail", productDetails?.thumbnail); // Giả sử productDetails chứa ảnh cũ
     }
-  } catch (error) {
-    console.error("Error updating product:", error);
-    notification.error({
-      message: "Lỗi cập nhật",
-      description: "Có lỗi xảy ra khi cập nhật sản phẩm.",
-      placement: "topRight",
-    });
-  }
-};
+    try {
+      const response = await updateProduct(formUpdatData);
+      console.log(response);
 
-const handleDeleted = async (productId) => {
-  const data = new FormData();
-  data.append("action", "delete");
-  data.append("id", productId);
-  try {
-    const response = await deleteProduct(data);
-    if (response && response.status === "success") {
-      notification.success({
-        message: "Xóa sản phẩm thành công!",
-        description: "Sản phẩm đã được xóa khỏi hệ thống.",
-        placement: "topRight",
-        duration: 3,
-      });
-      // Cập nhật danh sách sản phẩm sau khi xóa
-      setProducts(products.filter((product) => product.id !== productId));
-    } else {
+      if (response && response.status === 'success') {
+        notification.success({
+          message: 'Cập nhật sản phẩm thành công!',
+          description: 'Sản phẩm đã được cập nhật trong hệ thống.',
+          placement: 'topRight',
+          duration: 3,
+        });
+        setIsDrawerOpen(false);
+        fetchData(); // Tải lại danh sách sản phẩm sau khi cập nhật
+        form.resetFields(); // Reset form sau khi hoàn thành
+      } else {
+        notification.error({
+          message: 'Cập nhật sản phẩm thất bại!',
+          description: response.data.message || 'Không thể cập nhật sản phẩm.',
+          placement: 'topRight',
+          duration: 3,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating product:", error);
       notification.error({
-        message: "Xóa sản phẩm thất bại!",
-        description: response.message || "Không thể xóa sản phẩm.",
-        placement: "topRight",
-        duration: 3,
+        message: 'Lỗi cập nhật',
+        description: 'Có lỗi xảy ra khi cập nhật sản phẩm.',
+        placement: 'topRight',
       });
     }
-  } catch (error) {
-    console.error("Error deleting product:", error);
+  };
+
+
+  const handleDeleted = async (productId) => {
+    const data = new FormData();
+    data.append("action", "delete");
+    data.append("id", productId);
+    try {
+      const response = await deleteProduct(data);
+      if (response && response.status === 'success') {
+        notification.success({
+          message: 'Xóa sản phẩm thành công!',
+          description: 'Sản phẩm đã được xóa khỏi hệ thống.',
+          placement: 'topRight',
+          duration: 3,
+        });
+        // Cập nhật danh sách sản phẩm sau khi xóa
+        setProducts(products.filter((product) => product.id !== productId));
+      } else {
+        notification.error({
+          message: 'Xóa sản phẩm thất bại!',
+          description: response.message || 'Không thể xóa sản phẩm.',
+          placement: 'topRight',
+          duration: 3,
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
   }
 
   const [options, setOptions] = useState([]);

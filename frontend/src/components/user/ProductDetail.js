@@ -23,9 +23,6 @@ const ProductDetails = () => {
   const [rating, setRating] = useState(0); // Giá trị đánh giá
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const [replyTo, setReplyTo] = useState(null); // ID của bình luận đang trả lời
-  const [replyText, setReplyText] = useState(""); // Nội dung trả lời
-  const [replyUserName, setReplyUserName] = useState(""); // Khai báo state cho tên người dùng được trả lời
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
@@ -59,70 +56,6 @@ const ProductDetails = () => {
       }
     }
   };
-
-  const handleReply = async (e, parentId, userName) => {
-    e.preventDefault(); // Ngăn chặn hành động mặc định
-    setReplyTo(Number(parentId));
-    setReplyText(`@${userName} `); // Tự động điền @username vào phần trả lời
-    setReplyUserName(userName); // Lưu tên người dùng trả lời
-    if (!replyText.trim()) return; // Nếu không có nội dung trả lời, bỏ qua
-
-    const response = await fetch(
-      "http://localhost/tech-shop/backend/api/FeedbackApi.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: user.id,
-          product_id: product.id,
-          body: replyText,
-          parent_id: parentId,
-        }),
-      }
-    );
-
-    const data = await response.json();
-    if (data.status === "success") {
-      setFeedbackList(data.feedbackList); // Cập nhật lại danh sách bình luận
-      setReplyTo(null); // Đóng form trả lời
-      setReplyText(""); // Reset nội dung trả lời
-    }
-  };
-
-  const handleSubmitReply = async (e) => {
-    e.preventDefault(); // Ngăn chặn hành động mặc định của form
-    // Nếu không có nội dung trả lời, bỏ qua
-    if (!replyText.trim()) return;
-
-    // Gửi dữ liệu phản hồi lên API
-    const response = await fetch(
-      "http://localhost/tech-shop/backend/api/FeedbackApi.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: user.id, // ID người dùng
-          product_id: product.id, // ID sản phẩm
-          body: replyText, // Nội dung trả lời
-          parent_id: replyTo, // ID bình luận gốc
-        }),
-      }
-    );
-
-    // Kiểm tra phản hồi từ API
-    const data = await response.json();
-    console.log(data); // In ra để kiểm tra dữ liệu trả về từ API
-
-    if (data.status === "success") {
-      setFeedbackList(data.feedbackList); // Cập nhật lại danh sách bình luận
-      setReplyTo(null); // Đóng form trả lời
-      setReplyText(""); // Reset nội dung trả lời
-    } else {
-      // Nếu có lỗi xảy ra
-      console.error("Có lỗi xảy ra khi gửi phản hồi", data.message);
-    }
-  };
-
   const handleEditFeedback = (comment) => {
     setEditFeedbackId(comment.id);
     setEditComment(comment.comment); // Set the comment in the input field
@@ -411,10 +344,16 @@ const ProductDetails = () => {
                           ))}
                         </div>
                         <br />
-                        <button type="submit" className="product-add-to-cart">
+                        <button
+                          type="submit"
+                          className="product-add-to-cart"
+                        >
                           Thêm Vào Giỏ Hàng
                         </button>
-                        <button type="submit" className="product-buy-now">
+                        <button
+                          type="submit"
+                          className="product-buy-now"
+                        >
                           Mua Ngay
                         </button>
                       </form>
@@ -437,7 +376,6 @@ const ProductDetails = () => {
                         {feedbackMessage}
                       </div>
                     )}
-
                     <div className="bg-light p-2 mb-2">
                       <form id="commentForm" onSubmit={handleCommentSubmit}>
                         <div className="d-flex flex-row align-items-start">
@@ -490,30 +428,30 @@ const ProductDetails = () => {
                           </button>
                         </div>
                       </form>
+
                       {/* Hiển thị danh sách bình luận nếu có */}
                       {feedbackList.length > 0 ? (
                         feedbackList.map((comment) => (
                           <div
                             key={comment.id}
-                            className="comment bg-light p-3 rounded mb-3"
+                            className="comment bg-white p-2"
                           >
-                            {/* Phần thông tin người dùng */}
-                            <div className="d-flex align-items-center mb-2">
+                            <div className="d-flex flex-row user-info">
                               <img
-                                className="rounded-circle mr-3"
+                                className="rounded-circle"
                                 src={`http://localhost/tech-shop/backend/public/uploads/profile.png`}
-                                width="50"
+                                width="40"
                                 alt="User"
                               />
-                              <div>
-                                <h6 className="mb-0 font-weight-bold">
+                              <div className="d-flex flex-column justify-content-start">
+                                <span className="d-block font-weight-bold name">
                                   {comment.user_name}
-                                </h6>
-                                <small className="text-muted">
+                                </span>
+                                <span className="date text-black-50">
                                   {new Date(
                                     comment.created_at
                                   ).toLocaleString()}
-                                </small>
+                                </span>
                               </div>
                             </div>
                             <div className="mt-2">
@@ -531,107 +469,48 @@ const ProductDetails = () => {
                                   </span>
                                 ))}
                               </div>
-
-                              {/* Nội dung bình luận */}
-                              <p className="text-muted">{comment.comment}</p>
-
-                              {/* Hiển thị đánh giá (ngôi sao) */}
-                              <div className="comment-rating text-warning">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                  <i
-                                    key={star}
-                                    className={`fa fa-star ${comment.rating >= star
-                                        ? ""
-                                        : "text-secondary"
-                                      }`}
-                                  ></i>
-                                ))}
-                              </div>
-
-                              {/* Phần hành động: Trả lời, Sửa, Xóa */}
-                              <div className="comment-actions mt-2">
-                                <button
-                                  onClick={(e) =>
-                                    handleReply(e, comment.id, comment.user_name)
-                                  } // Truyền tên người dùng vào hàm handleReply
-                                  className="btn btn-sm btn-link text-primary"
-                                >
-                                  Trả lời
-                                </button>
-
-                                {/* Chỉ hiển thị nút Sửa và Xóa nếu người dùng là chủ của bình luận */}
-                                {user && user.id === comment.user_id && (
-                                  <>
-                                    <button
-                                      onClick={() => handleEditFeedback(comment)}
-                                      className="btn btn-sm btn-link text-info"
-                                    >
-                                      Sửa
-                                    </button>
-                                    <button
-                                      onClick={() =>
-                                        handleDeleteFeedback(comment.id)
-                                      }
-                                      className="btn btn-sm btn-link text-danger"
-                                    >
-                                      Xóa
-                                    </button>
-                                  </>
-                                )}
-                              </div>
-
-                              {/* Form trả lời bình luận */}
-                              {replyTo === comment.id && (
-                                <div className="reply-form mt-3">
-                                  <form onSubmit={handleSubmitReply}>
-                                    <textarea
-                                      placeholder={`Viết câu trả lời của bạn... @${replyUserName}`} // Hiển thị tên người dùng được trả lời
-                                      rows="3"
-                                      className="form-control"
-                                      value={replyText}
-                                      onChange={(e) =>
-                                        setReplyText(e.target.value)
-                                      }
-                                    ></textarea>
-                                    <div className="mt-2">
-                                      <button
-                                        type="submit"
-                                        className="btn btn-primary btn-sm"
-                                      >
-                                        Gửi
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          setReplyTo(null);
-                                          setReplyText("");
-                                          setReplyUserName(""); // Xóa tên người dùng khi hủy
-                                        }}
-                                        className="btn btn-secondary btn-sm ml-2"
-                                      >
-                                        Hủy
-                                      </button>
-                                    </div>
-                                  </form>
-                                </div>
-                              )}
                             </div>
-                            ))
-                            ) : (
-                            <div className="no-comments">Chưa có bình luận nào</div>
-                      )}
+
+                            {/* Chỉ hiển thị nút Sửa và Xóa nếu người dùng là chủ của bình luận */}
+                            {user && user.id === comment.user_id && (
+                              <div className="comment-actions">
+                                <div className="comment-action-buttons">
+                                  <button
+                                    onClick={() => handleEditFeedback(comment)}
+                                    className="btn-edit"
+                                    title="Sửa"
+                                  >
+                                    <i className="fas fa-edit"></i>
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteFeedback(comment.id)
+                                    }
+                                    className="btn-delete"
+                                    title="Xóa"
+                                  >
+                                    <i className="fas fa-trash-alt"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                  </div>
+                        ))
+                      ) : (
+                        <div className="no-comments">Chưa có bình luận nào</div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <br />
-          <RelatedProducts productId={id} />
         </div>
+        <br />
+        <RelatedProducts productId={id} />
       </div>
-      );
+    </div>
+  );
 };
 
-      export default ProductDetails;
+export default ProductDetails;
