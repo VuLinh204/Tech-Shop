@@ -1,4 +1,3 @@
-// src/components/CategoriesManage.js
 import React, { useState, useEffect } from "react";
 import AddCategory from "./AddCategory";
 import EditCategory from "./EditCategory";
@@ -7,14 +6,13 @@ import axios from "axios";
 import Pagination from "../common/Pagination_admin";
 import Dashboard from "./Dashboard";
 
-
-
 const CategoriesManage = () => {
   const [activeItem, setActiveItem] = useState("Danh mục");
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editCategoryData, setEditCategoryData] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // State cho tìm kiếm
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -84,16 +82,20 @@ const CategoriesManage = () => {
     setIsEditing(false);
     fetchCategories();
   };
+
   const offset = (currentPage - 1) * itemsPerPage;
-  const currentItems = categories.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(categories.length / itemsPerPage);
+  const filteredCategories = categories.filter(
+    (category) =>
+      category.name.toLowerCase().includes(searchQuery.toLowerCase()) // Lọc danh mục theo tên
+  );
+  const currentItems = filteredCategories.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(filteredCategories.length / itemsPerPage);
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
   return (
-
-
     <div className="grid__column-10">
       <div className="category-manager">
         {activeItem === "Bảng điều khiển" ? (
@@ -109,6 +111,14 @@ const CategoriesManage = () => {
           <div>
             <div className="category-manager__header">
               <h1>Danh sách các danh mục</h1>
+              {/* Ô tìm kiếm */}
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Tìm danh mục..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật state tìm kiếm
+              />
               <button
                 className="btn btn--primary"
                 onClick={handleAddCategoryClick}
@@ -140,9 +150,7 @@ const CategoriesManage = () => {
                       </td>
                       <td>
                         <button
-                          onClick={() =>
-                            handleEditCategoryClick(category)
-                          }
+                          onClick={() => handleEditCategoryClick(category)}
                           className="btn-edit"
                           title="Sửa"
                         >
@@ -164,7 +172,6 @@ const CategoriesManage = () => {
                   </tr>
                 )}
               </tbody>
-              ;
             </table>
             <div className="pagination">
               <Pagination
@@ -175,13 +182,9 @@ const CategoriesManage = () => {
               />
             </div>
           </div>
-
-
-
         )}
       </div>
-    </div >
-
+    </div>
   );
 };
 
