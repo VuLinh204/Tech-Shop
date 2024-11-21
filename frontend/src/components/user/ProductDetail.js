@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import "../../assets/css/ProductDetail.css";
 import axios from "axios";
 import "../../assets/css/Feedback.css";
@@ -167,7 +167,7 @@ const ProductDetails = () => {
     const user = JSON.parse(sessionStorage.getItem("user"));
 
     if (!user) {
-      alert("Vui lòng đăng nhập trước khi thêm sản phẩm vào giỏ hàng.");
+      navigate("/login");
       return;
     }
 
@@ -335,16 +335,14 @@ const ProductDetails = () => {
                             <button
                               key={index}
                               type="button"
-                              className={`color-btn ${
-                                selectedColor === color ? "selected" : ""
-                              }`}
+                              className={`color-btn ${selectedColor === color ? "selected" : ""
+                                }`}
                               onClick={() => setSelectedColor(color)}
                             >
                               {color}
                             </button>
                           ))}
                         </div>
-
                         <br />
                         <button
                           type="submit"
@@ -399,9 +397,8 @@ const ProductDetails = () => {
                           {[1, 2, 3, 4, 5].map((star) => (
                             <span
                               key={star}
-                              className={`star ${
-                                rating >= star ? "selected" : ""
-                              }`}
+                              className={`star ${rating >= star ? "selected" : ""
+                                }`}
                               onClick={() => handleRatingChange(star)}
                             >
                               ★
@@ -465,9 +462,8 @@ const ProductDetails = () => {
                                 {[1, 2, 3, 4, 5].map((star) => (
                                   <span
                                     key={star}
-                                    className={`star ${
-                                      comment.rating >= star ? "selected" : ""
-                                    }`}
+                                    className={`star ${comment.rating >= star ? "selected" : ""
+                                      }`}
                                   >
                                     ★
                                   </span>
