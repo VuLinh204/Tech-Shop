@@ -15,7 +15,7 @@ class Category
   // Lấy tất cả danh mục
   public function getAllCategories()
   {
-    $query = "SELECT category.id, category.name, COUNT(product.id) AS product_count FROM category AS category LEFT JOIN product ON category.id = product.category_id GROUP BY category.id;";
+    $query = "SELECT category.id, category.name,category.thumbnail, COUNT(product.id) AS product_count FROM category LEFT JOIN product ON category.id = product.category_id GROUP BY category.id;";
     $result = $this->conn->query($query);
 
     $categories = [];
