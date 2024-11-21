@@ -42,6 +42,7 @@ class AuthController
 
 
         session_start();
+
         $_SESSION['user'] = [
             'id' => $user['id'],
             'username' => $user['username'],
@@ -49,7 +50,8 @@ class AuthController
             'phone_number' => $user['phone_number'],
             'address' => $user['address'],
             'password' => $user['password'],
-            'role_id' => $user['role_id']
+            'role_id' => $user['role_id'],
+            'profile_picture' => $user['profile_picture']
         ];
 
         // Đăng nhập thành công, trả về thông tin người dùng
@@ -58,7 +60,9 @@ class AuthController
             'message' => 'Đăng nhập thành công.',
             'user' => $_SESSION['user']
         ];
+
     }
+
 
     // Phương thức tạo mật khẩu mới sau khi xác thực OTP
     public function createPassword(string $password): array

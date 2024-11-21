@@ -1,8 +1,7 @@
 <?php
-
 declare(strict_types=1);
 
-class UserModel
+class UserModel extends Database
 {
 
     private $mysqli;
@@ -64,10 +63,10 @@ class UserModel
         }
     }
 
+
     public function updatePassword(string $email, string $hashedPassword): bool
     {
         $user = $this->emailExists($email);
-
         if ($user) {
             $userId = $user['id'];
             $sql = "UPDATE user SET password = ? WHERE id = ?";

@@ -1,6 +1,10 @@
 <?php
-include_once '../config/database.php'; // Import file kết nối cơ sở dữ liệu
+require_once '../models/UpdateUserModel.php';
+require_once '../controllers/UpdateUserController.php';
 require_once '../config/cors.php';
+
+// Khởi tạo ProductController
+$UserController = new UpdateUserController(new UpdateUserModel());
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Lấy dữ liệu từ request
@@ -10,25 +14,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $data['username'];
     $phoneNumber = $data['phone_number'];
     $address = $data['address'];
+    $profile_picture = $data['profile_picture'];
 
-    // Kiểm tra kết nối cơ sở dữ liệu
-    $database = new Database();
-    $conn = $database::$connection;
+    // Xử lý upload file
+    // if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === 0) {
+    //     $targetDir = "../public/uploads/";
+    //     $fileName = basename($_FILES['thumbnail']['name']);
+    //     $targetFilePath = $targetDir . $fileName;
 
-    // Thực hiện câu lệnh SQL để cập nhật thông tin người dùng
-    $query = "UPDATE user SET username = ?, phone_number = ?, address = ? WHERE id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("sssi", $username, $phoneNumber, $address, $userId);
-
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Cập nhật thông tin thành công"]);
+    //     // Check if file already exists
+    //     if (file_exists($targetFilePath)) {
+    //         unlink($targetFilePath);
+    //     }
+    //     if (move_uploaded_file($_FILES['thumbnail']['tmp_name'], $targetFilePath)) {
+    //         // File upload thành công, xử lý thêm nếu cần
+    //         $data['thumbnail'] = $fileName; // Đường dẫn ảnh đã lưu
+    //     } else {
+    //         echo json_encode(['status' => 'error', 'message' => 'Không thể lưu ảnh.']);
+    //         exit;
+    //     }
+    // } else {
+    //     echo json_encode(['status' => 'error', 'message' => 'File ảnh không hợp lệ.']);
+    //     exit;
+    // }
+    if (isset($action)) {
+        $response = $UserController->updateProduct($username, $phoneNumber, $address, $profile_picture, $userId);
+        echo $response;
     } else {
-        echo json_encode(["success" => false, "message" => "Cập nhật thất bại"]);
+        echo json_encode(['error' => 'Thông tin không đầy đủ']);
     }
-
-    $stmt->close();
-    $conn->close();
 } else {
-    echo json_encode(["success" => false, "message" => "Yêu cầu không hợp lệ"]);
+    echo json_encode(['error' => 'Phương thức không hợp lệ']);
 }
 ?>

@@ -261,4 +261,6 @@ class Product_Model extends Database
         $result = $stmt->get_result();
         return json_encode($result->fetch_all(MYSQLI_ASSOC));
     }
+
 }
+
