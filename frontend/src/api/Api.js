@@ -218,3 +218,15 @@ export const deleteProduct = async (data) => {
         return { status: 'error', message: 'Có lỗi xảy ra khi xóa tạo sản phẩm.' };
     }
 };
+
+export const searchProduct = async ($keyword) => {
+    try {
+        const response = await axios.get(
+            `${API_URL}/product_api.php?action=search&keyword=${$keyword}`,
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error create product: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi xóa tạo sản phẩm.' };
+    }
+}; 

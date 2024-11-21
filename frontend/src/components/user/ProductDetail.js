@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import "../../assets/css/ProductDetail.css";
 import axios from "axios";
 import "../../assets/css/Feedback.css";
@@ -234,7 +234,7 @@ const ProductDetails = () => {
     const user = JSON.parse(sessionStorage.getItem("user"));
 
     if (!user) {
-      alert("Vui lòng đăng nhập trước khi thêm sản phẩm vào giỏ hàng.");
+      navigate("/login");
       return;
     }
 
@@ -402,16 +402,14 @@ const ProductDetails = () => {
                             <button
                               key={index}
                               type="button"
-                              className={`color-btn ${
-                                selectedColor === color ? "selected" : ""
-                              }`}
+                              className={`color-btn ${selectedColor === color ? "selected" : ""
+                                }`}
                               onClick={() => setSelectedColor(color)}
                             >
                               {color}
                             </button>
                           ))}
                         </div>
-
                         <br />
                         <button type="submit" className="product-add-to-cart">
                           Thêm Vào Giỏ Hàng
@@ -461,9 +459,8 @@ const ProductDetails = () => {
                           {[1, 2, 3, 4, 5].map((star) => (
                             <span
                               key={star}
-                              className={`star ${
-                                rating >= star ? "selected" : ""
-                              }`}
+                              className={`star ${rating >= star ? "selected" : ""
+                                }`}
                               onClick={() => handleRatingChange(star)}
                             >
                               ★
@@ -519,108 +516,122 @@ const ProductDetails = () => {
                                 </small>
                               </div>
                             </div>
-
-                            {/* Nội dung bình luận */}
-                            <p className="text-muted">{comment.comment}</p>
-
-                            {/* Hiển thị đánh giá (ngôi sao) */}
-                            <div className="comment-rating text-warning">
-                              {[1, 2, 3, 4, 5].map((star) => (
-                                <i
-                                  key={star}
-                                  className={`fa fa-star ${
-                                    comment.rating >= star
-                                      ? ""
-                                      : "text-secondary"
-                                  }`}
-                                ></i>
-                              ))}
-                            </div>
-
-                            {/* Phần hành động: Trả lời, Sửa, Xóa */}
-                            <div className="comment-actions mt-2">
-                              <button
-                                onClick={(e) =>
-                                  handleReply(e, comment.id, comment.user_name)
-                                } // Truyền tên người dùng vào hàm handleReply
-                                className="btn btn-sm btn-link text-primary"
-                              >
-                                Trả lời
-                              </button>
-
-                              {/* Chỉ hiển thị nút Sửa và Xóa nếu người dùng là chủ của bình luận */}
-                              {user && user.id === comment.user_id && (
-                                <>
-                                  <button
-                                    onClick={() => handleEditFeedback(comment)}
-                                    className="btn btn-sm btn-link text-info"
+                            <div className="mt-2">
+                              <span className="text-justify comment-text">
+                                {comment.comment}
+                              </span>
+                              <div className="comment-rating">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <span
+                                    key={star}
+                                    className={`star ${comment.rating >= star ? "selected" : ""
+                                      }`}
                                   >
-                                    Sửa
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleDeleteFeedback(comment.id)
-                                    }
-                                    className="btn btn-sm btn-link text-danger"
-                                  >
-                                    Xóa
-                                  </button>
-                                </>
+                                    ★
+                                  </span>
+                                ))}
+                              </div>
+
+                              {/* Nội dung bình luận */}
+                              <p className="text-muted">{comment.comment}</p>
+
+                              {/* Hiển thị đánh giá (ngôi sao) */}
+                              <div className="comment-rating text-warning">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <i
+                                    key={star}
+                                    className={`fa fa-star ${comment.rating >= star
+                                        ? ""
+                                        : "text-secondary"
+                                      }`}
+                                  ></i>
+                                ))}
+                              </div>
+
+                              {/* Phần hành động: Trả lời, Sửa, Xóa */}
+                              <div className="comment-actions mt-2">
+                                <button
+                                  onClick={(e) =>
+                                    handleReply(e, comment.id, comment.user_name)
+                                  } // Truyền tên người dùng vào hàm handleReply
+                                  className="btn btn-sm btn-link text-primary"
+                                >
+                                  Trả lời
+                                </button>
+
+                                {/* Chỉ hiển thị nút Sửa và Xóa nếu người dùng là chủ của bình luận */}
+                                {user && user.id === comment.user_id && (
+                                  <>
+                                    <button
+                                      onClick={() => handleEditFeedback(comment)}
+                                      className="btn btn-sm btn-link text-info"
+                                    >
+                                      Sửa
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        handleDeleteFeedback(comment.id)
+                                      }
+                                      className="btn btn-sm btn-link text-danger"
+                                    >
+                                      Xóa
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+
+                              {/* Form trả lời bình luận */}
+                              {replyTo === comment.id && (
+                                <div className="reply-form mt-3">
+                                  <form onSubmit={handleSubmitReply}>
+                                    <textarea
+                                      placeholder={`Viết câu trả lời của bạn... @${replyUserName}`} // Hiển thị tên người dùng được trả lời
+                                      rows="3"
+                                      className="form-control"
+                                      value={replyText}
+                                      onChange={(e) =>
+                                        setReplyText(e.target.value)
+                                      }
+                                    ></textarea>
+                                    <div className="mt-2">
+                                      <button
+                                        type="submit"
+                                        className="btn btn-primary btn-sm"
+                                      >
+                                        Gửi
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setReplyTo(null);
+                                          setReplyText("");
+                                          setReplyUserName(""); // Xóa tên người dùng khi hủy
+                                        }}
+                                        className="btn btn-secondary btn-sm ml-2"
+                                      >
+                                        Hủy
+                                      </button>
+                                    </div>
+                                  </form>
+                                </div>
                               )}
                             </div>
-
-                            {/* Form trả lời bình luận */}
-                            {replyTo === comment.id && (
-                              <div className="reply-form mt-3">
-                                <form onSubmit={handleSubmitReply}>
-                                  <textarea
-                                    placeholder={`Viết câu trả lời của bạn... @${replyUserName}`} // Hiển thị tên người dùng được trả lời
-                                    rows="3"
-                                    className="form-control"
-                                    value={replyText}
-                                    onChange={(e) =>
-                                      setReplyText(e.target.value)
-                                    }
-                                  ></textarea>
-                                  <div className="mt-2">
-                                    <button
-                                      type="submit"
-                                      className="btn btn-primary btn-sm"
-                                    >
-                                      Gửi
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setReplyTo(null);
-                                        setReplyText("");
-                                        setReplyUserName(""); // Xóa tên người dùng khi hủy
-                                      }}
-                                      className="btn btn-secondary btn-sm ml-2"
-                                    >
-                                      Hủy
-                                    </button>
-                                  </div>
-                                </form>
-                              </div>
-                            )}
-                          </div>
-                        ))
-                      ) : (
-                        <div className="no-comments">Chưa có bình luận nào</div>
+                            ))
+                            ) : (
+                            <div className="no-comments">Chưa có bình luận nào</div>
                       )}
-                    </div>
+                          </div>
+                  </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <br />
+          <RelatedProducts productId={id} />
         </div>
-        <br />
-        <RelatedProducts productId={id} />
       </div>
-    </div>
-  );
+      );
 };
 
-export default ProductDetails;
+      export default ProductDetails;

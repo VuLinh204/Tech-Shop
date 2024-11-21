@@ -262,19 +262,3 @@ class Product_Model extends Database
         return json_encode($result->fetch_all(MYSQLI_ASSOC));
     }
 }
-
-// $product = new stdClass();
-
-// Gán giá trị cho các thuộc tính của đối tượng
-// $product->id = 1;
-// $product->name = 'Điện thoại Samsung Galaxy';
-// $product->price = 15000000;
-// $product->description = 'Điện thoại thông minh với nhiều tính năng nổi bật';
-// $product->category_id = 1;
-// $product->quantity = 50;
-// $product->discount_percent = 10;
-// $product->color = ['Đen', 'Trắng', 'Xanh'];
-// $product->thumbnail = "ip.jpg";
-
-// $p = new Product_Model();
-// print_r($p->updateProduct($product));
