@@ -11,7 +11,10 @@ const ProductFilter = ({ selectedCategory }) => {
     return (
         <div className="home-filter">
             <span className="home-filter__label">Sắp xếp theo</span>
-            <button className="home-filter__btn btn" onClick={() => (window.location.href = getSortUrl('popular'))}>
+            <button
+                className="home-filter__btn btn btn--primary"
+                onClick={() => (window.location.href = getSortUrl('popular'))}
+            >
                 Yêu Thích
             </button>
             <button className="home-filter__btn btn" onClick={() => (window.location.href = getSortUrl('newest'))}>
@@ -49,6 +52,21 @@ const ProductFilter = ({ selectedCategory }) => {
                         </a>
                     </li>
                 </ul>
+            </div>
+            {/* Phân trang */}
+            <div class="home-filter__page">
+                <span class="home-filter__page-num">
+                    <span class="home-filter__page-current">1</span>/14
+                </span>
+
+                <div class="home-filter__page-control">
+                    <a href="" class="home-filter__page-btn home-filter__page-btn--disabled">
+                        <i class="home-filter__page-icon fa-solid fa-angle-left"></i>
+                    </a>
+                    <a href="" class="home-filter__page-btn">
+                        <i class="home-filter__page-icon fa-solid fa-angle-right"></i>
+                    </a>
+                </div>
             </div>
         </div>
     );

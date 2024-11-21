@@ -1,6 +1,7 @@
 <?php
 require_once '../models/Product_Model.php';
-class ProductController
+require_once '../config/cors.php';
+class Product_Controller
 {
     private $product;
 
@@ -19,32 +20,59 @@ class ProductController
     //lấy sản phẩm theo id
     public function getProductById($id)
     {
-        $products = $this->product->getProductById($id);
-        echo $products;
+        $result = $this->product->getProductByIdModel($id);
+
+        // Kiểm tra kết quả trả về từ model
+        if ($result['status'] === 'success') {
+            return json_encode(["status" => "success", "product" => $result['product']]);
+        } else {
+            // Nếu có lỗi, trả về thông báo lỗi
+            return json_encode(["status" => "error", "message" => $result['message']]);
+        }
     }
     // Tạo sản phẩm mới
     public function createProduct($product)
     {
-        $result = $this->product->createProduct($product);
-        echo $result;
+        $result = $this->product->createProductModel($product);
+
+        // Kiểm tra kết quả trả về từ model
+        if ($result['status'] === 'success') {
+            return json_encode(["status" => "success", "message" => $result['message'], "product" => $product]);
+        } else {
+            // Nếu có lỗi, trả về thông báo lỗi
+            return json_encode(["status" => "error", "message" => $result['message']]);
+        }
     }
 
     // Cập nhật sản phẩm
     public function updateProduct($product)
     {
-        return $this->product->updateProduct($product);
+        $result = $this->product->updateProduct($product);
+        // Kiểm tra kết quả trả về từ model
+        if ($result['status'] === 'success') {
+            return json_encode(["status" => "success", "message" => $result['message']]);
+        } else {
+            // Nếu có lỗi, trả về thông báo lỗi
+            return json_encode(["status" => "error", "message" => $result['message']]);
+        }
     }
 
     // Xóa sản phẩm
     public function deleteProduct($id)
     {
-        return $this->product->deleteProduct($id);
+        $result = $this->product->deleteProduct($id);
+        // Kiểm tra kết quả trả về từ model
+        if ($result['status'] === 'success') {
+            return json_encode(["status" => "success", "message" => $result['message']]);
+        } else {
+            // Nếu có lỗi, trả về thông báo lỗi
+            return json_encode(["status" => "error", "message" => $result['message']]);
+        }
     }
 
     //tìm kiếm sản phẩm
-    public function searchProduct($keyword)
+    public function searchProduct($key)
     {
-        $products = $this->product->seachProduct($keyword);
-        echo json_encode($products);
+        echo $this->product->searchProduct($key);
     }
 }

@@ -11,6 +11,17 @@ class Product
         $database = new Database();
         $this->conn = $database::$connection; // Sử dụng kết nối tĩnh
     }
+    // Đếm tổng số sản phẩm (không bao gồm sản phẩm bị xóa)
+    public function getTotal()
+    {
+        $query = "SELECT COUNT(*) as total FROM {$this->table} WHERE deleted_at IS NULL";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $data = $result->fetch_assoc();
+        return $data['total'];
+    }
 
     // Lấy tất cả sản phẩm
     public function getAll($category_id = null)

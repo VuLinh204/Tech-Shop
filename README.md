@@ -39,6 +39,9 @@ npm install react-slick slick-carousel
 
 npm install react-chartjs-2 chart.js
 
+npm install antd @ant-design/icons
+
+
 lệnh chạy localhost:3000
 cd frontend
 npm start -> run
