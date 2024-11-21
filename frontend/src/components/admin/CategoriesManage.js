@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from "react";
 import AddCategory from "./AddCategory";
 import EditCategory from "./EditCategory";
-import ControlPanel from "./ControlPanel";
-import Manages from "./Manages";
 import "../../assets/css/CategoriesManage.css";
 import axios from "axios";
 import Pagination from "../common/Pagination_admin";
 import Dashboard from "./Dashboard";
+
+
 
 const CategoriesManage = () => {
   const [activeItem, setActiveItem] = useState("Danh mục");
@@ -87,107 +87,101 @@ const CategoriesManage = () => {
   const offset = (currentPage - 1) * itemsPerPage;
   const currentItems = categories.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(categories.length / itemsPerPage);
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-  return (
-    <div className="categories-manage app__container">
-      <div className="app__container">
-        <div className="grid">
-          <div className="grid__row app__content">
-            <div className="grid__column-2">
-              <Manages activeItem={activeItem} onItemClick={handleItemClick} />{" "}
-            </div>
 
-            <div className="grid__column-10">
-              <div className="category-manager">
-                {activeItem === "Bảng điều khiển" ? (
-                  <Dashboard />
-                ) : isAdding ? (
-                  <AddCategory onAddSuccess={handleAddSuccess} />
-                ) : isEditing ? (
-                  <EditCategory
-                    categoryData={editCategoryData}
-                    onEditSuccess={handleEditSuccess}
-                  />
+  return (
+
+
+    <div className="grid__column-10">
+      <div className="category-manager">
+        {activeItem === "Bảng điều khiển" ? (
+          <Dashboard />
+        ) : isAdding ? (
+          <AddCategory onAddSuccess={handleAddSuccess} />
+        ) : isEditing ? (
+          <EditCategory
+            categoryData={editCategoryData}
+            onEditSuccess={handleEditSuccess}
+          />
+        ) : (
+          <div>
+            <div className="category-manager__header">
+              <h1>Danh sách các danh mục</h1>
+              <button
+                className="btn btn--primary"
+                onClick={handleAddCategoryClick}
+              >
+                + Thêm
+              </button>
+            </div>
+            <table className="category-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên danh mục</th>
+                  <th>Thumbnail</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.length > 0 ? (
+                  currentItems.map((category) => (
+                    <tr key={category.id}>
+                      <td>{category.original_id}</td>
+                      <td>{category.name}</td>
+                      <td>
+                        <img
+                          src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`}
+                          alt="Hình ảnh"
+                          style={{ width: "100px" }}
+                        />
+                      </td>
+                      <td>
+                        <button
+                          onClick={() =>
+                            handleEditCategoryClick(category)
+                          }
+                          className="btn-edit"
+                          title="Sửa"
+                        >
+                          <i className="fas fa-edit"></i>
+                        </button>
+                        <button
+                          onClick={() => deleteCategory(category.id)} // Sử dụng ID mã hóa để xóa
+                          className="btn-delete"
+                          title="Xóa"
+                        >
+                          <i className="fas fa-trash-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
                 ) : (
-                  <div>
-                    <div className="category-manager__header">
-                      <h1>Danh sách các danh mục</h1>
-                      <button
-                        className="btn btn--primary"
-                        onClick={handleAddCategoryClick}
-                      >
-                        + Thêm
-                      </button>
-                    </div>
-                    <table className="category-table">
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>Tên danh mục</th>
-                          <th>Thumbnail</th>
-                          <th>Thao tác</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currentItems.length > 0 ? (
-                          currentItems.map((category) => (
-                            <tr key={category.id}>
-                              <td>{category.original_id}</td>
-                              <td>{category.name}</td>
-                              <td>
-                                <img
-                                  src={`http://localhost/tech-shop/backend/public/uploads/${category.thumbnail}`}
-                                  alt="Hình ảnh"
-                                  style={{ width: "100px" }}
-                                />
-                              </td>
-                              <td>
-                                <button
-                                  onClick={() =>
-                                    handleEditCategoryClick(category)
-                                  }
-                                  className="btn-edit"
-                                  title="Sửa"
-                                >
-                                  <i className="fas fa-edit"></i>
-                                </button>
-                                <button
-                                  onClick={() => deleteCategory(category.id)} // Sử dụng ID mã hóa để xóa
-                                  className="btn-delete"
-                                  title="Xóa"
-                                >
-                                  <i className="fas fa-trash-alt"></i>
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan="4">Không có danh mục nào.</td>
-                          </tr>
-                        )}
-                      </tbody>
-                      ;
-                    </table>
-                    <div className="pagination">
-                      <Pagination
-                        totalPages={pageCount}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        onPageChange={handlePageChange}
-                      />
-                    </div>
-                  </div>
+                  <tr>
+                    <td colSpan="4">Không có danh mục nào.</td>
+                  </tr>
                 )}
-              </div>
+              </tbody>
+              ;
+            </table>
+            <div className="pagination">
+              <Pagination
+                totalPages={pageCount}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                onPageChange={handlePageChange}
+              />
             </div>
           </div>
-        </div>
+
+
+
+        )}
       </div>
-    </div>
+    </div >
+
   );
 };
 

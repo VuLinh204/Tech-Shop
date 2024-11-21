@@ -23,8 +23,16 @@ import VoucherList from "./components/user/VoucherList";
 import Order from "./components/user/Order";
 import Payment from "./components/user/Payment";
 import CategoriesManage from "./components/admin/CategoriesManage";
-import ControlPanel from "./components/admin/ControlPanel";
+// import ControlPanel from './components/admin/ControlPanel';
 import AuthLayout from "./components/common/AuthLayout";
+import AdminPage from "./components/admin/AdminPage";
+import SearchResultPage from "./components/user/SearchResultPage";
+import Dashboard from "./components/admin/Dashboard";
+
+// const isAuthenticated = () => {
+//     const user = JSON.parse(localStorage.getItem('user'));
+//     return user && user.role_id;
+// };
 
 const ProtectedRoute = ({ element, allowedRoles }) => {
   const user = JSON.parse(sessionStorage.getItem("user"));
@@ -93,10 +101,20 @@ function App() {
             <Route path="/categories" element={<CategoryList />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/payment" element={<Payment />} />
+            <Route
+              path="/product/searchResult"
+              element={<SearchResultPage />}
+            />
 
             {/* Routes dành riêng cho admin */}
             <Route
-              path="/categories/manages"
+              path="/admin"
+              element={
+                <ProtectedRoute element={<AdminPage />} allowedRoles={[1]} />
+              }
+            />
+            <Route
+              path="/admin/manages"
               element={
                 <ProtectedRoute
                   element={<CategoriesManage />}
@@ -105,9 +123,18 @@ function App() {
               }
             />
             <Route
-              path="/categories/controlpanel"
+              path="/admin/controlPanel"
               element={
-                <ProtectedRoute element={<ControlPanel />} allowedRoles={[1]} />
+                <ProtectedRoute element={<Dashboard />} allowedRoles={[1]} />
+              }
+            />
+            <Route
+              path="/admin/categoriesManage"
+              element={
+                <ProtectedRoute
+                  element={<CategoriesManage />}
+                  allowedRoles={[1]}
+                />
               }
             />
           </Route>
