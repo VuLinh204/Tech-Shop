@@ -123,7 +123,7 @@ function App() {
               }
             />
             <Route
-              path="/admin/controlPanel"
+              path="/admin/dashboard"
               element={
                 <ProtectedRoute element={<Dashboard />} allowedRoles={[1]} />
               }
