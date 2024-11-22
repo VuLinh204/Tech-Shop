@@ -64,6 +64,7 @@ const AdminProduct = () => {
           uid: "-1",
           name: product.thumbnail,
           url: `http://localhost/tech-shop/backend/public/uploads/${product.thumbnail}`,
+          urlImg: `http://localhost:3000/tech-shop/backend/public/uploads/${product.thumbnail}`,
         }
       });
 
@@ -129,29 +130,42 @@ const AdminProduct = () => {
 
   };
 
+  const convertUrlToFile = async (url, fileName) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], fileName, { type: blob.type });
+  };
+
   // Hàm cập nhật sản phẩm
   const handleUpdate = async (values) => {
-    const formUpdatData = new FormData();
-    formUpdatData.append("action", "update");
-    formUpdatData.append("id", productDetails?.id);
-    formUpdatData.append("name", values?.name);
-    formUpdatData.append("description", values?.description);
-    formUpdatData.append("category_id", categoryId);
-    formUpdatData.append("price", values?.price);
-    formUpdatData.append("quantity", values?.quantity);
-    formUpdatData.append("discount_percent", values?.discount_percent);
-    formUpdatData.append("color", values?.colors);
-    // Kiểm tra nếu người dùng chọn ảnh mới
-    if (values?.thumbnail?.file) {
-      // Thêm ảnh mới vào FormData
-      formUpdatData.append("thumbnail", values?.thumbnail?.file);
+    const formUpdateData = new FormData();
+    formUpdateData.append("action", "update");
+    formUpdateData.append("id", productDetails?.id);
+    formUpdateData.append("name", values?.name);
+    formUpdateData.append("description", values?.description);
+    formUpdateData.append("category_id", categoryId);
+    formUpdateData.append("price", values?.price);
+    formUpdateData.append("quantity", values?.quantity);
+    formUpdateData.append("discount_percent", values?.discount_percent);
+    formUpdateData.append("color", values?.colors);
+
+    console.log(values.thumbnail.url);
+    console.log(values.thumbnail.name);
+    if (values?.thumbnail?.[0]?.originFileObj) {
+      // Người dùng chọn ảnh mới
+      formUpdateData.append("thumbnail", values.thumbnail[0].originFileObj);
     } else {
-      // Nếu không có ảnh mới, chỉ gửi giá trị ảnh cũ
-      formUpdatData.append("thumbnail", productDetails?.thumbnail); // Giả sử productDetails chứa ảnh cũ
+      // Người dùng không chọn ảnh mới, gửi file từ ảnh cũ
+      const file = await convertUrlToFile(
+        values.thumbnail.urlImg,
+        values.thumbnail.name
+      );
+      formUpdateData.append("thumbnail", file);
     }
 
+
     try {
-      const response = await updateProduct(formUpdatData);
+      const response = await updateProduct(formUpdateData);
       console.log(response);
 
       if (response && response.status === 'success') {
@@ -824,7 +838,6 @@ const AdminProduct = () => {
           <Form.Item
             label="Hình ảnh"
             name="thumbnail"
-            getValueFromEvent={(e) => e && e.fileList}
             rules={[
               {
                 required: !productDetails?.thumbnail, // Chỉ yêu cầu ảnh nếu không có ảnh cũ
@@ -849,6 +862,7 @@ const AdminProduct = () => {
                 }
               }
             ]}
+            getValueFromEvent={(e) => e?.fileList[0] || null}
           >
             <Upload
               name="thumbnail"
