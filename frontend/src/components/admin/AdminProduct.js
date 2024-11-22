@@ -219,7 +219,6 @@ const AdminProduct = () => {
     }
     try {
       const response = await searchProduct(keyword);
-      console.log(response.status);
       if (response.status === 'success') {
         const suggestions = response.data.map((product) => ({
           value: product.name, // Tên sản phẩm

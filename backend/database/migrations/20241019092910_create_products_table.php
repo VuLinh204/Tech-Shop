@@ -31,5 +31,8 @@ final class CreateProductsTable extends AbstractMigration
             ->addColumn('deleted_at', 'timestamp', ['default' => null, 'null' => true])
             ->addTimestamps()
             ->create();
+
+        // Thêm chỉ mục FULLTEXT cho cột 'name' và 'description'
+        $this->execute("ALTER TABLE product ADD FULLTEXT(name, description)");
     }
 }
