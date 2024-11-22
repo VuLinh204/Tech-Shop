@@ -70,8 +70,26 @@ class Product_Controller
         }
     }
 
-    //tìm kiếm sản phẩm
+    // Hàm xử lý tìm kiếm sản phẩm
     public function searchProduct($key)
+    {
+        $products = $this->product->searchProductAd($key);
+
+        // Kiểm tra nếu có kết quả
+        if ($products) {
+            return json_encode([
+                'status' => 'success',
+                'data' => $products
+            ]);
+        } else {
+            return json_encode([
+                'status' => 'error',
+                'message' => 'Không tìm thấy sản phẩm'
+            ]);
+        }
+    }
+
+    public function searchProductUser($key)
     {
         echo $this->product->searchProduct($key);
     }

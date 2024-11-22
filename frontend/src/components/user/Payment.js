@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+// import '../../assets/css/payment.css';
+import axios from 'axios';
+import { deleteToCart, getProductsCart, getUser, updateToCart } from '../../api/Api';
 
-// Dữ liệu mẫu
 const sampleCarts = [
     {
         id: 1,
@@ -31,29 +33,153 @@ const sampleCarts = [
 ];
 
 const Payment = () => {
+    const [cartItems, setCartItems] = useState([]);
+    const [totalQuantity, setTotalQuantity] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('user')) || null);
     const [carts, setCarts] = useState(sampleCarts);
+    const [customerInfo, setCustomerInfo] = useState({
+        email: '',
+        fullName: '',
+        phone: '',
+        address: '',
+        message: '', // Lời nhắn
+    });
+    const [discountCode, setDiscountCode] = useState('');
+    const [deliveryOption, setDeliveryOption] = useState('J&T');
+    const [paymentMethod, setPaymentMethod] = useState('COD'); // Hình thức thanh toán: COD, Online
 
-    // Tính toán tổng số lượng và tổng giá
-    const totalQuantity = carts.reduce((total, cart) => total + cart.quantity, 0);
-    const totalPrice = carts.reduce((total, cart) => {
-        const discountedPrice = cart.product.price - (cart.product.price * cart.product.percent_discount) / 100;
-        return total + cart.quantity * discountedPrice;
-    }, 0);
+    // Dữ liệu thông tin khách hàng lấy từ sessionStorage khi component được render
+    useEffect(() => {
+        const storedUser = JSON.parse(sessionStorage.getItem('user'));
+        if (storedUser) {
+            setCustomerInfo({
+                email: storedUser.email || '',
+                fullName: storedUser.username || '',
+                phone: storedUser.phone_number || '',
+                address: storedUser.address || '',
+                message: '', // Có thể để trống
+            });
+        }
 
-    const handleQuantityChange = (cartId, change) => {
-        setCarts((prevCarts) =>
-            prevCarts.map((cart) =>
-                cart.id === cartId ? { ...cart, quantity: Math.max(1, cart.quantity + change) } : cart,
-            ),
-        );
+    }, []);
+
+    const handleUpdateInfo = async () => {
+        try {
+            const userId = JSON.parse(sessionStorage.getItem('user'))?.id;
+            const response = await axios.post(
+                'http://localhost/tech-shop/backend/api/update_profile.php',
+                {
+                    user_id: userId,
+                    username: customerInfo.fullName,
+                    phone_number: customerInfo.phone,
+                    address: customerInfo.address,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            if (response.data.success) {
+                alert('Cập nhật thông tin thành công!');
+                sessionStorage.setItem(
+                    'user',
+                    JSON.stringify({
+                        ...JSON.parse(sessionStorage.getItem('user')),
+                        username: customerInfo.fullName,
+                        phone_number: customerInfo.phone,
+                        address: customerInfo.address,
+                    })
+                );
+            } else {
+                alert('Cập nhật thất bại. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            console.error('Error updating info:', error);
+            alert('Có lỗi xảy ra khi cập nhật thông tin.');
+        }
+    };
+    // Lấy thông tin người dùng từ API
+    const fetchUser = async () => {
+        if (!user) {
+            const data = await getUser();
+            if (data.status === 'success') {
+                setUser(data.user);
+                sessionStorage.setItem('user', JSON.stringify(data.user));
+            } else {
+                console.error(data.message);
+            }
+        }
     };
 
-    const handleRemoveItem = (cartId) => {
-        setCarts((prevCarts) => prevCarts.filter((cart) => cart.id !== cartId));
+    // Lấy thông tin giỏ hàng từ API
+    const fetchCartItems = async (userId) => {
+        try {
+            const response = await getProductsCart(userId);
+
+            if (response.cart_items && Array.isArray(response.cart_items)) {
+                setCartItems(response.cart_items);
+                updateTotal(response.cart_items);
+            } else {
+                setCartItems([]);
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy giỏ hàng:', error);
+        }
     };
+
+    // Fetch user và giỏ hàng khi component mount
+    useEffect(() => {
+        fetchUser();
+    }, []);
+
+    // Khi user thay đổi, fetch giỏ hàng
+    useEffect(() => {
+        if (user) {
+            fetchCartItems(user.id);
+        }
+    }, [user]);
+
+    // Tính toán tổng số lượng và tổng giá trị
+    const updateTotal = (items) => {
+        let quantity = 0;
+        let price = 0;
+
+        items.forEach((cart) => {
+            const newPrice = cart.price - (cart.price * cart.discount_percent) / 100; // Tính giá sau giảm giá
+            quantity += cart.quantity;
+            price += cart.quantity * newPrice; // Tổng giá trị
+        });
+
+        setTotalQuantity(quantity);
+        setTotalPrice(price);
+    };
+
+
+    const handleCustomerInfoChange = (e) => {
+        const { name, value } = e.target;
+        setCustomerInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
+    };
+
 
     const handleCheckout = () => {
-        alert(`Thanh toán với tổng số tiền: ${totalPrice.toLocaleString()} VND`);
+        const checkoutData = {
+            customerInfo,
+            carts,
+            totalQuantity,
+            totalPrice,
+            discountCode,
+            deliveryOption,
+            paymentMethod,
+        };
+        if (!customerInfo.fullName || !customerInfo.phone || !customerInfo.address) {
+            alert('Vui lòng điền đầy đủ thông tin khách hàng');
+            return;
+        }
+        // Tiến hành xử lý thanh toán nếu thông tin hợp lệ
+        console.log('Dữ liệu thanh toán:', checkoutData);
+        alert(`Thanh toán thành công! Tổng số tiền: ${totalPrice.toLocaleString()} VND`);
     };
 
     return (
@@ -63,117 +189,162 @@ const Payment = () => {
                     <div className="grid__column">
                         <div className="container">
                             <section className="shopping-cart">
-                                <div className="grid__row">
-                                    <div className="grid__column">
-                                        <h2>Thanh Toán</h2>
-                                        <div className="cart-actions">
-                                            {carts.length === 0 ? (
-                                                <>
-                                                    <img src="/assets/img/no-cart.webp" alt="No-cart" />
-                                                    <a href="/product" className="button buy-now-btn">
-                                                        Mua Thêm
-                                                    </a>
-                                                </>
-                                            ) : (
-                                                <table className="cart-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Hình Ảnh</th>
-                                                            <th>Tên</th>
-                                                            <th>Mã Sản Phẩm</th>
-                                                            <th>Size</th>
-                                                            <th>Color</th>
-                                                            <th>Đơn Giá (VND)</th>
-                                                            <th>Số Lượng</th>
-                                                            <th>Số Tiền (VND)</th>
-                                                            <th>Thao Tác</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {carts.map((cart) => {
-                                                            const newPrice =
-                                                                cart.product.price -
-                                                                (cart.product.price * cart.product.percent_discount) /
-                                                                    100;
-                                                            return (
-                                                                <tr key={cart.id}>
-                                                                    <td>
-                                                                        <a href={`/user/detail/${cart.product.id}`}>
-                                                                            <img
-                                                                                src={`/assets/img/${cart.product.image}`}
-                                                                                alt="Product"
-                                                                                style={{ width: '100px' }}
-                                                                            />
-                                                                        </a>
-                                                                    </td>
-                                                                    <td>
-                                                                        <a href={`/user/detail/${cart.product.id}`}>
-                                                                            {cart.product.name}
-                                                                        </a>
-                                                                    </td>
-                                                                    <td>{cart.product.id}</td>
-                                                                    <td>{cart.size}</td>
-                                                                    <td>{cart.color}</td>
-                                                                    <td>{newPrice.toLocaleString()}</td>
-                                                                    <td>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                handleQuantityChange(cart.id, -1)
-                                                                            }
-                                                                        >
-                                                                            -
-                                                                        </button>
-                                                                        <span>{cart.quantity}</span>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                handleQuantityChange(cart.id, 1)
-                                                                            }
-                                                                        >
-                                                                            +
-                                                                        </button>
-                                                                    </td>
-                                                                    <td>
-                                                                        {(cart.quantity * newPrice).toLocaleString()}
-                                                                    </td>
-                                                                    <td>
-                                                                        <button
-                                                                            onClick={() => handleRemoveItem(cart.id)}
-                                                                            className="remove-item"
-                                                                        >
-                                                                            Xóa
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                            );
-                                                        })}
-                                                        <tr>
-                                                            <td colSpan="2" className="text-right">
-                                                                Tổng Số Lượng Sản Phẩm:
-                                                            </td>
-                                                            <td colSpan="2" id="total-quantity">
-                                                                {totalQuantity}
-                                                            </td>
-                                                            <td colSpan="2">Tổng Số Tiền:</td>
-                                                            <td colSpan="2">
-                                                                <strong id="total-price">
-                                                                    {totalPrice.toLocaleString()}
-                                                                </strong>
-                                                            </td>
-                                                            <td>
-                                                                <button
-                                                                    onClick={handleCheckout}
-                                                                    className="button checkout-btn"
-                                                                >
-                                                                    Thanh Toán
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            )}
-                                        </div>
+                                <h2>Thanh Toán</h2>
+                                {carts.length === 0 ? (
+                                    <div>
+                                        <img src="/assets/img/no-cart.webp" alt="No-cart" />
+                                        <a href="/product" className="button buy-now-btn">
+                                            Mua Thêm
+                                        </a>
                                     </div>
-                                </div>
+                                ) : (
+                                    <>
+                                        <table className="cart-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Hình Ảnh</th>
+                                                    <th colSpan={3}>Tên</th>
+                                                    <th>Mã Sản Phẩm</th>
+                                                    <th>Color</th>
+                                                    <th>Đơn Giá (VND)</th>
+                                                    <th>Số Lượng</th>
+                                                    <th colSpan={2}>Số Tiền (VND)</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {cartItems.map((cart) => {
+                                                    const newPrice =
+                                                        cart.price - (cart.price * cart.discount_percent) / 100;
+                                                    return (
+                                                        <tr
+                                                            key={cart.product_id + cart.cart_item_color}
+                                                            className="cart-item"
+                                                        >
+                                                            <td>
+                                                                <img
+                                                                    src={`http://localhost/tech-shop/backend/public/uploads/${cart.thumbnail}`}
+                                                                    alt="Product thumbnail"
+                                                                    style={{ width: '100px' }}
+                                                                />
+                                                            </td>
+                                                            <td colSpan={3}>{cart.product_name}</td>
+                                                            <td>{cart.product_id}</td>
+                                                            <td>{cart.cart_item_color || 'Không có màu'}</td>
+                                                            <td>{newPrice.toLocaleString()}</td>
+
+
+                                                            <td colSpan={2}>
+                                                                {(cart.quantity * newPrice).toLocaleString()}
+                                                            </td>
+
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+
+                                        <div className="customer-info">
+                                            <h3>Thông Tin Khách Hàng</h3>
+                                            <form>
+                                                <div>
+                                                    <label>Email:</label>
+                                                    <input
+                                                        type="email"
+                                                        name="email"
+                                                        value={customerInfo.email}
+                                                        onChange={handleCustomerInfoChange}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>Họ và Tên:</label>
+                                                    <input
+                                                        type="text"
+                                                        name="fullName"
+                                                        value={customerInfo.fullName}
+                                                        onChange={handleCustomerInfoChange}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>Số Điện Thoại:</label>
+                                                    <input
+                                                        type="text"
+                                                        name="phone"
+                                                        value={customerInfo.phone}
+                                                        onChange={handleCustomerInfoChange}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>Địa Chỉ:</label>
+                                                    <input
+                                                        type="text"
+                                                        name="address"
+                                                        value={customerInfo.address}
+                                                        onChange={handleCustomerInfoChange}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <button type="button" onClick={handleUpdateInfo}>
+                                                        Cập Nhật Thông Tin
+                                                    </button>
+                                                </div>
+                                            </form>
+                                            <div>
+                                                <label>Lời Nhắn:</label>
+                                                <textarea
+                                                    name="message"
+                                                    value={customerInfo.message}
+                                                    onChange={handleCustomerInfoChange}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label>Mã Giảm Giá:</label>
+                                                <input
+                                                    type="text"
+                                                    value={discountCode}
+                                                    onChange={(e) => setDiscountCode(e.target.value)}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label>Đơn Vị Vận Chuyển:</label>
+                                                <select
+                                                    value={deliveryOption}
+                                                    onChange={(e) => setDeliveryOption(e.target.value)}
+                                                >
+                                                    <option value="J&T">J&T</option>
+                                                    <option value="Shopee">Shopee</option>
+                                                    <option value="Lazada">Lazada</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Hình Thức Thanh Toán:</label>
+                                                <select
+                                                    value={paymentMethod}
+                                                    onChange={(e) => setPaymentMethod(e.target.value)}
+                                                >
+                                                    <option value="COD">Thanh Toán Khi Nhận Hàng</option>
+                                                    <option value="Online">Thanh Toán Online</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <tr>
+                                                <td colSpan="7">Tổng Số Lượng Sản Phẩm:</td>
+                                                <td>{totalQuantity}</td>
+                                                <td colSpan="2">
+                                                    <strong>{totalPrice.toLocaleString()}</strong>
+                                                </td>
+                                                <td>
+                                                    <button className="button checkout-btn">Thanh Toán</button>
+                                                </td>
+                                            </tr>
+                                        </div>
+                                    </>
+                                )}
                             </section>
                         </div>
                     </div>

@@ -26,7 +26,8 @@ if ($method === 'GET' && isset($_GET['action'])) {
             break;
         case 'search':
             if (isset($_GET['keyword'])) {
-                $productController->searchProduct($_GET['keyword']);
+                $result = $productController->searchProduct($_GET['keyword']);
+                echo $result;
             } else {
                 echo json_encode(['error' => 'Từ khóa tìm kiếm không được cung cấp']);
             }

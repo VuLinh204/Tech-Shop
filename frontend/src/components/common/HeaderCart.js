@@ -1,82 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import '../../assets/css/Cart.css';
-import { getUser } from '../../api/Api';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { deleteToCart, getProductsCart, getUser } from '../../api/Api';
 import noCart from '../../assets/img/no-cart.webp';
+import '../../assets/css/Cart.css';
 
-const Cart = () => {
-    const [carts, setCarts] = useState([]); // State lưu giỏ hàng
-    const [cartCount, setCartCount] = useState(0); // State lưu số lượng sản phẩm trong giỏ hàng
-    const [user, setUser] = useState(null);
+const HeaderCart = () => {
+    const [carts, setCarts] = useState([]);
+    const [cartCount, setCartCount] = useState(0);
+    const [user, setUser] = useState(() => JSON.parse(sessionStorage.getItem('user')));
+    const navigate = useNavigate();
 
-    // Hàm lấy thông tin người dùng
-    const fetchUser = async () => {
-        const storedUser = JSON.parse(sessionStorage.getItem('user'));
-        if (storedUser) {
-            setUser(storedUser);
-        } else {
+    const fetchUser = useCallback(async () => {
+        if (!user) {
             const data = await getUser();
             if (data.status === 'success') {
                 setUser(data.user);
                 sessionStorage.setItem('user', JSON.stringify(data.user));
-            } else {
-                console.log('Chưa đăng nhập');
             }
         }
-    };
+    }, [user]);
+
+    const fetchCart = useCallback(async () => {
+        if (user && user.id) {
+            const response = await getProductsCart(user.id);
+            if (response?.cart_items) {
+                setCarts(response.cart_items);
+                setCartCount(response.cart_items.length);
+            } else {
+                setCarts([]);
+                setCartCount(0);
+            }
+        }
+    }, [user]);
 
     useEffect(() => {
         fetchUser();
-    }, []); // Chạy 1 lần khi component được mount
-
-    // Hàm tính giá mới sau khi giảm giá
-    const calculateNewPrice = (price, discount) => {
-        return price - (price * discount) / 100;
-    };
-
-    // Gọi API giỏ hàng khi user đã được tải
-    const fetchCart = () => {
-        if (user && user.id) {
-            const userId = user.id;
-            fetch(`http://localhost/tech-shop/backend/api/get_cart.php?userid=${userId}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data && data.cartItems) {
-                        setCarts(data.cartItems); // Cập nhật giỏ hàng từ dữ liệu API
-                        setCartCount(data.cartItems.length); // Cập nhật số lượng giỏ hàng
-                    }
-                })
-                .catch((error) => console.error('Lỗi khi lấy dữ liệu giỏ hàng:', error));
-        }
-    };
+    }, [fetchUser]);
 
     useEffect(() => {
         fetchCart();
-    }, [user]); // Chạy lại khi user thay đổi
+    }, [user, fetchCart]);
 
-    // Hàm xử lý xóa sản phẩm khỏi giỏ hàng
-    const handleRemove = (cartId, event) => {
-        event.preventDefault();
-
-        fetch(`http://localhost/tech-shop/backend/api/remove_from_cart.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cartItemId: cartId }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.status === 'success') {
-                    // Sau khi xóa thành công, gọi lại API giỏ hàng để tải lại dữ liệu
-                    fetchCart();
-                } else {
-                    console.error('Lỗi khi xóa sản phẩm:', data.message);
-                }
-            })
-            .catch((error) => console.error('Lỗi khi gửi yêu cầu xóa sản phẩm:', error));
+    const handleRemove = async (cartId) => {
+        const response = await deleteToCart(cartId);
+        if (response.status === 'success') fetchCart();
     };
+
+    const handleRouteCart = () => {
+        navigate(`/cart`);
+    };
+
+    const calculateNewPrice = (price, discount) => price - (price * discount) / 100;
 
     return (
         <div className="header__cart">
-            <div className="header__cart-click">
+            <div onClick={handleRouteCart} className="header__cart-click">
                 <div className="header__cart-wrap">
                     <i className="header__cart-icon fa-solid fa-cart-shopping"></i>
                     <span className="header__cart-notice">{cartCount}</span>
@@ -88,11 +66,10 @@ const Cart = () => {
                             <>
                                 <h4 className="header__cart-heading">Sản phẩm trong giỏ hàng</h4>
                                 <ul className="header__cart-list-item">
-                                    {carts.map((cart) => {
-                                        console.log(cart);
+                                    {carts.map((cart, index) => {
                                         const newPrice = calculateNewPrice(cart.price, cart.discount_percent);
                                         return (
-                                            <li key={cart.id} className="header__cart-item">
+                                            <li key={`${cart.id}-${index}`} className="header__cart-item">
                                                 <img
                                                     src={`http://localhost/tech-shop/backend/public/uploads/${cart.thumbnail}`} // Đảm bảo đường dẫn ảnh đúng
                                                     alt={cart.name}
@@ -139,4 +116,4 @@ const Cart = () => {
     );
 };
 
-export default Cart;
+export default HeaderCart;

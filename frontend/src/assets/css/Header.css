@@ -49,6 +49,7 @@
 
 .header__navbar-user:hover .header__navbar-user-menu {
     display: block;
+    z-index: 2;
 }
 
 .header__navbar-user-menu {
