@@ -14,6 +14,7 @@ class FeedbackModel
   {
     $query = "SELECT 
     feedback.id,
+    feedback.user_id,
     user.username AS user_name, 
     feedback.comment,
     feedback.rating,
@@ -32,17 +33,19 @@ WHERE
   }
 
   // Thêm feedback mới
-  public function addFeedback($userId, $productId, $comment, $rating)
+  public function addFeedback($userId, $productId, $comment, $rating, $parentId = null)
   {
-    $query = "INSERT INTO feedback (user_id, product_id, comment, rating, created_at) 
-                  VALUES (:user_id, :product_id, :comment, :rating, NOW())";
+    $query = "INSERT INTO feedback (user_id, product_id, comment, rating, parent_id, created_at) 
+              VALUES (:user_id, :product_id, :comment, :rating, :parent_id, NOW())";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
     $stmt->bindParam(':product_id', $productId, PDO::PARAM_INT);
     $stmt->bindParam(':comment', $comment, PDO::PARAM_STR);
     $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
+    $stmt->bindParam(':parent_id', $parentId, PDO::PARAM_INT);
     return $stmt->execute();
   }
+
   public function updateFeedback($feedbackId, $userId, $comment, $rating)
   {
     $sql = "UPDATE feedback SET comment = :comment, rating = :rating WHERE id = :feedbackId AND user_id = :userId";

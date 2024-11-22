@@ -1,50 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { getCategories } from '../../api/Api';
 import '../../assets/css/CategoryList.css';
 
 const CategoryList = ({ setProducts, productsPerPage = 12 }) => {
     const [categories, setCategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [sortOrder, setSortOrder] = useState('asc');
     const [currentPage, setCurrentPage] = useState(1);
+    const [activeCategoryId, setActiveCategoryId] = useState(
+        localStorage.getItem('activeCategoryId') ? localStorage.getItem('activeCategoryId') : null,
+    );
     const itemsPerPage = productsPerPage;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost/Tech-Shop/backend/api/CategoryApi.php');
-                setCategories(response.data);
+                const data = await getCategories();
+                setCategories(data);
             } catch (error) {
-                console.error('Lỗi khi lấy danh mục:', error);
+                console.log('Lỗi lấy danh mục: ', error);
             }
         };
         fetchCategories();
     }, []);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const url = selectedCategory
-                    ? `http://localhost/Tech-Shop/backend/api/getProducts.php?category_id=${selectedCategory}`
-                    : 'http://localhost/Tech-Shop/backend/api/getProducts.php';
-
-                const response = await axios.get(url);
-                let productData = Array.isArray(response.data) ? response.data : [];
-                productData.sort((a, b) => (sortOrder === 'desc' ? b.price - a.price : a.price - b.price));
-                setProducts(productData);
-            } catch (error) {
-                console.error('Lỗi khi lấy sản phẩm:', error);
-            }
-        };
-        fetchProducts();
-    }, [selectedCategory, sortOrder, setProducts]);
-
     const handleCategoryClick = (categoryId) => {
-        setSelectedCategory(categoryId);
+        localStorage.removeItem('activeCategoryId');
+        localStorage.setItem('activeCategoryId', categoryId);
+        setActiveCategoryId(categoryId);
+
         const productSection = document.getElementById('product-section');
         if (productSection) {
             productSection.scrollIntoView({ behavior: 'smooth' });
         }
+        navigate(`/product/searchResult/?categoryId=${categoryId}`);
     };
 
     const handleNextPage = () => {
@@ -68,9 +57,9 @@ const CategoryList = ({ setProducts, productsPerPage = 12 }) => {
                 <div className="home__category-row">
                     {visibleCategories.map((category) => (
                         <div
-                            key={category.id}
+                            key={category.original_id}
                             className="home__category-item"
-                            onClick={() => handleCategoryClick(category.id)}
+                            onClick={() => handleCategoryClick(category.original_id)}
                         >
                             <div
                                 className="home__category-image"

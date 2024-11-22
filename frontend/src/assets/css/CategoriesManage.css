@@ -89,7 +89,7 @@
 }
 
 .categories-manage .btn--primary {
-  background-color: #28a745;
+  background-color: #229aeb;
   padding: 10px 15px;
   color: white;
   border: none;
@@ -183,4 +183,62 @@
     width: 100%;
     text-align: center;
   }
+}
+/* Định dạng cho ô tìm kiếm */
+.search-input {
+  padding: 8px 12px;
+  margin-right: 10px;
+  width: 250px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Định dạng cho nút tìm kiếm */
+.btn--primary {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn--primary:hover {
+  background-color: #0056b3;
+}
+
+/* Định dạng cho header chứa ô tìm kiếm */
+.category-manager__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Đảm bảo không gian giữa ô tìm kiếm và nút tìm kiếm */
+.category-manager__header .btn--primary {
+  margin-left: 10px;
+}
+
+/* Chỉnh sửa cho kiểu bố cục khi ô tìm kiếm và nút tìm kiếm nằm trên một dòng */
+.category-manager__header input,
+.category-manager__header button {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Điều chỉnh khoảng cách và kích thước các phần tử trong header */
+.category-manager__header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
 }

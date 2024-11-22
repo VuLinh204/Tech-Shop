@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getProducts } from '../../api/Api'; 
+import { getProducts } from '../../api/Api';
 import ProductCard from './ProductCard';
 import Pagination from '../common/Pagination_admin';
 
@@ -14,7 +14,7 @@ const ProductList = () => {
                 const data = await getProducts();
                 setProducts(data);
             } catch (error) {
-                console.error("Error fetching products:", error);
+                console.error('Error fetching products:', error);
             }
         };
 

@@ -59,4 +59,58 @@ class AuthController
             'user' => $_SESSION['user']
         ];
     }
+
+    // Phương thức tạo mật khẩu mới sau khi xác thực OTP
+    public function createPassword(string $password): array
+    {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        $_SESSION['user_password'] = $hashedPassword;
+        return [
+            'success' => true,
+            'message' => 'Mật khẩu đã được lưu vào session thành công.'
+        ];
+    }
+
+    public function createUser(string $email, string $hashedPassword): array
+    {
+        // Tạo người dùng mới
+
+        if ($this->userModel->emailExists($email)) {
+            return [
+                'success' => false,
+                'errors' => ['Email này đã được đăng ký. Vui lòng đăng nhập hoặc sử dụng email khác.']
+            ];
+        }
+        // Hash lại mật khẩu trước khi lưu vào cơ sở dữ liệu
+        $hashedPassword = password_hash($hashedPassword, PASSWORD_DEFAULT);
+
+        $result = $this->userModel->createUser($email, $hashedPassword);
+
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Người dùng đã được tạo thành công.'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'errors' => ['Có lỗi xảy ra khi tạo người dùng. Vui lòng thử lại.']
+            ];
+        }
+    }
+
+    public function updatePassword(string $email, string $newPassword): array
+    {
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+
+        $result = $this->userModel->updatePassword($email, $hashedPassword);
+
+        if ($result) {
+            return ['success' => true, 'message' => 'Mật khẩu cập nhật thành công.'];
+        } else {
+            return ['success' => false, 'errors' => ['Mật khẩu cập nhật thất bại.']];
+        }
+    }
 }

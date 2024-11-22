@@ -24,6 +24,7 @@ final class CreateCartItemTable extends AbstractMigration
             ->addColumn('product_id', 'integer', ['signed' => false])
             ->addColumn('quantity', 'integer', ['default' => 1])
             ->addColumn('price', 'decimal', ['precision' => 10, 'scale' => 2])
+            ->addColumn('color', 'string', ['limit' => 50, 'null' => true])
             ->addForeignKey('cart_id', 'cart', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->addForeignKey('product_id', 'product', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->addTimestamps()

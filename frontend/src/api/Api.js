@@ -11,7 +11,6 @@ export const Login = async (email, password) => {
     }
 };
 
-// Hàm gọi API lấy thông tin người dùng
 export const getUser = async () => {
     try {
         const response = await axios.get(`${API_URL}/getUser.php`, {
@@ -36,7 +35,6 @@ export const updateUser = async () => {
     }
 };
 
-// Hàm gọi API để đổi mật khẩu
 export const changePassword = async (oldPassword, newPassword, email) => {
     try {
         const response = await axios.post(
@@ -57,27 +55,57 @@ export const changePassword = async (oldPassword, newPassword, email) => {
     }
 };
 
-// Hàm gọi API gửi OTP
 export const sendOtp = async (email) => {
     try {
-        const response = await axios.post(`${API_URL}/sendOtp`, { email });
+        const response = await axios.post(`${API_URL}/sendOtp.php`, { email }, { withCredentials: true });
         return response.data;
     } catch (error) {
-        return { errors: error.response ? error.response.data.errors : ['Failed to send OTP.'] };
+        console.error(error);
     }
 };
 
-// Hàm gọi API xác thực OTP
 export const verifyOtp = async (email, otp) => {
     try {
-        const response = await axios.post(`${API_URL}/verifyOtpAndRegister`, { email, otp });
+        const response = await axios.post(
+            `${API_URL}/verifyOtp.php`,
+            { email, otp },
+            { withCredentials: true, headers: { 'Content-Type': 'application/json' } },
+        );
         return response.data;
     } catch (error) {
         return { errors: error.response ? error.response.data.errors : ['OTP verification failed.'] };
     }
 };
 
-// Ví dụ hàm đăng xuất
+export const createPassword = async (password) => {
+    try {
+        const response = await axios.post(`${API_URL}/createPassword.php`, { password });
+        return response.data;
+    } catch (error) {
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const createUser = async (userData, email, password) => {
+    try {
+        const response = await axios.post(`${API_URL}/createUser.php`, userData, { email, password });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const resetPassword = async (email, newPassword) => {
+    try {
+        const response = await axios.post(`${API_URL}/resetPassword.php`, { email, newPassword });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
 export const logout = async () => {
     try {
         const response = await axios.post(
@@ -94,7 +122,6 @@ export const logout = async () => {
     }
 };
 
-// Ví dụ hàm lấy danh sách sản phẩm
 export const getProducts = async () => {
     try {
         const response = await axios.get(`${API_URL}/getProducts.php`);
@@ -105,24 +132,57 @@ export const getProducts = async () => {
     }
 };
 
+export const getProductsSearch = async (query) => {
+    try {
+        const response = await axios.get(`${API_URL}/search.php`, {
+            params: { query: query },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error;
+    }
+};
+
+export const getCategories = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/CategoryApi.php`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching categories: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi lấy danh sách sản phẩm.' };
+    }
+};
+
+export const getProductsByCategory = async (categoryIds) => {
+    try {
+        const response = await axios.post(`${API_URL}/getProductsByCategories.php`, {
+            categoryIds: categoryIds,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Lỗi khi gọi API getProductsByCategory:', error);
+        throw error;
+    }
+};
 
 export const createProduct = async (productData) => {
     try {
-        const response = await axios.post(
-            `${API_URL}/product_api.php`, productData
-        );
-        return response.data;
+        const response = await fetch(`${API_URL}/product_api.php`, {
+            method: 'POST',
+            body: productData,
+        });
+        const result = await response.json();
+        return result;
     } catch (error) {
-        console.error('Error create product: ', error);
+        console.error('Error creating product:', error);
         return { status: 'error', message: 'Có lỗi xảy ra khi tạo sản phẩm.' };
     }
 };
 
 export const getDetailProduct = async (id) => {
     try {
-        const response = await axios.get(
-            `${API_URL}/product_api.php?action=view&id=${id}`,
-        );
+        const response = await axios.get(`${API_URL}/product_api.php?action=view&id=${id}`);
         return response.data;
     } catch (error) {
         console.error('Error create product: ', error);
@@ -132,10 +192,12 @@ export const getDetailProduct = async (id) => {
 
 export const updateProduct = async (productData) => {
     try {
-        const response = await axios.post(
-            `${API_URL}/product_api.php`, productData
-        );
-        return response.data;
+        const response = await fetch(`${API_URL}/product_api.php`, {
+            method: 'POST',
+            body: productData,
+        });
+        const result = await response.json();
+        return result;
     } catch (error) {
         console.error('Error update product: ', error);
         return { status: 'error', message: 'Có lỗi xảy ra khi sửa sản phẩm.' };
@@ -144,12 +206,80 @@ export const updateProduct = async (productData) => {
 
 export const deleteProduct = async (data) => {
     try {
-        const response = await axios.post(
-            `${API_URL}/product_api.php`, data,
-        );
+        const response = await fetch(`${API_URL}/product_api.php`, {
+            method: 'POST',
+            body: data,
+        });
+        const result = await response.json();
+        console.log(result);
+        return result;
+    } catch (error) {
+        console.error('Error create product: ', error);
+        return { status: 'error', message: 'Có lỗi xảy ra khi xóa tạo sản phẩm.' };
+    }
+};
+
+export const searchProduct = async ($keyword) => {
+    try {
+        const response = await axios.get(`${API_URL}/product_api.php?action=search&keyword=${$keyword}`);
         return response.data;
     } catch (error) {
         console.error('Error create product: ', error);
         return { status: 'error', message: 'Có lỗi xảy ra khi xóa tạo sản phẩm.' };
+    }
+};
+
+export const addToCart = async (userId, productId, quantityToAdd, selectedColor) => {
+    try {
+        const response = await axios.post(`${API_URL}/cart.php`, {
+            action: 'add_to_cart',
+            user_id: userId,
+            product_id: productId,
+            quantity: quantityToAdd,
+            color: selectedColor,
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const deleteToCart = async (cartItemId) => {
+    try {
+        const response = await axios.post(`${API_URL}/cart.php`, {
+            action: 'delete_cart_item',
+            cart_item_id: cartItemId,
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const updateToCart = async (userId, productId, quantity, color) => {
+    try {
+        const response = await axios.post(`${API_URL}/cart.php`, {
+            action: 'update_cart_item',
+            user_id: userId,
+            product_id: productId,
+            quantity: quantity,
+            color: color,
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const getProductsCart = async (userId) => {
+    try {
+        const response = await axios.get(`${API_URL}/cart.php?user_id=${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
     }
 };

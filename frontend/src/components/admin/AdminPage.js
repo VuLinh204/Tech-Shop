@@ -1,29 +1,30 @@
 // src/components/Manages.js
-import React, { useState } from 'react';
-import { BarChartOutlined, UnorderedListOutlined, ProductOutlined, DownSquareOutlined, UserOutlined, SwapOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
+import React, { useState } from "react";
+import {
+  BarChartOutlined,
+  UnorderedListOutlined,
+  ProductOutlined,
+  DownSquareOutlined,
+  UserOutlined,
+  SwapOutlined,
+} from "@ant-design/icons";
+import { Menu } from "antd";
 import CategoriesManage from "./CategoriesManage";
 import AdminProduct from "./AdminProduct";
-import ControlPanel from './ControlPanel';
+import Dashboard from "./Dashboard";
 
 const renderPage = (key) => {
   switch (key) {
-    case 'Dasboard':
-      return (
-        <ControlPanel />
-      )
-    case 'Category':
-      return (
-        <CategoriesManage />
-      )
-    case 'Product':
-      return (
-        <AdminProduct />
-      )
+    case "Dasboard":
+      return <Dashboard />;
+    case "Category":
+      return <CategoriesManage />;
+    case "Product":
+      return <AdminProduct />;
     default:
-      return <></>
+      return <></>;
   }
-}
+};
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -36,17 +37,16 @@ function getItem(label, key, icon, children, type) {
 }
 const AdminPage = () => {
   const items = [
-    getItem('Bảng điều khiển', 'Dasboard', <BarChartOutlined />),
-    getItem('Danh mục', 'Category', <UnorderedListOutlined />),
-    getItem('Sản phẩm', 'Product', <ProductOutlined />),
-    getItem('Thanh trượt', 'Slider', <SwapOutlined />),
-    getItem('Mã giảm Giá', 'Discount_percent', <DownSquareOutlined />),
-    getItem('Người dùng', 'User', <UserOutlined />),
-
+    getItem("Bảng điều khiển", "Dasboard", <BarChartOutlined />),
+    getItem("Danh mục", "Category", <UnorderedListOutlined />),
+    getItem("Sản phẩm", "Product", <ProductOutlined />),
+    getItem("Thanh trượt", "Slider", <SwapOutlined />),
+    getItem("Mã giảm Giá", "Discount_percent", <DownSquareOutlined />),
+    getItem("Người dùng", "User", <UserOutlined />),
   ];
-  const rootSubmenuKeys = ['Dasboard', 'Category', 'Product'];
+  const rootSubmenuKeys = ["Dasboard", "Category", "Product"];
   const [keySelected, setKeySelected] = useState("Dasboard");
-  const [openKeys, setOpenKeys] = useState(['Dasboard']);
+  const [openKeys, setOpenKeys] = useState(["Dasboard"]);
   const onOpenChange = (keys) => {
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
     if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
@@ -54,10 +54,10 @@ const AdminPage = () => {
     } else {
       setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
     }
-  }
+  };
   const handlOnclick = ({ key }) => {
     setKeySelected(key);
-  }
+  };
   return (
     <div className="categories-manage app__container">
       <div className="app__container">
@@ -84,8 +84,6 @@ const AdminPage = () => {
         </div>
       </div>
     </div>
-
   );
-
-}
+};
 export default AdminPage;

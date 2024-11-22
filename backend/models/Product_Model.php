@@ -1,5 +1,6 @@
 <?php
 require_once '../config/database.php';
+require_once 'Product.php';
 class Product_Model extends Database
 {
     //Lấy tất cả thông tin sản phẩm
@@ -69,40 +70,6 @@ class Product_Model extends Database
             return ["status" => "error", "message" => $e->getMessage()];
         }
     }
-
-    //Validate product
-    // public function validateProduct($product)
-    // {
-    //     $errors = [];
-
-    //     // Kiểm tra tên sản phẩm
-    //     if (empty($product->name)) {
-    //         $errors[] = "Tên sản phẩm không được để trống.";
-    //     } elseif (strlen($product->name) < 3) {
-    //         $errors[] = "Tên sản phẩm phải có ít nhất 3 ký tự.";
-    //     } elseif (strlen($product->name) > 100) {
-    //         $errors[] = "Tên sản phẩm không vượt quá 100 ký tự.";
-    //     } elseif (!preg_match('/^[a-zA-Z0-9\s]+$/u', $product->name)) {
-    //         $errors[] = "Tên sản phẩm chứa ký tự không hợp lệ.";
-    //     }
-
-    //     // Kiểm tra giá sản phẩm
-    //     if (!is_numeric($product->price) || $product->price < 0) {
-    //         $errors[] = "Giá sản phẩm phải là số dương hợp lệ.";
-    //     }
-
-    //     // Kiểm tra mô tả sản phẩm
-    //     if (empty($product->description)) {
-    //         $errors[] = "Mô tả sản phẩm không được để trống.";
-    //     }
-
-    //     // Kiểm tra danh mục sản phẩm
-    //     if (empty($product->category_id)) {
-    //         $errors[] = "Vui lòng chọn danh mục cho sản phẩm.";
-    //     }
-
-    //     return $errors;
-    // }
 
     //Kiểm tra color và thêm color
     public function addColorsToProduct($productId, $colors)
@@ -179,24 +146,35 @@ class Product_Model extends Database
         discount_percent = ?, thumbnail = ? WHERE id = ?";
 
         if ($stmt = self::$connection->prepare($query)) {
+            // Khai báo các biến
+            $name = $product->getName();
+            $description = $product->getDescription();
+            $category_id = $product->getCategoryId();
+            $price = $product->getPrice();
+            $quantity = $product->getQuantity();
+            $discount_percent = $product->getDiscountPercent();
+            $thumbnail = $product->getThumbnail();
+            $id = $product->getId();
+            $color = $product->getColor();
+
             $stmt->bind_param(
                 "ssidiisi",
-                $product->name,
-                $product->description,
-                $product->category_id,
-                $product->price,
-                $product->quantity,
-                $product->discount_percent,
-                $product->thumbnail,
-                $product->id
+                $name,
+                $description,
+                $category_id,
+                $price,
+                $quantity,
+                $discount_percent,
+                $thumbnail,
+                $id
             );
 
             if ($stmt->execute()) {
                 $deleteColorQuery = "DELETE FROM product_color WHERE product_id = ?";
                 $deleteColorStmt = self::$connection->prepare($deleteColorQuery);
-                $deleteColorStmt->bind_param("i", $product->id);
+                $deleteColorStmt->bind_param("i", $id);
                 $deleteColorStmt->execute();
-                $this->addColorsToProduct($product->id, $product->color);
+                $this->addColorsToProduct($id, $color);
                 return ["status" => "success", "message" => "Sản phẩm đã được cập nhật thành công"];
             } else {
                 // Thông báo lỗi rõ ràng nếu việc cập nhật thất bại
@@ -208,12 +186,19 @@ class Product_Model extends Database
         }
     }
 
+    // Xóa ảnh trong thư mục
+    function deleteProductImage($imageName)
+    {
+        $target_dir = "../public/uploads/";
+        unlink($target_dir . $imageName);
+    }
+
 
     //Xóa sản phẩm
     public function deleteProduct($id)
     {
         //kiểm tra sản phẩm có tồn tại hay không
-        $selectIdProduct = "SELECT id FROM product WHERE id = ?";
+        $selectIdProduct = "SELECT id, thumbnail FROM product WHERE id = ?";
         $stmt = self::$connection->prepare($selectIdProduct);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -222,6 +207,10 @@ class Product_Model extends Database
         if ($result->num_rows === 0) {
             return ["status" => "error", "message" => "Sản phẩm không tồn tại"];
         }
+        $product = $result->fetch_assoc();
+        $thumbnail = $product['thumbnail'];
+        $this->deleteProductImage($thumbnail);
+
         $query = "DELETE FROM product WHERE id = ?";
         $stmt = self::$connection->prepare($query);
         $stmt->bind_param("i", $id);
@@ -230,11 +219,10 @@ class Product_Model extends Database
         } else {
             return ["status" => "error", "message" => "Xóa sản phẩm thất bại"];
         }
-
     }
 
     //Tìm kiếm sản phẩm theo tên và theo mô tả
-    public function seachProduct($key)
+    public function searchProductAd($key)
     {
         $query = "SELECT p.id, p.name, p.price, p.description, p.quantity,
         GROUP_CONCAT(DISTINCT cl.name SEPARATOR ', ') as color, p.discount_percent,
@@ -254,20 +242,23 @@ class Product_Model extends Database
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    //Tìm kiếm sản phẩm theo tên và theo mô tả
+    public function searchProduct($key)
+    {
+        $query = "SELECT p.id, p.name, p.price, p.description, p.quantity,
+                  GROUP_CONCAT(DISTINCT cl.name SEPARATOR ', ') as color, p.discount_percent,
+                  p.thumbnail, c.name AS category_name
+                  FROM product p
+                  LEFT JOIN category c on p.category_id = c.id
+                  LEFT JOIN product_color pc on p.id = pc.product_id
+                  LEFT JOIN color cl on pc.color_id = cl.id
+                  WHERE p.name LIKE ? OR p.description LIKE ?
+                  GROUP BY p.id";
+        $stmt = self::$connection->prepare($query);
+        $keyword = "%{$key}%";
+        $stmt->bind_param("ss", $keyword, $keyword);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return json_encode($result->fetch_all(MYSQLI_ASSOC));
+    }
 }
-
-// $product = new stdClass();
-
-// Gán giá trị cho các thuộc tính của đối tượng
-// $product->id = 1;
-// $product->name = 'Điện thoại Samsung Galaxy';
-// $product->price = 15000000;
-// $product->description = 'Điện thoại thông minh với nhiều tính năng nổi bật';
-// $product->category_id = 1;
-// $product->quantity = 50;
-// $product->discount_percent = 10;
-// $product->color = ['Đen', 'Trắng', 'Xanh'];
-// $product->thumbnail = "ip.jpg";
-
-// $p = new Product_Model();
-// print_r($p->updateProduct($product));

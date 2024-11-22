@@ -37,7 +37,9 @@ npm install axios
 
 npm install react-slick slick-carousel
 
+npm install react-chartjs-2 chart.js
 
+npm install antd @ant-design/icons
 
 
 lệnh chạy localhost:3000

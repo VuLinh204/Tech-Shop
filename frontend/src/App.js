@@ -18,14 +18,11 @@ import VoucherList from './components/user/VoucherList';
 import Order from './components/user/Order';
 import Payment from './components/user/Payment';
 import CategoriesManage from './components/admin/CategoriesManage';
-import ControlPanel from './components/admin/ControlPanel';
+// import ControlPanel from './components/admin/ControlPanel';
 import AuthLayout from './components/common/AuthLayout';
 import AdminPage from './components/admin/AdminPage';
-
-// const isAuthenticated = () => {
-//     const user = JSON.parse(localStorage.getItem('user'));
-//     return user && user.role_id;
-// };
+import SearchResultPage from './components/user/SearchResultPage';
+import Dashboard from './components/admin/Dashboard';
 
 const ProtectedRoute = ({ element, allowedRoles }) => {
     const user = JSON.parse(sessionStorage.getItem('user'));
@@ -51,19 +48,13 @@ function App() {
         <Router>
             <div className="app">
                 <Routes>
-                    <Route path="/login" element={<RedirectRoute element={<Login />} />} />
-                    <Route path="/register" element={<RedirectRoute element={<Register />} />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
                     <Route path="/forgot_password" element={<ForgotPassword />} />
 
-                    {/* Routes với AuthLayout */}
                     <Route element={<AuthLayout />}>
-                        <Route path="/home" element={<Main />} />
-                        <Route path="/productDetail/:id" element={<ProductDetail />} />
-                        <Route path="/categories" element={<CategoryList />} />
-                        <Route path="/cart" element={<Cart />} />
-                        <Route path="/payment" element={<Payment />} />
-
                         {/* Routes yêu cầu người dùng đăng nhập */}
+                        <Route path="/home" element={<Main />} />
                         <Route path="/profile" element={<ProtectedRoute element={<Profile />} allowedRoles={[2]} />} />
                         <Route
                             path="/password"
@@ -79,25 +70,29 @@ function App() {
                             element={<ProtectedRoute element={<VoucherList />} allowedRoles={[2]} />}
                         />
 
+                        <Route path="/cart" element={<ProtectedRoute element={<Cart />} allowedRoles={[2]} />} />
+
+                        {/* Routes không yêu cầu đăng nhập */}
+                        <Route path="/productDetail/:id" element={<ProductDetail />} />
+                        <Route path="/categories" element={<CategoryList />} />
+                        <Route path="/payment" element={<Payment />} />
+                        <Route path="/product/searchResult" element={<SearchResultPage />} />
+
                         {/* Routes dành riêng cho admin */}
+                        <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} allowedRoles={[1]} />} />
                         <Route
-                            path="/admin"
-                            element={<ProtectedRoute element={<AdminPage />} allowedRoles={[1]} />}
-                        />
-                        {/* <Route
                             path="/admin/manages"
                             element={<ProtectedRoute element={<CategoriesManage />} allowedRoles={[1]} />}
                         />
                         <Route
-                            path="/admin/controlPanel"
-                            element={<ProtectedRoute element={<ControlPanel />} allowedRoles={[1]} />}
+                            path="/admin/dashboard"
+                            element={<ProtectedRoute element={<Dashboard />} allowedRoles={[1]} />}
                         />
                         <Route
                             path="/admin/categoriesManage"
                             element={<ProtectedRoute element={<CategoriesManage />} allowedRoles={[1]} />}
-                        /> */}
+                        />
                     </Route>
-
                     <Route path="*" element={<Navigate to="/home" replace />} />
                 </Routes>
             </div>

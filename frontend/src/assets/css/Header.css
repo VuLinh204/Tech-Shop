@@ -49,6 +49,7 @@
 
 .header__navbar-user:hover .header__navbar-user-menu {
     display: block;
+    z-index: 2;
 }
 
 .header__navbar-user-menu {
@@ -217,7 +218,7 @@
 /* header notification */
 .header__notify {
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     top: 118%;
     right: 0;
     width: 404px;
@@ -376,10 +377,34 @@
     cursor: pointer;
 }
 
+.header__search-input-sp {
+    position: absolute;
+    height: 50px;
+    width: 100%;
+}
+
 .header__search-input-wrap {
     flex: 1;
-    height: 100%;
     position: relative;
+}
+
+.header__search-input-wrap form {
+    display: flex;
+    align-items: center;
+}
+
+.header__search-history-clear-all {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.header__search-history-clear-all:hover {
+    background-color: #fa5252;
 }
 
 .header__search-input {
@@ -390,7 +415,8 @@
     font-size: 1.4rem;
     color: var(--text-color);
     padding: 10px 16px;
-    border-radius: 2px;
+    border-radius: 2px7;
+    z-index: 1;
 }
 
 .header__search-btn {
@@ -398,9 +424,10 @@
     border: none;
     width: 60px;
     height: 34px;
-    border-radius: 3px;
     margin-right: 3px;
+    border-radius: 3px;
     outline: none;
+    z-index: 1;
 }
 
 .header__search-btn:hover {
@@ -478,7 +505,9 @@
     display: inline-block;
 }
 
-.header__search-input:focus ~ .header__search-history {
+.header__search-input-wrap:hover .header__search-history,
+.header__search-input-sp:hover .header__search-history,
+.header__search-input:focus + .header__search-history {
     display: block;
 }
 
@@ -487,13 +516,13 @@
     position: absolute;
     top: calc(100% + 2px);
     left: 0;
-    width: calc(100% - 16px);
+    width: 100%;
     background-color: var(--white-color);
     border-radius: 2px;
     box-shadow: 0 1px 5px #c7c7c7;
     display: none;
     overflow: hidden;
-    z-index: 1;
+    z-index: 10;
 }
 
 .header__search-history-heading {
@@ -513,7 +542,7 @@
     display: flex;
     align-items: center;
     height: 38px;
-    padding: 0 12px;
+    padding: 0 0 0 12px;
 }
 
 .header__search-history-item:hover {
@@ -532,10 +561,17 @@
 .header__search-history-item button {
     font-size: 1.4rem;
     color: var(--text-color);
-    margin-left: 10px;
+    margin: 10px;
     background: transparent;
     border: none;
     cursor: pointer;
+}
+
+.header__search-history-empty {
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+    margin-top: 10px;
 }
 
 .btn-logout {

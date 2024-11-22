@@ -1,5 +1,6 @@
 /* Product item */
 .home__product {
+    background-color: rgba(0, 0, 0, 0.04);
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -191,39 +192,42 @@ i.home__product-item__like-icon-fill {
 
 /*Slider FlashSale*/
 /* Tùy chỉnh nút điều hướng slick với kích thước lớn và hiệu ứng mờ */
-.slick-prev, .slick-next {
-    width: 45px !important;         
-    height: 75px!important;         
-    background-color: rgba(0, 0, 0, 0.5)!important;          
-    border-radius: 8px!important;   
-    z-index: 1!important;          
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3)!important; 
-    display: flex!important;      
-    align-items: center!important;
-    justify-content: center!important;
+.home__product .slick-prev,
+.home__product .slick-next {
+    width: 45px !important;
+    height: 75px !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    border-radius: 8px !important;
+    z-index: 1 !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 /*slider flashsale*/
-.slick-prev {
+.home__product .slick-prev {
     left: -6px !important;
 }
 
-.slick-next {
-    right: -6px !important; 
+.home__product .slick-next {
+    right: -6px !important;
 }
 /* Căn chỉnh biểu tượng mũi tên vào giữa nút */
-.slick-prev:before, .slick-next:before  {
+.home__product .slick-prev:before,
+.home__product .slick-next:before {
     font-size: 28px !important;
-    color: rgba(0, 0, 0, 0.5) !important; 
-    background: none !important; 
-    border: none !important; 
-    opacity: .5 !important;
+    color: rgba(0, 0, 0, 0.5) !important;
+    background: none !important;
+    border: none !important;
+    opacity: 0.5 !important;
 }
-.slick-prev:hover, .slick-next:hover {
+.home__product .slick-prev:hover,
+.home__product .slick-next:hover {
     opacity: 1 !important;
     background-color: #7c7a7a !important;
 }
 
-.slick-slide div .grid__column-2-4{
-    width: 100%  !important;
+.home__product .slick-slide div .grid__column-2-4 {
+    width: 100% !important;
 }

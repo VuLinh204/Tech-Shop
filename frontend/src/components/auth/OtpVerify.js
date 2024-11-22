@@ -62,53 +62,59 @@ const OtpVerify = () => {
             </header>
 
             <div className="modal">
-                <div className="modal__overlay"></div>
-                <div className="modal__body">
-                    <form onSubmit={handleSubmit} className="auth-form">
-                        <div className="auth-form__container">
-                            <div className="auth-form__header">
-                                <h3 className="auth-form__heading">Xác thực OTP</h3>
-                                <a href="/signin" className="auth-form__switch-btn">
-                                    Đăng nhập
-                                </a>
-                            </div>
-                            {errors.length > 0 && (
-                                <div
-                                    className="alert alert-danger"
-                                    style={{ maxHeight: '50px', display: 'flex', alignItems: 'center' }}
-                                >
-                                    {errors.map((error, index) => (
-                                        <p key={index}>{error}</p>
-                                    ))}
-                                    <button className="close" onClick={() => setErrors([])}>
-                                        &times;
+                <div class="area">
+                    <ul className="circles">
+                        {[...Array(10)].map((_, i) => (
+                            <li key={i}></li>
+                        ))}
+                    </ul>
+                    <div className="modal__body">
+                        <form onSubmit={handleSubmit} className="auth-form">
+                            <div className="auth-form__container">
+                                <div className="auth-form__header">
+                                    <h3 className="auth-form__heading">Xác thực OTP</h3>
+                                    <a href="/signin" className="auth-form__switch-btn">
+                                        Đăng nhập
+                                    </a>
+                                </div>
+                                {errors.length > 0 && (
+                                    <div
+                                        className="alert alert-danger"
+                                        style={{ maxHeight: '50px', display: 'flex', alignItems: 'center' }}
+                                    >
+                                        {errors.map((error, index) => (
+                                            <p key={index}>{error}</p>
+                                        ))}
+                                        <button className="close" onClick={() => setErrors([])}>
+                                            &times;
+                                        </button>
+                                    </div>
+                                )}
+                                <div className="auth-form__form">
+                                    <div className="auth-form__group">
+                                        <input
+                                            type="text"
+                                            className="auth-form__input"
+                                            id="otp"
+                                            name="otp"
+                                            placeholder="Nhập OTP"
+                                            value={otp}
+                                            onChange={(e) => setOtp(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="auth-form__controls" style={{ marginBottom: '24px' }}>
+                                    <a href="/forgot_password" className="btn btn--normal auth-form__controls-back">
+                                        TRỞ LẠI
+                                    </a>
+                                    <button type="submit" className="btn btn--primary">
+                                        XÁC THỰC OTP
                                     </button>
                                 </div>
-                            )}
-                            <div className="auth-form__form">
-                                <div className="auth-form__group">
-                                    <input
-                                        type="text"
-                                        className="auth-form__input"
-                                        id="otp"
-                                        name="otp"
-                                        placeholder="Nhập OTP"
-                                        value={otp}
-                                        onChange={(e) => setOtp(e.target.value)}
-                                        required
-                                    />
-                                </div>
                             </div>
-                            <div className="auth-form__controls" style={{ marginBottom: '24px' }}>
-                                <a href="/forgot_password" className="btn btn--normal auth-form__controls-back">
-                                    TRỞ LẠI
-                                </a>
-                                <button type="submit" className="btn btn--primary">
-                                    XÁC THỰC OTP
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </>

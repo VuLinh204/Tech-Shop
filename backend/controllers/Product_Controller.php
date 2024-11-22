@@ -70,12 +70,22 @@ class Product_Controller
         }
     }
 
-    //tìm kiếm sản phẩm
-    public function searchProduct($keyword)
+    // Hàm xử lý tìm kiếm sản phẩm
+    public function searchProduct($key)
     {
-        $products = $this->product->seachProduct($keyword);
-        echo json_encode($products);
+        $products = $this->product->searchProductAd($key);
+
+        // Kiểm tra nếu có kết quả
+        if ($products) {
+            return json_encode([
+                'status' => 'success',
+                'data' => $products
+            ]);
+        } else {
+            return json_encode([
+                'status' => 'error',
+                'message' => 'Không tìm thấy sản phẩm'
+            ]);
+        }
     }
 }
-
-
