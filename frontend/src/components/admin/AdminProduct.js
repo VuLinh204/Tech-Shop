@@ -149,6 +149,7 @@ const AdminProduct = () => {
       // Nếu không có ảnh mới, chỉ gửi giá trị ảnh cũ
       formUpdatData.append("thumbnail", productDetails?.thumbnail); // Giả sử productDetails chứa ảnh cũ
     }
+
     try {
       const response = await updateProduct(formUpdatData);
       console.log(response);
@@ -823,6 +824,7 @@ const AdminProduct = () => {
           <Form.Item
             label="Hình ảnh"
             name="thumbnail"
+            getValueFromEvent={(e) => e && e.fileList}
             rules={[
               {
                 required: !productDetails?.thumbnail, // Chỉ yêu cầu ảnh nếu không có ảnh cũ

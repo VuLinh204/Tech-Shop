@@ -61,21 +61,20 @@ const Profile = () => {
     // };
 
     const handleUpdate = async (values) => {
-        // e.preventDefault();
         const formUpdatData = new FormData();
         formUpdatData.append("user_id", formData.user_id);
         formUpdatData.append("username", values?.username);
         formUpdatData.append("phone_number", values?.phone_number);
         formUpdatData.append("address", values?.address);
-        console.log(values);
+
+        // Kiểm tra xem có ảnh mới được tải lên hay không
         const fileItem = fileList[0]?.originFileObj;
-        console.log(fileItem);
-        // Kiểm tra nếu người dùng chọn ảnh mới
-        if (fileList && fileList.length > 0 && fileList[0]?.originFileObj) {
-            formUpdatData.append("avatar", fileList[0].originFileObj); // Ảnh mới
+        if (fileItem) {
+            formUpdatData.append("avatar", fileItem); // Nếu có ảnh mới, gửi ảnh mới
         } else {
-            formUpdatData.append("avatar_url", formData?.avatar_url.url); // Giữ ảnh cũ
+            formUpdatData.append("avatar_url", formData?.avatar_url.url); // Nếu không có ảnh mới, giữ nguyên ảnh cũ
         }
+
         try {
             const response = await fetch('http://localhost/tech-shop/backend/api/update_profile.php', {
                 method: 'POST',
@@ -83,26 +82,27 @@ const Profile = () => {
             });
 
             const result = await response.json();
-            console.log(result);
             if (result.status === 'success') {
                 // Cập nhật thông tin người dùng trong state và sessionStorage
                 const updatedUser = { ...user, ...result.data };
                 sessionStorage.setItem('user', JSON.stringify(updatedUser));
-                setUser(updatedUser); // Cập nhật lại state user
-                setFormData({ ...formData, ...result.data }); // Cập nhật lại formData
-                setIsDrawerOpen(false); // Đóng drawer
+                setUser(updatedUser);
+                setFormData({ ...formData, ...result.data });
+                setIsDrawerOpen(false);
                 notification.success({
                     message: 'Cập nhật thông tin thành công!',
                     placement: 'topRight',
                     duration: 3,
                 });
             } else {
-                notification.error({ message: result.message }); // Hiển thị thông báo lỗi nếu có
+                notification.error({ message: result.message });
             }
         } catch (error) {
             console.error('Error:', error);
+            notification.error({ message: 'Cập nhật thất bại!' });
         }
     };
+
 
     //drawer
     const handleCloseDrawer = () => {
@@ -154,6 +154,7 @@ const Profile = () => {
                                 <label htmlFor="profile_picture">Ảnh đại diện</label>
                                 <img
                                     src={`${formData.avatar_url.url || ''}`}
+                                    disabled
                                     alt="Hình ảnh"
                                     style={{ width: '150px', height: '150px', borderRadius: "50%", marginLeft: "15px" }}
                                 />
@@ -167,6 +168,7 @@ const Profile = () => {
                                 <input
                                     type="text"
                                     id="name"
+                                    disabled
                                     name="username"
                                     value={formData.username || ''}
                                     required
@@ -177,6 +179,7 @@ const Profile = () => {
                                 <input
                                     type="text"
                                     id="phone"
+                                    disabled
                                     name="phone_number"
                                     value={formData.phone_number || ''}
                                     required
@@ -187,6 +190,7 @@ const Profile = () => {
                                 <input
                                     type="text"
                                     id="address"
+                                    disabled
                                     name="address"
                                     value={formData.address || ''}
                                     required
@@ -254,9 +258,11 @@ const Profile = () => {
                             },
                             {
                                 validator: (_, value) => {
-                                    return value && value.length === 10
-                                        ? Promise.resolve()
-                                        : Promise.reject(new Error('Số điện thoại phải đúng 10 chữ số!'));
+                                    // Kiểm tra độ dài số điện thoại là 10 ký tự hoặc có định dạng +84
+                                    if (value && (value.length === 10 && value[0] === '0' || /^(\+84)[0-9]{9}$/.test(value))) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(new Error('Số điện thoại không hợp lệ'));
                                 },
                             },
                             {
@@ -295,7 +301,6 @@ const Profile = () => {
                     <Form.Item
                         label="Ảnh đại diện"
                         name="avatar"
-
                         getValueFromEvent={(e) => e && e.fileList}
                         rules={[
                             {
@@ -332,6 +337,7 @@ const Profile = () => {
                             <Button icon={<UploadOutlined />}>Chọn ảnh mới</Button>
                         </Upload>
                     </Form.Item>
+
 
                     <Form.Item
                         wrapperCol={{
