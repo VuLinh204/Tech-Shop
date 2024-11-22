@@ -109,16 +109,17 @@ const CategoriesManage = () => {
           />
         ) : (
           <div>
+            {/* Ô tìm kiếm */}
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Tìm danh mục..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật state tìm kiếm
+            />
             <div className="category-manager__header">
               <h1>Danh sách các danh mục</h1>
-              {/* Ô tìm kiếm */}
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Tìm danh mục..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật state tìm kiếm
-              />
+
               <button
                 className="btn btn--primary"
                 onClick={handleAddCategoryClick}
