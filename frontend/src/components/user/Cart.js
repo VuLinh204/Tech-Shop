@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import EmtyCart from '../../assets/img/emty-cart.png';
 import { deleteToCart, getProductsCart, getUser, updateToCart } from '../../api/Api';
 import RelatedProducts from './RelatedProducts';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
+    const navigate = useNavigate();
     // const [cart, setCart] = useState([]);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [totalQuantity, setTotalQuantity] = useState(0);
@@ -23,7 +25,10 @@ const Cart = () => {
             }
         }
     };
-
+    const handleCheckout = () => {
+        // Chuyển hướng sang trang thanh toán
+        navigate('/payment');
+      };
     // Lấy thông tin giỏ hàng từ API
     const fetchCartItems = async (userId) => {
         try {
@@ -231,7 +236,7 @@ const Cart = () => {
                                                     <strong>{totalPrice.toLocaleString()}</strong>
                                                 </td>
                                                 <td>
-                                                    <button className="button checkout-btn">Thanh Toán</button>
+                                                    <button  onClick={handleCheckout} className="button checkout-btn">Thanh Toán</button>
                                                 </td>
                                             </tr>
                                         </tbody>
