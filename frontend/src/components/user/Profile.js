@@ -82,9 +82,10 @@ const Profile = () => {
             });
 
             const result = await response.json();
+            console.log(result);
             if (result.status === 'success') {
                 // Cập nhật thông tin người dùng trong state và sessionStorage
-                const updatedUser = { ...user, ...result.data };
+                const updatedUser = { ...user, ...result.data, };
                 sessionStorage.setItem('user', JSON.stringify(updatedUser));
                 setUser(updatedUser);
                 setFormData({ ...formData, ...result.data });
@@ -153,7 +154,7 @@ const Profile = () => {
                             <div className="form-group">
                                 <label htmlFor="profile_picture">Ảnh đại diện</label>
                                 <img
-                                    src={`${formData.avatar_url.url || ''}`}
+                                    src={`http://localhost/tech-shop/backend/public/uploads/${formData.avatar}`}
                                     disabled
                                     alt="Hình ảnh"
                                     style={{ width: '150px', height: '150px', borderRadius: "50%", marginLeft: "15px" }}

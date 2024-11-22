@@ -2,7 +2,10 @@
 include_once '../config/database.php'; // Import file kết nối cơ sở dữ liệu
 require_once '../config/cors.php';
 
+$database = new Database();
+$conn = $database::$connection;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     // Lấy dữ liệu từ request
     $userId = $_POST['user_id'];
     $username = $_POST['username'];
@@ -32,8 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Nếu không có ảnh mới, giữ lại ảnh cũ
         // Cần lấy thông tin ảnh cũ từ cơ sở dữ liệu
-        $database = new Database();
-        $conn = $database::$connection;
+
 
         $query = "SELECT avatar FROM user WHERE id = ?";
         $stmt = $conn->prepare($query);
