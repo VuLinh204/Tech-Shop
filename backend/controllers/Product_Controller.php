@@ -88,4 +88,9 @@ class Product_Controller
             ]);
         }
     }
+
+    public function searchProductUser($key)
+    {
+        echo $this->product->searchProduct($key);
+    }
 }

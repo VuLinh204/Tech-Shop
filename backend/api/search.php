@@ -13,7 +13,7 @@ if (isset($_GET['query'])) {
     $productController = new Product_Controller($productModel);
 
     // Call the searchProduct method in ProductController
-    $productController->searchProduct($searchKey);
+    $productController->searchProductUser($searchKey);
 } else {
     echo json_encode(["status" => "error", "message" => "Search query is required"]);
 }
