@@ -68,7 +68,7 @@ const EditCategory = ({ categoryData, onEditSuccess }) => {
 
     // Kiểm tra xem người dùng có thay đổi ảnh hay không
     if (typeof thumbnail === "string") {
-      formData.append("current_thumbnail", thumbnail); // Gửi lại ảnh cũ nếu không chọn ảnh mới
+      formData.append("current_thumbnail", thumbnail); // Ghửi lại ản cũ nếu không chọn ảnh mới
     } else {
       formData.append("thumbnail", thumbnail); // Gửi tệp ảnh mới
     }

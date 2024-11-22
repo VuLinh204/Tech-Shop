@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { changePassword, getUser } from '../../api/Api';
 import { useNavigate } from 'react-router-dom';
+import { notification } from 'antd';
 
 const Password = () => {
     const [user, setUser] = useState(null);
@@ -11,11 +12,15 @@ const Password = () => {
         confirmPassword: '',
     });
 
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
+
     useEffect(() => {
         const storedUser = JSON.parse(sessionStorage.getItem('user'));
         if (!storedUser) {
             navigate('/login');
         } else {
+            console.log(storedUser);
             setUser(storedUser); // Lưu thông tin người dùng vào state
         }
     }, [navigate]);
@@ -35,11 +40,42 @@ const Password = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.newPassword !== formData.confirmPassword) {
-            alert('Mật khẩu mới không khớp.');
+            notification.error({
+                message: 'Sai mật khẩu',
+                description: 'Mật khẩu mới không khớp với nhau. Vui lòng nhập lại',
+                placement: 'topRight',
+                duration: 3,
+            });
             return;
         }
-        const result = await changePassword(formData.oldPassword, formData.newPassword, user.email);
-        alert(result.message);
+        setLoading(true);
+
+        const result = await changePassword(formData.oldPassword, formData.newPassword, user.email, user.id);
+
+        console.log(result);
+        setLoading(false);
+
+        //kiểm tra kết quả trả về
+        if (result.status === 'success') {
+            notification.success({
+                message: 'Thành công',
+                description: 'Bạn đã đôi mật khẩu thành công. Vui lòng đăng nhập lại',
+                placement: 'topRight',
+                duration: 3,
+            });
+            navigate('/login');
+        } else if (result.status === 'error') {
+            notification.error({
+                message: 'Sai mật khẩu',
+                description: 'Vui lòng nhập lại mật khẩu',
+                placement: 'topRight',
+                duration: 3,
+            });
+        }
+        else {
+            setMessage("Có lỗi xảy ra khi đổi mật khẩu");
+        }
+
     };
 
     return (
@@ -57,7 +93,7 @@ const Password = () => {
                                 </li>
                                 <li className="manager-item">
                                     <a href="/password" className="manager-item__link active">
-                                        Mật Khẩu
+                                        Đổi Mật Khẩu
                                     </a>
                                 </li>
                                 <li className="manager-item">
@@ -97,7 +133,7 @@ const Password = () => {
                                     type="password"
                                     id="password"
                                     name="newPassword"
-                                    value={formData.newPassword}
+                                    value={formData.newPassword || ''}
                                     onChange={handleChange}
                                     required
                                 />

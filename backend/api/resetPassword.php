@@ -29,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($user) {
         $response = $authController->updatePassword($email, $password);
-
         echo json_encode($response);
     } else {
         echo json_encode(['success' => false, 'errors' => ['Email not found.']]);
