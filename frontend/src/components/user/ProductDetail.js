@@ -402,9 +402,8 @@ const ProductDetails = () => {
                             <button
                               key={index}
                               type="button"
-                              className={`color-btn ${
-                                selectedColor === color ? "selected" : ""
-                              }`}
+                              className={`color-btn ${selectedColor === color ? "selected" : ""
+                                }`}
                               onClick={() => setSelectedColor(color)}
                             >
                               {color}
@@ -461,9 +460,8 @@ const ProductDetails = () => {
                           {[1, 2, 3, 4, 5].map((star) => (
                             <span
                               key={star}
-                              className={`star ${
-                                rating >= star ? "selected" : ""
-                              }`}
+                              className={`star ${rating >= star ? "selected" : ""
+                                }`}
                               onClick={() => handleRatingChange(star)}
                             >
                               ★
@@ -528,11 +526,10 @@ const ProductDetails = () => {
                               {[1, 2, 3, 4, 5].map((star) => (
                                 <i
                                   key={star}
-                                  className={`fa fa-star ${
-                                    comment.rating >= star
-                                      ? ""
-                                      : "text-secondary"
-                                  }`}
+                                  className={`fa fa-star ${comment.rating >= star
+                                    ? ""
+                                    : "text-secondary"
+                                    }`}
                                 ></i>
                               ))}
                             </div>
@@ -614,10 +611,10 @@ const ProductDetails = () => {
                 </div>
               </div>
             </div>
+            <br />
+            <RelatedProducts productId={id} />
           </div>
         </div>
-        <br />
-        <RelatedProducts productId={id} />
       </div>
     </div>
   );

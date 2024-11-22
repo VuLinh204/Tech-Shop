@@ -4,6 +4,7 @@ import { BarChartOutlined, UnorderedListOutlined, ProductOutlined, DownSquareOut
 import { Menu } from 'antd';
 import CategoriesManage from "./CategoriesManage";
 import AdminProduct from "./AdminProduct";
+import BannerManage from './BannerManage';
 import Dashboard from "./Dashboard";
 
 const renderPage = (key) => {
@@ -19,6 +20,10 @@ const renderPage = (key) => {
     case 'Product':
       return (
         <AdminProduct />
+      )
+    case 'Banner':
+      return (
+        <BannerManage />
       )
     default:
       return <></>
@@ -39,12 +44,12 @@ const AdminPage = () => {
     getItem('Bảng điều khiển', 'Dasboard', <BarChartOutlined />),
     getItem('Danh mục', 'Category', <UnorderedListOutlined />),
     getItem('Sản phẩm', 'Product', <ProductOutlined />),
-    getItem('Thanh trượt', 'Slider', <SwapOutlined />),
+    getItem('Biểu ngữ', 'Banner', <SwapOutlined />),
     getItem('Mã giảm Giá', 'Discount_percent', <DownSquareOutlined />),
     getItem('Người dùng', 'User', <UserOutlined />),
 
   ];
-  const rootSubmenuKeys = ['Dasboard', 'Category', 'Product'];
+  const rootSubmenuKeys = ['Dasboard', 'Category', 'Product', 'Banner'];
   const [keySelected, setKeySelected] = useState("Dasboard");
   const [openKeys, setOpenKeys] = useState(['Dasboard']);
   const onOpenChange = (keys) => {

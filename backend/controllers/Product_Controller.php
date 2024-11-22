@@ -76,6 +76,37 @@ class Product_Controller
         $products = $this->product->seachProduct($keyword);
         echo json_encode($products);
     }
+
+
+    //lay san pham theo danh muc
+    public function getProductByCategory($id)
+    {
+        $result = $this->product->getProductByCategory($id);
+
+        // Kiểm tra kết quả trả về từ model
+        if ($result['status'] === 'success') {
+            return json_encode(["status" => "success", "product" => $result['product']]);
+        } else {
+            // Nếu có lỗi, trả về thông báo lỗi
+            return json_encode(["status" => "error", "message" => $result['message']]);
+        }
+    }
+
+    //lấy related product
+    public function getRelatedProducts($categoryId, $excludeProductId) {
+        // Add validation
+        if (!isset($categoryId) || $categoryId <= 0) {
+            return [
+                "status" => "error",
+                "message" => "Category ID không hợp lệ"
+            ];
+        }
+    
+        $relatedProducts = $this->product->getRelatedProduct($categoryId, $excludeProductId);
+        
+        return [
+            "status" => "success",
+            "related_products" => $relatedProducts
+        ];
+    }
 }
-
-

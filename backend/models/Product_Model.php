@@ -219,7 +219,6 @@ class Product_Model extends Database
         } else {
             return ["status" => "error", "message" => "Xóa sản phẩm thất bại"];
         }
-
     }
 
     //Tìm kiếm sản phẩm theo tên và theo mô tả
@@ -243,20 +242,50 @@ class Product_Model extends Database
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    //lay san pham theo danh muc
+    public function getProductByCategory($id)
+    {
+        $query = "SELECT p.id, p.name, p.price, p.description, p.quantity,
+                     GROUP_CONCAT(cl.name SEPARATOR ', ') as color, p.discount_percent,
+                     p.thumbnail, c.name AS category_name, c.id AS category_id FROM product p
+              LEFT JOIN category c on p.category_id = c.id
+              LEFT JOIN product_color pc on p.id = pc.product_id
+              LEFT JOIN color cl on pc.color_id = cl.id
+              WHERE c.id = ?
+              GROUP BY c.id";
+
+        try {
+            $stmt = self::$connection->prepare($query);
+            $stmt->bind_param("i", $id); // Truyền tham số `id` vào câu truy vấn
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows === 0) {
+                return ["status" => "error", "message" => "Sản phẩm không tồn tại"];
+            } else {
+                $product = $result->fetch_assoc();
+                if (!empty($product)) {
+                    // Tách chuỗi màu sắc thành mảng nếu có giá trị
+                    $product['color'] = empty($product['color']) ? [] : explode(', ', $product['color']);
+                    return ["status" => "success", "product" => $product];
+                }
+            }
+        } catch (Exception $e) {
+            return ["status" => "error", "message" => $e->getMessage()];
+        }
+    }
+
+    //lay san pham lien quan
+    public function getRelatedProduct($categoryId, $excludeProductId) {
+        $query = "SELECT * FROM product WHERE category_id = ? AND id != ?";
+        $stmt = self::$connection->prepare($query);
+        $stmt->bind_param("ii", $categoryId, $excludeProductId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC) ?: [];
+    }
+    
 }
 
-// $product = new stdClass();
-
-// Gán giá trị cho các thuộc tính của đối tượng
-// $product->id = 1;
-// $product->name = 'Điện thoại Samsung Galaxy';
-// $product->price = 15000000;
-// $product->description = 'Điện thoại thông minh với nhiều tính năng nổi bật';
-// $product->category_id = 1;
-// $product->quantity = 50;
-// $product->discount_percent = 10;
-// $product->color = ['Đen', 'Trắng', 'Xanh'];
-// $product->thumbnail = "ip.jpg";
-
 // $p = new Product_Model();
-// print_r($p->updateProduct($product));
+// print_r($p -> getRelatedProducts(2,2));
