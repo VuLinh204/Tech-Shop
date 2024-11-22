@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../assets/css/payment.css';
+// import '../../assets/css/payment.css';
 import axios from 'axios';
 import { deleteToCart, getProductsCart, getUser, updateToCart } from '../../api/Api';
 
@@ -332,16 +332,16 @@ const Payment = () => {
                                             </div>
                                         </div>
                                         <div>
-                                        <tr>
-                                            <td colSpan="7">Tổng Số Lượng Sản Phẩm:</td>
-                                            <td>{totalQuantity}</td>
-                                            <td colSpan="2">
-                                                <strong>{totalPrice.toLocaleString()}</strong>
-                                            </td>
-                                            <td>
-                                                <button className="button checkout-btn">Thanh Toán</button>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td colSpan="7">Tổng Số Lượng Sản Phẩm:</td>
+                                                <td>{totalQuantity}</td>
+                                                <td colSpan="2">
+                                                    <strong>{totalPrice.toLocaleString()}</strong>
+                                                </td>
+                                                <td>
+                                                    <button className="button checkout-btn">Thanh Toán</button>
+                                                </td>
+                                            </tr>
                                         </div>
                                     </>
                                 )}

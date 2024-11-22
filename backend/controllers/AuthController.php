@@ -49,7 +49,8 @@ class AuthController
             'phone_number' => $user['phone_number'],
             'address' => $user['address'],
             'password' => $user['password'],
-            'role_id' => $user['role_id']
+            'role_id' => $user['role_id'],
+            'avatar' => $user['avatar']
         ];
 
         // Đăng nhập thành công, trả về thông tin người dùng

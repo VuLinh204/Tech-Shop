@@ -4,31 +4,74 @@ require_once '../config/cors.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Lấy dữ liệu từ request
-    $data = json_decode(file_get_contents("php://input"), true);
+    $userId = $_POST['user_id'];
+    $username = $_POST['username'];
+    $phoneNumber = $_POST['phone_number'];
+    $address = $_POST['address'];
 
-    $userId = $data['user_id'];
-    $username = $data['username'];
-    $phoneNumber = $data['phone_number'];
-    $address = $data['address'];
+    // Biến để lưu đường dẫn ảnh
+    $avatar = '';
 
-    // Kiểm tra kết nối cơ sở dữ liệu
-    $database = new Database();
-    $conn = $database::$connection;
+    // Xử lý upload file
+    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === 0) {
+        $targetDir = "../public/uploads/";
+        $fileName = uniqid() . "_" . basename($_FILES['avatar']['name']);
+        $targetFilePath = $targetDir . $fileName;
 
-    // Thực hiện câu lệnh SQL để cập nhật thông tin người dùng
-    $query = "UPDATE user SET username = ?, phone_number = ?, address = ? WHERE id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("sssi", $username, $phoneNumber, $address, $userId);
-
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Cập nhật thông tin thành công"]);
+        // Check if file already exists
+        if (file_exists($targetFilePath)) {
+            unlink($targetFilePath);
+        }
+        if (move_uploaded_file($_FILES['avatar']['tmp_name'], $targetFilePath)) {
+            // File upload thành công, lưu tên file mới
+            $avatar = $fileName;
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Không thể lưu ảnh.']);
+            exit;
+        }
     } else {
-        echo json_encode(["success" => false, "message" => "Cập nhật thất bại"]);
+        // Nếu không có ảnh mới, giữ lại ảnh cũ
+        // Cần lấy thông tin ảnh cũ từ cơ sở dữ liệu
+        $database = new Database();
+        $conn = $database::$connection;
+
+        $query = "SELECT avatar FROM user WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $avatar = $row['avatar'];  // Lấy ảnh cũ từ cơ sở dữ liệu
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Không tìm thấy người dùng.']);
+            exit;
+        }
     }
 
-    $stmt->close();
-    $conn->close();
+    // Kiểm tra kết nối cơ sở dữ liệu
+    $query = "UPDATE user SET username = ?, phone_number = ?, address = ?, avatar = ? WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    if ($stmt) {
+        $stmt->bind_param("ssssi", $username, $phoneNumber, $address, $avatar, $userId);
+        if ($stmt->execute()) {
+            echo json_encode([
+                "status" => "success",
+                "message" => "Thông tin người dùng đã được cập nhật thành công",
+                "data" => [
+                    "avatar" => $avatar,
+                    "username" => $username,
+                    "phone_number" => $phoneNumber,
+                    "address" => $address,
+                ]
+            ]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Cập nhật thất bại: " . $stmt->error]);
+        }
+    } else {
+        echo json_encode(["status" => "error", "message" => "Lỗi khi chuẩn bị câu truy vấn: " . $conn->error]);
+    }
 } else {
-    echo json_encode(["success" => false, "message" => "Yêu cầu không hợp lệ"]);
+    echo json_encode(["status" => "error", "message" => "Yêu cầu không hợp lệ"]);
 }
 ?>

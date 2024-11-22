@@ -25,6 +25,7 @@ final class CreateUsersTable extends AbstractMigration
             ->addIndex(['email'], ['unique' => true])
             ->addColumn('phone_number', 'string', ['limit' => 15, 'null' => false])
             ->addColumn('address', 'string', ['limit' => 500, 'null' => false])
+            ->addColumn('avatar', 'string', ['limit' => 255, 'null' => true, 'default' => null])
             ->addColumn('password', 'string', ['limit' => 255, 'null' => false])
             ->addColumn('role_id', 'integer', ['null' => false, 'signed' => false])
             ->addForeignKey('role_id', 'role', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
