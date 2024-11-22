@@ -221,12 +221,65 @@ export const deleteProduct = async (data) => {
 
 export const searchProduct = async ($keyword) => {
     try {
-        const response = await axios.get(
-            `${API_URL}/product_api.php?action=search&keyword=${$keyword}`,
-        );
+        const response = await axios.get(`${API_URL}/product_api.php?action=search&keyword=${$keyword}`);
         return response.data;
     } catch (error) {
         console.error('Error create product: ', error);
         return { status: 'error', message: 'Có lỗi xảy ra khi xóa tạo sản phẩm.' };
     }
-}; 
+};
+
+export const addToCart = async (userId, productId, quantityToAdd, selectedColor) => {
+    try {
+        const response = await axios.post(`${API_URL}/cart.php`, {
+            action: 'add_to_cart',
+            user_id: userId,
+            product_id: productId,
+            quantity: quantityToAdd,
+            color: selectedColor,
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const deleteToCart = async (cartItemId) => {
+    try {
+        const response = await axios.post(`${API_URL}/cart.php`, {
+            action: 'delete_cart_item',
+            cart_item_id: cartItemId,
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const updateToCart = async (userId, productId, quantity, color) => {
+    try {
+        const response = await axios.post(`${API_URL}/cart.php`, {
+            action: 'update_cart_item',
+            user_id: userId,
+            product_id: productId,
+            quantity: quantity,
+            color: color,
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
+export const getProductsCart = async (userId) => {
+    try {
+        const response = await axios.get(`${API_URL}/cart.php?user_id=${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
