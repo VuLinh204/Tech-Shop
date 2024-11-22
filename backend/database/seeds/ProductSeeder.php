@@ -98,7 +98,7 @@ class ProductSeeder extends AbstractSeed
                 'name' => 'Apple Watch Series 8',
                 'price' => 3990000,
                 'description' => 'Đồng hồ thông minh Apple Watch Series 8.',
-                'thumbnail' => 'Apple Watch Series 8.jpg',
+                'thumbnail' => 'Apple Watch Series 8.png',
                 'category_id' => rand(1, 10),
                 'quantity' => rand(1, 100),
                 'created_at' => date('Y-m-d H:i:s'),
@@ -205,7 +205,7 @@ class ProductSeeder extends AbstractSeed
                 'name' => 'Bose SoundLink II',
                 'price' => 1990000,
                 'description' => 'Loa Bluetooth Bose SoundLink II với âm thanh tuyệt vời.',
-                'thumbnail' => 'Bose SoundLink II.jpg',
+                'thumbnail' => 'Bose SoundLink II.png',
                 'category_id' => rand(1, 10),
                 'quantity' => rand(1, 100),
                 'updated_at' => date('Y-m-d H:i:s')
@@ -227,6 +227,196 @@ class ProductSeeder extends AbstractSeed
                 'category_id' => rand(1, 10),
                 'quantity' => rand(1, 100),
                 'updated_at' => date('Y-m-d H:i:s')
+            ],
+
+            [
+                "name" => "Laptop Dell Inspiron 15",
+                "price" => 15000000,
+                "category_id" => 11,
+                "description" => "Laptop Dell với cấu hình mạnh mẽ, màn hình 15.6 inch, lý tưởng cho học tập và công việc.",
+                "thumbnail" => "Laptop Dell Inspiron 15.jpg"
+            ],
+            [
+                "name" => "Smartphone Samsung Galaxy S23",
+                "price" => 20000000,
+                "category_id" => 12,
+                "description" => "Điện thoại thông minh Samsung Galaxy S23 với camera 50MP, màn hình AMOLED 120Hz.",
+                "thumbnail" => "Smartphone Samsung Galaxy S23.jpg"
+            ],
+            [
+                "name" => "Máy tính bàn HP Pavilion",
+                "price" => 12000000,
+                "category_id" => 13,
+                "description" => "Máy tính bàn HP Pavilion với bộ vi xử lý Intel Core i5, thích hợp cho văn phòng và giải trí.",
+                "thumbnail" => "Máy tính bàn HP Pavilion.jpg"
+            ],
+            [
+                "name" => "Tai nghe Sony WH-1000XM5",
+                "price" => 8000000,
+                "category_id" => 14,
+                "description" => "Tai nghe chống ồn Sony WH-1000XM5, âm thanh tuyệt vời, pin lâu dài.",
+                "thumbnail" => "Tai nghe Sony WH-1000XM5.jpg"
+            ],
+            [
+                "name" => "Máy chiếu Epson EB-X41",
+                "price" => 11000000,
+                "category_id" => 15,
+                "description" => "Máy chiếu Epson EB-X41 với độ sáng cao, chất lượng hình ảnh sắc nét.",
+                "thumbnail" => "Máy chiếu Epson EB-X41.jpg"
+            ],
+            [
+                "name" => "Màn hình LG 27 inch",
+                "price" => 6000000,
+                "category_id" => 16,
+                "description" => "Màn hình LG 27 inch, độ phân giải Full HD, phù hợp cho công việc và giải trí.",
+                "thumbnail" => "Màn hình LG 27 inch.jpg"
+            ],
+            [
+                "name" => "Máy in Canon Pixma G3020",
+                "price" => 4500000,
+                "category_id" => 17,
+                "description" => "Máy in Canon Pixma G3020, in nhanh, hiệu quả, phù hợp cho văn phòng.",
+                "thumbnail" => "Máy in Canon Pixma G3020.jpg"
+            ],
+            [
+                "name" => "Loa Bluetooth JBL Charge 5",
+                "price" => 5500000,
+                "category_id" => 18,
+                "description" => "Loa Bluetooth JBL Charge 5, âm thanh sống động, chống nước, pin lâu dài.",
+                "thumbnail" => "Loa Bluetooth JBL Charge 5.jpg"
+            ],
+            [
+                "name" => "Máy lạnh Panasonic 1.5HP",
+                "price" => 9000000,
+                "category_id" => 19,
+                "description" => "Máy lạnh Panasonic 1.5HP, tiết kiệm điện, làm lạnh nhanh.",
+                "thumbnail" => "Máy lạnh Panasonic 1.5HP.jpg"
+            ],
+            [
+                "name" => "Tủ lạnh Samsung 250L",
+                "price" => 7000000,
+                "category_id" => 20,
+                "description" => "Tủ lạnh Samsung 250L, thiết kế hiện đại, tiết kiệm năng lượng.",
+                "thumbnail" => "Tủ lạnh Samsung 250L.jpg"
+            ],
+            [
+                "name" => "Máy giặt LG Inverter 8kg",
+                "price" => 6500000,
+                "category_id" => 11,
+                "description" => "Máy giặt LG Inverter 8kg, giặt sạch hiệu quả, tiết kiệm điện.",
+                "thumbnail" => "Máy giặt LG Inverter 8kg.jpg"
+            ],
+            [
+                "name" => "Nồi cơm điện Panasonic 1L",
+                "price" => 1200000,
+                "category_id" => 12,
+                "description" => "Nồi cơm điện Panasonic 1L, tiện lợi, chế biến cơm ngon.",
+                "thumbnail" => "Nồi cơm điện Panasonic 1L.jpg"
+            ],
+            [
+                "name" => "Bàn phím cơ Logitech G Pro X",
+                "price" => 2000000,
+                "category_id" => 13,
+                "description" => "Bàn phím cơ Logitech G Pro X, công nghệ Blue Switch, tốc độ phản hồi cực nhanh.",
+                "thumbnail" => "Bàn phím cơ Logitech G Pro X.jpg"
+            ],
+            [
+                "name" => "Chuột gaming Razer DeathAdder V2",
+                "price" => 1500000,
+                "category_id" => 14,
+                "description" => "Chuột gaming Razer DeathAdder V2, thiết kế ergonomic, cảm biến quang học chính xác.",
+                "thumbnail" => "Chuột gaming Razer DeathAdder V2.jpg"
+            ],
+            [
+                "name" => "Ổ cứng di động Seagate 1TB",
+                "price" => 1200000,
+                "category_id" => 15,
+                "description" => "Ổ cứng di động Seagate 1TB, dung lượng lớn, tốc độ đọc ghi nhanh.",
+                "thumbnail" => "Ổ cứng di động Seagate 1TB.jpg"
+            ],
+            [
+                "name" => "Vỏ máy tính NZXT H510",
+                "price" => 3000000,
+                "category_id" => 16,
+                "description" => "Vỏ máy tính NZXT H510, thiết kế tối giản, làm mát hiệu quả.",
+                "thumbnail" => "Vỏ máy tính NZXT H510.jpg"
+            ],
+            [
+                "name" => "Máy lọc không khí Xiaomi Mi Air Purifier 3H",
+                "price" => 3500000,
+                "category_id" => 17,
+                "description" => "Máy lọc không khí Xiaomi Mi Air Purifier 3H, lọc bụi mịn hiệu quả.",
+                "thumbnail" => "Máy lọc không khí Xiaomi Mi Air Purifier 3H.jpg"
+            ],
+            [
+                "name" => "Robot hút bụi Xiaomi Roborock S7",
+                "price" => 8000000,
+                "category_id" => 18,
+                "description" => "Robot hút bụi Xiaomi Roborock S7, làm sạch tự động, công nghệ sóng âm.",
+                "thumbnail" => "Robot hút bụi Xiaomi Roborock S7.jpg"
+            ],
+            [
+                "name" => "Máy xay sinh tố Philips HR3652/00",
+                "price" => 1500000,
+                "category_id" => 19,
+                "description" => "Máy xay sinh tố Philips HR3652/00, công suất mạnh mẽ, dễ sử dụng.",
+                "thumbnail" => "Máy xay sinh tố Philips HR3652/00.jpg"
+            ],
+            [
+                "name" => "Máy sấy tóc Dyson Supersonic",
+                "price" => 6000000,
+                "category_id" => 20,
+                "description" => "Máy sấy tóc Dyson Supersonic, công nghệ sấy nhanh, bảo vệ tóc.",
+                "thumbnail" => "Máy sấy tóc Dyson Supersonic.jpg"
+            ],
+            [
+                "name" => "Tủ đồ thông minh Xiaomi",
+                "price" => 5000000,
+                "category_id" => 21,
+                "description" => "Tủ đồ thông minh Xiaomi, thiết kế hiện đại, tiết kiệm không gian.",
+                "thumbnail" => "Tủ đồ thông minh Xiaomi.jpg"
+            ],
+            [
+                "name" => "Nồi áp suất điện Philips HD2137",
+                "price" => 3000000,
+                "category_id" => 11,
+                "description" => "Nồi áp suất điện Philips HD2137, giúp nấu ăn nhanh chóng và tiết kiệm năng lượng.",
+                "thumbnail" => "Nồi áp suất điện Philips HD2137.jpg"
+            ],
+            [
+                "name" => "Đèn bàn LED Xiaomi Mi",
+                "price" => 800000,
+                "category_id" => 12,
+                "description" => "Đèn bàn LED Xiaomi Mi, ánh sáng dịu nhẹ, bảo vệ mắt.",
+                "thumbnail" => "Đèn bàn LED Xiaomi Mi.jpg"
+            ],
+            [
+                "name" => "Bình giữ nhiệt Thermos",
+                "price" => 500000,
+                "category_id" => 13,
+                "description" => "Bình giữ nhiệt Thermos, giữ nhiệt lâu, tiện lợi cho mọi hoạt động.",
+                "thumbnail" => "Bình giữ nhiệt Thermos.jpg"
+            ],
+            [
+                "name" => "Máy pha cà phê DeLonghi",
+                "price" => 4500000,
+                "category_id" => 14,
+                "description" => "Máy pha cà phê DeLonghi, pha cà phê chuyên nghiệp, tiện dụng.",
+                "thumbnail" => "Máy pha cà phê DeLonghi.jpg"
+            ],
+            [
+                "name" => "Đồng hồ thông minh Apple Watch Series 8",
+                "price" => 10000000,
+                "category_id" => 15,
+                "description" => "Đồng hồ thông minh Apple Watch Series 8, theo dõi sức khỏe và thể thao chính xác.",
+                "thumbnail" => "Đồng hồ thông minh Apple Watch Series 8.jpg"
+            ],
+            [
+                "name" => "Áo khoác Nike Windrunner",
+                "price" => 1200000,
+                "category_id" => 16,
+                "description" => "Áo khoác Nike Windrunner, chất liệu chống gió, thiết kế thể thao.",
+                "thumbnail" => "Áo khoác Nike Windrunner.jpg"
             ]
         ];
 
