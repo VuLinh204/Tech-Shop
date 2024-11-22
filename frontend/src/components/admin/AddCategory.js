@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../assets/css/AddCategory.css";
+import { useNavigate } from "react-router-dom";
 
 const AddCategory = ({ onAddSuccess }) => {
   const [name, setName] = useState("");
@@ -9,6 +10,7 @@ const AddCategory = ({ onAddSuccess }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isNameValid, setIsNameValid] = useState(true);
   const [showPopup, setShowPopup] = useState(false); // Trạng thái hiển thị thông báo
+  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -91,6 +93,9 @@ const AddCategory = ({ onAddSuccess }) => {
       console.error("Client error:", error.message);
     }
   };
+  const handleCancel = () => {
+    window.location.href = "/admin"; // Đường dẫn quay lại danh sách danh mục
+  };
 
   return (
     <div className="add-category">
@@ -126,8 +131,16 @@ const AddCategory = ({ onAddSuccess }) => {
             />
           </div>
         )}
-        <button type="submit">Thêm danh mục</button>
-
+        <div className="button-group">
+          <button type="submit">Thêm danh mục</button>
+          <button
+            type="button"
+            className="cancel-button"
+            onClick={handleCancel}
+          >
+            Hủy
+          </button>
+        </div>
         {/* Hiển thị thông báo thành công hoặc lỗi */}
         {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
