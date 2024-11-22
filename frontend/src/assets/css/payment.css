@@ -1,14 +1,13 @@
 .customer-info {
     background-color: #f9f9f9;
-    padding: 20px;
+    padding: 40px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
+    margin: 40px;
 }
 
 .customer-info h3 {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 2rem;
     margin-bottom: 15px;
     color: #333;
 }
@@ -25,15 +24,15 @@
     color: #555;
 }
 
-.customer-info input[type="text"],
-.customer-info input[type="email"],
+.customer-info input[type='text'],
+.customer-info input[type='email'],
 .customer-info textarea,
 .customer-info select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 1.6rem;
     color: #333;
 }
 
@@ -72,14 +71,15 @@
 }
 
 .customer-info .summary p {
-    margin: 5px 0;
-    font-size: 1.1rem;
+    margin: 10px;
+    font-size: 1.4rem;
     font-weight: bold;
 }
 
 .customer-info .checkout-btn {
     display: inline-block;
     padding: 12px 25px;
+    margin-top: 20px;
     background-color: #28a745;
     color: white;
     font-size: 1.2rem;
@@ -94,4 +94,27 @@
 
 .customer-info .checkout-btn:hover {
     background-color: #218838;
+}
+
+.cart-summary {
+    /* font-weight: bold; */
+    background-color: #f9f9f9;
+    border-top: 2px solid #ddd;
+    text-align: right;
+    padding: 10px;
+}
+
+.cart-summary td {
+    font-size: 1.6rem;
+    padding: 8px 40px;
+}
+
+.cart-summary strong {
+    font-size: 1.4em;
+}
+
+.payment__summary {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }

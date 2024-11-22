@@ -3,25 +3,22 @@ require_once '../config/database.php';
 
 class OrderModel extends Database
 {
-    public function createOrder($userId, $status, ?int $discountId): int
+    public function createOrder(int $userId, int $status, ?int $discountId, int $totalQuantity, float $totalPrice, ?string $deliveryOption, ?string $paymentMethod): int
     {
         $connection = self::getConnection();
 
-        $stmt = $connection->prepare("
-            INSERT INTO `order` (`user_id`, `order_date`, `status`, `discount_id`) 
-            VALUES (?, NOW(), ?, ?)
-        ");
+        $stmt = $connection->prepare("INSERT INTO `order` 
+            (`user_id`, `status`, `discount_id`, `total_quantity`, `total_price`, `delivery_option`, `payment_method`, `created_at`, `updated_at`) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
 
-        // Kiểm tra chuẩn bị truy vấn
         if (!$stmt) {
             die('Lỗi chuẩn bị truy vấn: ' . $connection->error);
         }
 
         // Gán giá trị và thực thi truy vấn
-        $stmt->bind_param('iii', $userId, $status, $discountId);
+        $stmt->bind_param('iiidsss', $userId, $status, $discountId, $totalQuantity, $totalPrice, $deliveryOption, $paymentMethod);
         $stmt->execute();
 
-        // Kiểm tra lỗi thực thi
         if ($stmt->error) {
             die('Lỗi thực thi truy vấn: ' . $stmt->error);
         }
@@ -35,14 +32,13 @@ class OrderModel extends Database
         return $orderId;
     }
 
-    public function createOrderItem($orderId, $productId, $price, $quantity)
+    public function createOrderItem(int $orderId, int $productId, float $price, int $quantity): void
     {
         $connection = self::getConnection();
 
-        $stmt = $connection->prepare("
-            INSERT INTO `order_item` (`order_id`, `product_id`, `price`, `num`) 
-            VALUES (?, ?, ?, ?)
-        ");
+        $stmt = $connection->prepare("INSERT INTO `order_item` 
+            (`order_id`, `product_id`, `price`, `quantity`) 
+            VALUES (?, ?, ?, ?)");
 
         if (!$stmt) {
             die('Lỗi chuẩn bị truy vấn: ' . $connection->error);

@@ -1,67 +1,39 @@
 import React, { useState, useEffect } from 'react';
-// import '../../assets/css/payment.css';
+import '../../assets/css/Payment.css';
 import axios from 'axios';
-import { deleteToCart, getProductsCart, getUser, updateToCart } from '../../api/Api';
-
-const sampleCarts = [
-    {
-        id: 1,
-        product: {
-            id: 'P001',
-            name: 'Sản phẩm 1',
-            price: 1000000,
-            percent_discount: 10,
-            image: 'product1.jpg',
-        },
-        quantity: 2,
-        size: 'M',
-        color: 'Đỏ',
-    },
-    {
-        id: 2,
-        product: {
-            id: 'P002',
-            name: 'Sản phẩm 2',
-            price: 2000000,
-            percent_discount: 15,
-            image: 'product2.jpg',
-        },
-        quantity: 1,
-        size: 'L',
-        color: 'Xanh',
-    },
-];
+import { getProductsCart, getUser, checkoutOrder, updateUser, updateToCart, clearCart } from '../../api/Api';
+import { useNavigate } from 'react-router-dom';
 
 const Payment = () => {
     const [cartItems, setCartItems] = useState([]);
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('user')) || null);
-    const [carts, setCarts] = useState(sampleCarts);
     const [customerInfo, setCustomerInfo] = useState({
         email: '',
         fullName: '',
         phone: '',
         address: '',
-        message: '', // Lời nhắn
+        message: '',
     });
     const [discountCode, setDiscountCode] = useState('');
     const [deliveryOption, setDeliveryOption] = useState('J&T');
-    const [paymentMethod, setPaymentMethod] = useState('COD'); // Hình thức thanh toán: COD, Online
+    const [paymentMethod, setPaymentMethod] = useState('COD');
+    const navigate = useNavigate();
 
     // Dữ liệu thông tin khách hàng lấy từ sessionStorage khi component được render
     useEffect(() => {
         const storedUser = JSON.parse(sessionStorage.getItem('user'));
         if (storedUser) {
             setCustomerInfo({
+                user_id: storedUser.id,
                 email: storedUser.email || '',
                 fullName: storedUser.username || '',
                 phone: storedUser.phone_number || '',
                 address: storedUser.address || '',
-                message: '', // Có thể để trống
+                message: '',
             });
         }
-
     }, []);
 
     const handleUpdateInfo = async () => {
@@ -79,7 +51,7 @@ const Payment = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                }
+                },
             );
             if (response.data.success) {
                 alert('Cập nhật thông tin thành công!');
@@ -90,7 +62,7 @@ const Payment = () => {
                         username: customerInfo.fullName,
                         phone_number: customerInfo.phone,
                         address: customerInfo.address,
-                    })
+                    }),
                 );
             } else {
                 alert('Cập nhật thất bại. Vui lòng thử lại.');
@@ -100,7 +72,7 @@ const Payment = () => {
             alert('Có lỗi xảy ra khi cập nhật thông tin.');
         }
     };
-    // Lấy thông tin người dùng từ API
+
     const fetchUser = async () => {
         if (!user) {
             const data = await getUser();
@@ -141,45 +113,99 @@ const Payment = () => {
         }
     }, [user]);
 
-    // Tính toán tổng số lượng và tổng giá trị
     const updateTotal = (items) => {
         let quantity = 0;
         let price = 0;
 
         items.forEach((cart) => {
-            const newPrice = cart.price - (cart.price * cart.discount_percent) / 100; // Tính giá sau giảm giá
+            const newPrice = cart.price - (cart.price * cart.discount_percent) / 100;
             quantity += cart.quantity;
-            price += cart.quantity * newPrice; // Tổng giá trị
+            price += cart.quantity * newPrice;
         });
 
         setTotalQuantity(quantity);
         setTotalPrice(price);
     };
 
-
     const handleCustomerInfoChange = (e) => {
         const { name, value } = e.target;
         setCustomerInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
     };
 
-
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         const checkoutData = {
-            customerInfo,
-            carts,
+            user_id: customerInfo.user_id,
+            status: 1,
+            discount_id: discountCode ? discountCode.id : null,
             totalQuantity,
             totalPrice,
-            discountCode,
             deliveryOption,
             paymentMethod,
+            items: cartItems.map((item) => ({
+                product_id: item.product_id,
+                price: parseFloat(item.price),
+                quantity: item.quantity,
+            })),
         };
+
         if (!customerInfo.fullName || !customerInfo.phone || !customerInfo.address) {
             alert('Vui lòng điền đầy đủ thông tin khách hàng');
             return;
         }
-        // Tiến hành xử lý thanh toán nếu thông tin hợp lệ
-        console.log('Dữ liệu thanh toán:', checkoutData);
-        alert(`Thanh toán thành công! Tổng số tiền: ${totalPrice.toLocaleString()} VND`);
+
+        const response = await checkoutOrder(checkoutData);
+
+        if (response.success) {
+            const clearCartResponse = await clearCart(checkoutData.user_id);
+            // const paymentResult = await processVNPayPayment(response.paymentUrl);
+            // if (paymentResult.success) {
+            //     // Cập nhật trạng thái đơn hàng thành '2' (đã thanh toán) khi thanh toán thành công
+            //     await updateOrderStatus(response.orderId, 2);
+            //     // navigate('/orderSuccess');
+            // } else {
+            //     alert('Thanh toán không thành công. Vui lòng thử lại.');
+            //     // navigate('/orderFailure');
+            // }
+            if (clearCartResponse.success) {
+                sessionStorage.removeItem('cartItems');
+                setCartItems([]);
+                navigate('/orderList');
+            } else {
+                console.error('Lỗi khi xóa giỏ hàng:', clearCartResponse.data.message);
+            }
+        } else {
+            alert('Có lỗi xảy ra trong quá trình thanh toán.');
+        }
+    };
+
+    // Cập nhật số lượng sản phẩm trong giỏ hàng
+    const handleQuantityChange = async (id, color, change) => {
+        const updatedCartItems = cartItems.map((cart) =>
+            cart.product_id === id && cart.cart_item_color === color
+                ? { ...cart, quantity: cart.quantity + change }
+                : cart,
+        );
+
+        setCartItems(updatedCartItems);
+        updateTotal(updatedCartItems);
+
+        const userId = user.id;
+        const productId = id;
+        const colorProduct = color;
+        const quantity = updatedCartItems.find(
+            (item) => item.product_id === id && item.cart_item_color === color,
+        )?.quantity;
+
+        try {
+            const response = await updateToCart(userId, productId, quantity, colorProduct);
+            if (response.status === 'success') {
+                setCartItems(updatedCartItems);
+            } else {
+                console.error('Cập nhật giỏ hàng thất bại:', response.message);
+            }
+        } catch (error) {
+            console.error('Lỗi khi cập nhật giỏ hàng:', error);
+        }
     };
 
     return (
@@ -190,7 +216,7 @@ const Payment = () => {
                         <div className="container">
                             <section className="shopping-cart">
                                 <h2>Thanh Toán</h2>
-                                {carts.length === 0 ? (
+                                {cartItems.length === 0 ? (
                                     <div>
                                         <img src="/assets/img/no-cart.webp" alt="No-cart" />
                                         <a href="/product" className="button buy-now-btn">
@@ -209,7 +235,6 @@ const Payment = () => {
                                                     <th>Đơn Giá (VND)</th>
                                                     <th>Số Lượng</th>
                                                     <th colSpan={2}>Số Tiền (VND)</th>
-
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -232,12 +257,37 @@ const Payment = () => {
                                                             <td>{cart.product_id}</td>
                                                             <td>{cart.cart_item_color || 'Không có màu'}</td>
                                                             <td>{newPrice.toLocaleString()}</td>
-
+                                                            <td>
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleQuantityChange(
+                                                                            cart.product_id,
+                                                                            cart.cart_item_color,
+                                                                            -1,
+                                                                        )
+                                                                    }
+                                                                    className="quantity-btn"
+                                                                >
+                                                                    <i className="fas fa-minus"></i>
+                                                                </button>
+                                                                <span className="quantity">{cart.quantity}</span>
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleQuantityChange(
+                                                                            cart.product_id,
+                                                                            cart.cart_item_color,
+                                                                            1,
+                                                                        )
+                                                                    }
+                                                                    className="quantity-btn"
+                                                                >
+                                                                    <i className="fas fa-plus"></i>
+                                                                </button>
+                                                            </td>
 
                                                             <td colSpan={2}>
                                                                 {(cart.quantity * newPrice).toLocaleString()}
                                                             </td>
-
                                                         </tr>
                                                     );
                                                 })}
@@ -327,19 +377,22 @@ const Payment = () => {
                                                     onChange={(e) => setPaymentMethod(e.target.value)}
                                                 >
                                                     <option value="COD">Thanh Toán Khi Nhận Hàng</option>
-                                                    <option value="Online">Thanh Toán Online</option>
+                                                    <option value="Online">Thanh Toán Bằng VNPAY</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div>
-                                            <tr>
-                                                <td colSpan="7">Tổng Số Lượng Sản Phẩm:</td>
+                                        <div className="payment__summary">
+                                            <tr className="cart-summary">
+                                                <td>Tổng Số Lượng Sản Phẩm:</td>
                                                 <td>{totalQuantity}</td>
-                                                <td colSpan="2">
+                                                <td>Thành tiền: </td>
+                                                <td>
                                                     <strong>{totalPrice.toLocaleString()}</strong>
                                                 </td>
-                                                <td>
-                                                    <button className="button checkout-btn">Thanh Toán</button>
+                                                <td colSpan={2}>
+                                                    <button onClick={handleCheckout} className="button checkout-btn">
+                                                        Thanh Toán
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </div>

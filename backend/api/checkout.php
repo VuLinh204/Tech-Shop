@@ -21,12 +21,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Kiểm tra các trường trong 'items' có hợp lệ không
+    $validStatuses = [1, 2, 3, 4];
+    if (!in_array($data['status'], $validStatuses)) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Trạng thái đơn hàng không hợp lệ!'
+        ]);
+        exit;
+    }
     if (!is_array($data['items']) || empty($data['items'])) {
         echo json_encode([
             'success' => false,
             'message' => 'Giỏ hàng không hợp lệ! Vui lòng kiểm tra lại.'
         ]);
         exit;
+    }
+
+    // Kiểm tra từng sản phẩm trong 'items'
+    foreach ($data['items'] as $item) {
+        if (!isset($item['product_id'], $item['quantity'], $item['price'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Sản phẩm trong giỏ hàng không hợp lệ! Vui lòng kiểm tra lại.'
+            ]);
+            exit;
+        }
+
+        // Kiểm tra quantity và price hợp lệ
+        if (!is_numeric($item['quantity']) || $item['quantity'] <= 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Số lượng sản phẩm không hợp lệ!'
+            ]);
+            exit;
+        }
+
+        if (!is_numeric($item['price']) || $item['price'] <= 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Giá sản phẩm không hợp lệ!'
+            ]);
+            exit;
+        }
     }
 
     // Kiểm tra user_id có phải là một số hợp lệ không
@@ -39,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $orderController = new OrderController();
-    $response = $orderController->checkout($data);
+    $response = $orderController->createFullOrder($data);
 
     if ($response['success']) {
         echo json_encode([

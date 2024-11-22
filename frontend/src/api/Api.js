@@ -258,6 +258,21 @@ export const deleteToCart = async (cartItemId) => {
     }
 };
 
+export const clearCart = async (userId) => {
+    try {
+        const response = await axios.post(`${API_URL}/clearCart.php`, {
+            user_id: userId,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error.message);
+        return { success: false, errors: [error.message] };
+    }
+};
+
 export const updateToCart = async (userId, productId, quantity, color) => {
     try {
         const response = await axios.post(`${API_URL}/cart.php`, {
@@ -281,5 +296,19 @@ export const getProductsCart = async (userId) => {
     } catch (error) {
         console.error(error.message);
         return { success: false, errors: [error.message] };
+    }
+};
+
+export const checkoutOrder = async (checkoutData) => {
+    try {
+        const response = await axios.post(`${API_URL}/checkout.php`, checkoutData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return { success: false, message: 'Có lỗi xảy ra, vui lòng thử lại sau.' };
     }
 };
