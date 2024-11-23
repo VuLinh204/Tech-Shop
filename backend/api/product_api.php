@@ -9,6 +9,13 @@ $productController = new Product_Controller(new Product_Model());
 // Lấy phương thức và tham số từ URL
 $method = $_SERVER['REQUEST_METHOD'];
 
+function decryptId($encrypted)
+{
+    $encryptionKey = 'NoLoveNoLife';
+    $cipher = 'AES-128-CTR';
+    list($encryptedData, $iv) = explode('::', base64_decode($encrypted), 2);
+    return openssl_decrypt($encryptedData, $cipher, $encryptionKey, 0, $iv);
+}
 // Xử lý các loại yêu cầu khác nhau
 if ($method === 'GET' && isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -37,7 +44,6 @@ if ($method === 'GET' && isset($_GET['action'])) {
             break;
     }
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     // Kiểm tra và xử lý các tham số khác
     $id = $_POST['id'] ?? '';
     $name = $_POST['name'] ?? '';
@@ -55,6 +61,8 @@ if ($method === 'GET' && isset($_GET['action'])) {
     $action = $_POST['action'];
     switch ($action) {
         case 'create':
+            //giải mã id category
+            $categoryId = decryptId($category_id);
             // Xử lý upload file
             if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === 0) {
                 $targetDir = "../public/uploads/";
@@ -76,7 +84,7 @@ if ($method === 'GET' && isset($_GET['action'])) {
                 $response = $productController->createProduct([
                     'name' => $name,
                     'description' => $description,
-                    'category_id' => $category_id,
+                    'category_id' => $categoryId,
                     'price' => $price,
                     'quantity' => $quantity,
                     'discount_percent' => $discount_percent,
@@ -89,32 +97,39 @@ if ($method === 'GET' && isset($_GET['action'])) {
             }
             break;
         case 'update':
-            // Xử lý upload file
-            if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === 0) {
-                $targetDir = "../public/uploads/";
-                $fileName = basename($_FILES['thumbnail']['name']);
-                $targetFilePath = $targetDir . $fileName;
+            // Xử lý cả tạo mới và cập nhật dựa vào 'action' trong dữ liệu gửi lên
+            $data = $_POST;
+            $action = $data['action'] ?? '';
+            $thumbnail = $_FILES['thumbnail'] ?? null;
 
-                // Check if file already exists
-                if (file_exists($targetFilePath)) {
-                    unlink($targetFilePath);
-                }
-                if (move_uploaded_file($_FILES['thumbnail']['tmp_name'], $targetFilePath)) {
-                    // File upload thành công, xử lý thêm nếu cần
-                    $data['thumbnail'] = $fileName; // Đường dẫn ảnh đã lưu
+            // Thư mục lưu ảnh
+            $uploads_dir = '../public/uploads';
+
+            if ($action === 'update') {
+                $currentThumbnail = $data['current_thumbnail'] ?? null;  // Đảm bảo có trường này khi gửi yêu cầu
+                if (isset($thumbnail) && $thumbnail['error'] === UPLOAD_ERR_OK) {
+                    // Xử lý khi người dùng tải lên ảnh mới
+                    $thumbnailFileName = basename($thumbnail['name']);
+
+                    // Di chuyển file tải lên
+                    if (move_uploaded_file($thumbnail['tmp_name'], "$uploads_dir/$thumbnailFileName")) {
+                        // Nếu tải ảnh mới, cập nhật ảnh mới
+                        $response = $productController->updateProduct(new Product($id, $name, $price, $description, $colorArr, $quantity, $thumbnailFileName, $discount_percent, $category_id));
+                        echo $response;
+                    } else {
+                        echo json_encode(["error" => "Failed to move uploaded file."]);
+                    }
                 } else {
-                    echo json_encode(['status' => 'error', 'message' => 'Không thể lưu ảnh.']);
-                    exit;
+                    // Nếu không có ảnh mới, sử dụng lại ảnh cũ
+                    if ($currentThumbnail) {
+                        $response = $productController->updateProduct(new Product($id, $name, $price, $description, $colorArr, $quantity, $currentThumbnail, $discount_percent, $category_id));
+                        echo $response;
+                    } else {
+                        echo json_encode(["error" => "No valid thumbnail or current thumbnail not provided."]);
+                    }
                 }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'File ảnh không hợp lệ.']);
-                exit;
-            }
-            if (isset($action)) {
-                $response = $productController->updateProduct(new Product($id, $name, $price, $description, $colorArr, $quantity, $data['thumbnail'] ?? null, $discount_percent, $category_id));
-                echo $response;
-            } else {
-                echo json_encode(['error' => 'Thông tin sản phẩm không đầy đủ']);
+                echo json_encode(["success" => false, "message" => "Invalid input data for update."]);
             }
             break;
         case 'delete':

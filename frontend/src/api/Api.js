@@ -35,7 +35,7 @@ export const updateUser = async () => {
     }
 };
 
-export const changePassword = async (oldPassword, newPassword, email) => {
+export const changePassword = async (oldPassword, newPassword, email, id) => {
     try {
         const response = await axios.post(
             `${API_URL}/changePassword.php`,
@@ -43,6 +43,7 @@ export const changePassword = async (oldPassword, newPassword, email) => {
                 oldPassword,
                 newPassword,
                 email,
+                id
             },
             {
                 withCredentials: true,
@@ -169,7 +170,7 @@ export const getProductsByCategory = async (categoryIds) => {
 export const createProduct = async (productData) => {
     try {
         const response = await fetch(`${API_URL}/product_api.php`, {
-            method: 'POST',
+            method: "POST",
             body: productData,
         });
         const result = await response.json();
@@ -179,6 +180,7 @@ export const createProduct = async (productData) => {
         return { status: 'error', message: 'Có lỗi xảy ra khi tạo sản phẩm.' };
     }
 };
+
 
 export const getDetailProduct = async (id) => {
     try {
@@ -211,7 +213,6 @@ export const deleteProduct = async (data) => {
             body: data,
         });
         const result = await response.json();
-        console.log(result);
         return result;
     } catch (error) {
         console.error('Error create product: ', error);

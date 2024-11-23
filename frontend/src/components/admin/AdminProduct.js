@@ -59,7 +59,7 @@ const AdminProduct = () => {
       setCategoryId(product.category_id);
       setProductDetails({
         ...product,
-        colors: data.product.color.join(", "),
+        colors: data.product.color.join(","),
         thumbnail: {
           uid: "-1",
           name: product.thumbnail,
@@ -127,14 +127,8 @@ const AdminProduct = () => {
       console.error("Error adding product:", error);
       message.error('Có lỗi xảy ra khi thêm sản phẩm.');
     }
-
   };
 
-  const convertUrlToFile = async (url, fileName) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return new File([blob], fileName, { type: blob.type });
-  };
 
   // Hàm cập nhật sản phẩm
   const handleUpdate = async (values) => {
@@ -149,21 +143,13 @@ const AdminProduct = () => {
     formUpdateData.append("discount_percent", values?.discount_percent);
     formUpdateData.append("color", values?.colors);
 
-    console.log(values.thumbnail.url);
-    console.log(values.thumbnail.name);
-    if (values?.thumbnail?.[0]?.originFileObj) {
+    console.log(values?.thumbnail?.originFileObj);
+    if (values?.thumbnail?.originFileObj) {
       // Người dùng chọn ảnh mới
-      formUpdateData.append("thumbnail", values.thumbnail[0].originFileObj);
+      formUpdateData.append("thumbnail", values?.thumbnail?.originFileObj);
     } else {
-      // Người dùng không chọn ảnh mới, gửi file từ ảnh cũ
-      const file = await convertUrlToFile(
-        values.thumbnail.urlImg,
-        values.thumbnail.name
-      );
-      formUpdateData.append("thumbnail", file);
+      formUpdateData.append("current_thumbnail", productDetails?.thumbnail.name);
     }
-
-
     try {
       const response = await updateProduct(formUpdateData);
       console.log(response);
@@ -203,6 +189,7 @@ const AdminProduct = () => {
     data.append("id", productId);
     try {
       const response = await deleteProduct(data);
+      console.log(response);
       if (response && response.status === 'success') {
         notification.success({
           message: 'Xóa sản phẩm thành công!',
