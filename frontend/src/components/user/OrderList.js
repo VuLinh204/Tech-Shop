@@ -8,19 +8,19 @@ const OrderList = () => {
   const [user, setUser] = useState(null);
 
   const fetchUser = async () => {
-    try {
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    } else {
       const data = await getUser();
       if (data.status === "success") {
         setUser(data.user);
         sessionStorage.setItem("user", JSON.stringify(data.user));
       } else {
-        console.error("Lỗi getUser:", data.message);
+        console.error(data.message);
       }
-    } catch (error) {
-      console.error("Lỗi khi gọi API lấy thông tin người dùng:", error);
     }
   };
-
   useEffect(() => {
     fetchUser();
   }, []);

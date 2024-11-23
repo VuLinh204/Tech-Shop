@@ -1,9 +1,6 @@
 <?php
 require_once '../controllers/OrderController.php';
-
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *'); // Cho phép truy cập từ mọi nguồn
-
+include_once '../config/cors.php';
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $userId = $_GET['user_id'] ?? null;
 
