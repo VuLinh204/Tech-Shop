@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../assets/css/Payment.css';
+import '../../assets/css/payment.css';
 import axios from 'axios';
 import { getProductsCart, getUser, checkoutOrder, updateUser, updateToCart, clearCart } from '../../api/Api';
 import { useNavigate } from 'react-router-dom';
