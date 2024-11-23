@@ -312,3 +312,31 @@ export const checkoutOrder = async (checkoutData) => {
         return { success: false, message: 'Có lỗi xảy ra, vui lòng thử lại sau.' };
     }
 };
+
+
+export const getRelatedProducts = async (productId) => {
+    try {
+        const response = await fetch(`${API_URL}/relatedProducts.php?product_id=${productId}`, {
+            method: "GET",
+        });
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const result = await response.json(); // Parse JSON response
+
+        if (result.status === "success" && result.related_products) {
+            return result.related_products;
+        } else {
+            // Return empty array if no related products or error
+            console.log("No related products found:", result.message);
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching related products:', error);
+        return []; // Return empty array on error
+    }
+};
+
+
