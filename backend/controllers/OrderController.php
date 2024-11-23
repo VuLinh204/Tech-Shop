@@ -9,7 +9,11 @@ class OrderController
     {
         $this->orderModel = new OrderModel();
     }
-
+    public function getOrdersByUserId($userId)
+    {
+        $orderModel = new OrderModel();
+        return $orderModel->getOrdersByUserId($userId);
+    }
     public function createFullOrder(array $data): array
     {
         // Bắt đầu giao dịch

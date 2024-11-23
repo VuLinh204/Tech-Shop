@@ -53,4 +53,44 @@ class OrderModel extends Database
 
         $stmt->close();
     }
+    public function getOrdersByUserId($userId)
+    {
+        $connection = self::getConnection(); // Lấy kết nối
+        $query = "SELECT id, total_price AS total_amount, 
+                         CASE 
+                             WHEN status = 1 THEN 'Đang Xử Lý'
+                             WHEN status = 2 THEN 'Đã Thanh Toán'
+                             WHEN status = 3 THEN 'Đã Giao Hàng'
+                             WHEN status = 4 THEN 'Đã Hủy'
+                             ELSE 'Không Xác Định'
+                         END AS status
+                  FROM `order`
+                  WHERE user_id = ?"; // Dùng ký tự `?` thay vì `:user_id` cho mysqli
+
+        // Chuẩn bị câu truy vấn
+        $stmt = $connection->prepare($query);
+
+        if (!$stmt) {
+            die('Lỗi chuẩn bị truy vấn: ' . $connection->error);
+        }
+
+        // Gán giá trị cho tham số
+        $stmt->bind_param('i', $userId); // `i` cho kiểu integer
+
+        // Thực thi truy vấn
+        $stmt->execute();
+
+        if ($stmt->error) {
+            die('Lỗi thực thi truy vấn: ' . $stmt->error);
+        }
+
+        // Lấy kết quả
+        $result = $stmt->get_result();
+        $orders = $result->fetch_all(MYSQLI_ASSOC);
+
+        // Đóng statement
+        $stmt->close();
+
+        return $orders;
+    }
 }
