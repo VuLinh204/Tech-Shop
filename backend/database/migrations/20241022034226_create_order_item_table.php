@@ -26,7 +26,7 @@ final class CreateOrderItemTable extends AbstractMigration
             ->addColumn('product_id', 'integer', ['null' => false, 'signed' => false])
             ->addForeignKey('product_id', 'product', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->addColumn('price', 'decimal', ['precision' => 10, 'scale' => 2, 'null' => false])
-            ->addColumn('num', 'integer', ['null' => false])
+            ->addColumn('quantity', 'integer', ['null' => false])
             ->create();
     }
 }

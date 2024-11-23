@@ -1,43 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Slider from 'react-slick';
-import ProductCard from './ProductCard';
-import '../../assets/css/RelatedProduct.css';
+import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
+import { getRelatedProducts } from "../../api/Api";
+import ProductCard from "./ProductCard";
+import "../../assets/css/RelatedProduct.css";
 
 const RelatedProducts = ({ productId }) => {
     const [relatedProducts, setRelatedProducts] = useState([]);
 
+    // In RelatedProducts.js
     useEffect(() => {
-        fetchRelatedProducts();
+        const fetchRelatedProducts = async () => {
+            try {
+                const relatedData = await getRelatedProducts(productId);
+                // relatedData will now always be an array (empty if no products)
+                setRelatedProducts(relatedData.filter(product => product.id !== productId));
+            } catch (error) {
+                console.error("Error fetching related products:", error);
+                setRelatedProducts([]);
+            }
+        };
+
+        if (productId) {
+            fetchRelatedProducts();
+        }
     }, [productId]);
 
-    const fetchRelatedProducts = async () => {
-        try {
-            const response = await axios.get(
-                `http://localhost/tech-shop/backend/api/relatedProducts.php?product_id=${productId}`,
-            );
-
-            if (response.data.error) {
-                console.error(response.data.error);
-            } else {
-                const uniqueProducts = Array.from(new Set(response.data.map((product) => product.id)))
-                    .map((id) => response.data.find((product) => product.id === id))
-                    .filter((product) => product.id !== productId); // Exclude the selected product
-
-                setRelatedProducts(uniqueProducts);
-            }
-        } catch (error) {
-            console.error('Error fetching related products:', error);
-        }
-    };
-
-    // Slider settings for react-slick
+    // Cấu hình slider react-slick
     const sliderSettings = {
         dots: false,
         infinite: false,
         speed: 500,
-        slidesToShow: 4, // Adjust as per design requirements
+        slidesToShow: 5,
         slidesToScroll: 1,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                },
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 2,
+                },
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                },
+            },
+        ],
     };
 
     return (

@@ -190,7 +190,11 @@
     background-color: var(--white-color);
 }
 
-.cart-emty{
+.cart-emty {
     display: grid;
     justify-items: center;
+}
+
+.quantity {
+    padding: 0 4px;
 }

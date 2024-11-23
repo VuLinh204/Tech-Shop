@@ -11,16 +11,27 @@ import {
 import { Menu } from "antd";
 import CategoriesManage from "./CategoriesManage";
 import AdminProduct from "./AdminProduct";
+import BannerManage from './BannerManage';
 import Dashboard from "./Dashboard";
 
 const renderPage = (key) => {
   switch (key) {
-    case "Dasboard":
-      return <Dashboard />;
-    case "Category":
-      return <CategoriesManage />;
-    case "Product":
-      return <AdminProduct />;
+    case 'Dasboard':
+      return (
+        <Dashboard />
+      )
+    case 'Category':
+      return (
+        <CategoriesManage />
+      )
+    case 'Product':
+      return (
+        <AdminProduct />
+      )
+    case 'Banner':
+      return (
+        <BannerManage />
+      )
     default:
       return <></>;
   }
@@ -37,14 +48,15 @@ function getItem(label, key, icon, children, type) {
 }
 const AdminPage = () => {
   const items = [
-    getItem("Bảng điều khiển", "Dasboard", <BarChartOutlined />),
-    getItem("Danh mục", "Category", <UnorderedListOutlined />),
-    getItem("Sản phẩm", "Product", <ProductOutlined />),
-    getItem("Thanh trượt", "Slider", <SwapOutlined />),
-    getItem("Mã giảm Giá", "Discount_percent", <DownSquareOutlined />),
-    getItem("Người dùng", "User", <UserOutlined />),
+    getItem('Bảng điều khiển', 'Dasboard', <BarChartOutlined />),
+    getItem('Danh mục', 'Category', <UnorderedListOutlined />),
+    getItem('Sản phẩm', 'Product', <ProductOutlined />),
+    getItem('Biểu ngữ', 'Banner', <SwapOutlined />),
+    getItem('Mã giảm Giá', 'Discount_percent', <DownSquareOutlined />),
+    getItem('Người dùng', 'User', <UserOutlined />),
+
   ];
-  const rootSubmenuKeys = ["Dasboard", "Category", "Product"];
+  const rootSubmenuKeys = ['Dasboard', 'Category', 'Product', 'Banner'];
   const [keySelected, setKeySelected] = useState("Dasboard");
   const [openKeys, setOpenKeys] = useState(["Dasboard"]);
   const onOpenChange = (keys) => {

@@ -72,10 +72,11 @@ function App() {
 
                         <Route path="/cart" element={<ProtectedRoute element={<Cart />} allowedRoles={[2]} />} />
 
+                        <Route path="/payment" element={<ProtectedRoute element={<Payment />} allowedRoles={[2]} />} />
+
                         {/* Routes không yêu cầu đăng nhập */}
                         <Route path="/productDetail/:id" element={<ProductDetail />} />
                         <Route path="/categories" element={<CategoryList />} />
-                        <Route path="/payment" element={<Payment />} />
                         <Route path="/product/searchResult" element={<SearchResultPage />} />
 
                         {/* Routes dành riêng cho admin */}

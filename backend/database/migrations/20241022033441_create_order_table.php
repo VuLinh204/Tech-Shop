@@ -23,10 +23,13 @@ final class CreateOrderTable extends AbstractMigration
         $table
             ->addColumn('user_id', 'integer', ['null' => false, 'signed' => false])
             ->addForeignKey('user_id', 'user', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
-            ->addColumn('order_date', 'datetime', ['null' => false, 'default' => 'CURRENT_TIMESTAMP'])
-            ->addColumn('status', 'integer', ['limit' => 10])
+            ->addColumn('status', 'integer', ['null' => false, 'default' => 1])
             ->addColumn('discount_id', 'integer', ['null' => true, 'signed' => false])
             ->addForeignKey('discount_id', 'discount', 'id', ['delete' => 'SET_NULL', 'update' => 'NO_ACTION'])
+            ->addColumn('total_quantity', 'integer', ['null' => false])
+            ->addColumn('total_price', 'decimal', ['precision' => 10, 'scale' => 2, 'null' => false])
+            ->addColumn('delivery_option', 'string', ['limit' => 255, 'null' => true])
+            ->addColumn('payment_method', 'string', ['limit' => 255, 'null' => true])
             ->addTimestamps()
             ->create();
     }
