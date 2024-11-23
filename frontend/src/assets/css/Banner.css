@@ -1,9 +1,13 @@
 .app__banner {
     padding-top: var(--header-height);
+    padding-left: 20px; 
+    padding-right: 20px;
 }
 
 .full-home-banners__main {
     position: relative;
+    max-width: 80%; /* Giới hạn chiều rộng */
+    margin: 0 auto; /* Căn giữa banner */
 }
 
 .full-home-banners__main:hover .full-home-banners__main-controls i {

@@ -38,7 +38,7 @@ const Banner = () => {
         <div className="app__banner">
             <div className="grid wide">
                 <div className="row sm-gutter app__banner-content">
-                    <div className="col l-8 m-12 c-12">
+                    <div className="col l-8 m-12     c-12">
                         <div className="full-home-banners__main">
                             <div className="full-home-banners__main-inner">
                                 {sliders.length > 0 ? (
