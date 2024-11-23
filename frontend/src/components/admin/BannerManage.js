@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Input, Upload, notification, Drawer } from 'antd';
+import { Modal, Button, Form, Input, Upload, notification, Drawer, AutoComplete } from 'antd';
 import { addBanner, deleteBanner, getBanners, updateBanner } from '../../api/BannerApi';
 import { UploadOutlined } from '@ant-design/icons';
 import Pagination from '../common/Pagination_admin';
-import axios from 'axios';
 import '../../assets/css/CategoriesManage.css';
-
 
 const BannerManage = () => {
     const [banners, setBanners] = useState([]);
+    const [filteredBanners, setFilteredBanners] = useState([]);
+    const [searchOptions, setSearchOptions] = useState([]);
     const [bannerDetails, setBannerDetails] = useState({
         id: '',
         title: '',
@@ -23,19 +23,24 @@ const BannerManage = () => {
     const [form] = Form.useForm();
 
     const itemsPerPage = 10;
-    const offset = (currentPage - 1) * itemsPerPage;
-    const currentItems = banners.slice(offset, offset + itemsPerPage);
-    const pageCount = Math.ceil(banners.length / itemsPerPage);
+    const validCurrentPage = currentPage > 0 ? currentPage : 1;
+    const offset = (validCurrentPage - 1) * itemsPerPage;
+    const currentItems = Array.isArray(filteredBanners)
+        ? filteredBanners.slice(offset, offset + itemsPerPage)
+        : [];
+    const pageCount = Array.isArray(filteredBanners)
+        ? Math.ceil(filteredBanners.length / itemsPerPage)
+        : 0;
 
     useEffect(() => {
         fetchData();
     }, []);
 
-    // Fetch banners data
     const fetchData = async () => {
         try {
             const data = await getBanners();
             setBanners(data);
+            setFilteredBanners(data);
         } catch (error) {
             notification.error({
                 message: 'Lỗi',
@@ -47,14 +52,34 @@ const BannerManage = () => {
         }
     };
 
-    // Add new banner
+    // Tìm kiếm biểu ngữ
+    const handleSearch = (value) => {
+        if (!value.trim()) {
+            setFilteredBanners(banners);
+            setSearchOptions([]);
+            return;
+        }
+
+        const filtered = banners.filter((banner) =>
+            banner.title.toLowerCase().includes(value.toLowerCase())
+        );
+
+        setFilteredBanners(filtered);
+        setSearchOptions(filtered.map((banner) => ({ value: banner.title })));
+    };
+
+    const handleResetSearch = () => {
+        setFilteredBanners(banners);
+        setSearchOptions([]);
+    };
+
     const handleAdd = async (values) => {
         const formData = {
             action: "add",
             title: values.title,
             link: values.link,
             image_url: fileList[0]?.originFileObj.name
-        }
+        };
         try {
             const response = await addBanner(formData);
             if (response && response.status === 'success') {
@@ -70,7 +95,6 @@ const BannerManage = () => {
         }
     };
 
-    // Update banner
     const handleUpdate = async (values) => {
         const formData = {
             action: "update",
@@ -78,7 +102,7 @@ const BannerManage = () => {
             title: values.title,
             link: values.link,
             image_url: fileList[0].originFileObj.name
-        }
+        };
         try {
             const response = await updateBanner(formData);
             if (response && response.status === 'success') {
@@ -94,13 +118,12 @@ const BannerManage = () => {
         }
     };
 
-    // Delete banner
     const handleDelete = async (bannerId) => {
         try {
             const response = await deleteBanner(bannerId);
             if (response && response.status === 'success') {
                 notification.success({ message: 'Xóa biểu ngữ thành công!' });
-                setBanners(banners.filter((banner) => banner.id !== bannerId));
+                fetchData();
             } else {
                 throw new Error(response?.data?.message || 'Không thể xóa biểu ngữ.');
             }
@@ -129,25 +152,6 @@ const BannerManage = () => {
         });
     };
 
-    const showModal = () => {
-        form.resetFields();
-        setIsModalOpen(true);
-    };
-
-    const showDrawer = (banner) => {
-        setBannerDetails(banner);
-        form.setFieldsValue({
-            title: banner.title,
-            link: banner.link,
-        });
-        setFileList([{
-            uid: "-1",
-            name: banner.image,
-            url: banner.image,
-        }]);
-        setIsDrawerOpen(true);
-    };
-
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -162,28 +166,26 @@ const BannerManage = () => {
                 <div>
                     <div className="category-manager__header">
                         <h1 style={{ marginRight: '100px' }}>Danh sách các biểu ngữ</h1>
-                        <div className="header__search" style={{ width: '30%', border: '1px solid #000' }}>
-                            <div className="header__search-input-wrap">
-                                <form action="#" method="GET">
-                                    <input
-                                        type="text"
-                                        name="query"
-                                        className="header__search-input"
-                                        placeholder="Tìm kiếm"
-                                    />
-                                </form>
-                            </div>
-                            <button type="submit" className="header__search-btn">
-                                <i className="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
-                            </button>
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            <AutoComplete
+                                options={searchOptions}
+                                style={{ width: 300 }}
+                                onSearch={handleSearch}
+                                placeholder="Tìm kiếm biểu ngữ..."
+                            >
+                                <Input.Search enterButton size="large" onSearch={handleSearch} />
+                            </AutoComplete>
+                            <Button type="default" onClick={handleResetSearch}>
+                                Hiển thị tất cả
+                            </Button>
                         </div>
-                        <button className="btn btn--primary" onClick={showModal} style={{ marginLeft: '140px' }}>
+                        <button className="btn btn--primary" onClick={() => setIsModalOpen(true)}>
                             + Thêm biểu ngữ
                         </button>
                     </div>
                     {loading ? (
                         <p>Loading biểu ngữ...</p>
-                    ) : banners.length === 0 ? (
+                    ) : filteredBanners.length === 0 ? (
                         <h3>Không có biểu ngữ nào</h3>
                     ) : (
                         <table className="category-table">
@@ -213,7 +215,10 @@ const BannerManage = () => {
                                             <button
                                                 className="btn-edit"
                                                 title="Sửa"
-                                                onClick={() => showDrawer(banner)}
+                                                onClick={() => {
+                                                    setBannerDetails(banner);
+                                                    setIsDrawerOpen(true);
+                                                }}
                                             >
                                                 <i className="fas fa-edit"></i>
                                             </button>
@@ -230,17 +235,13 @@ const BannerManage = () => {
                             </tbody>
                         </table>
                     )}
-                    <div>
-                        <Pagination
-                            totalPages={pageCount}
-                            currentPage={currentPage}
-                            setCurrentPage={setCurrentPage}
-                            onPageChange={handlePageChange}
-                        />
-                    </div>
+                    <Pagination
+                        totalPages={pageCount}
+                        currentPage={currentPage}
+                        onPageChange={handlePageChange}
+                    />
                 </div>
             </div>
-
             {/* Add Banner Modal */}
             <Modal
                 title="Thêm Biểu Ngữ"
@@ -269,9 +270,16 @@ const BannerManage = () => {
                             },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
-                                    if (value && value.fileList.length === 0) {
-                                        return Promise.reject('Vui lòng chọn hình ảnh.');
+                                    const isJpgOrPng = value.file.type === 'image/jpeg' || value.file.type === 'image/png';
+                                    if (!isJpgOrPng) {
+                                        return Promise.reject("Bạn chỉ có thể tải lên tệp JPG/PNG!");
                                     }
+
+                                    const isLt2M = value.file.size / 1024 / 1024 < 2;
+                                    if (!isLt2M) {
+                                        return Promise.reject("Hình ảnh phải nhỏ hơn 2MB!");
+                                    }
+
                                     return Promise.resolve();
                                 },
                             }),
@@ -326,9 +334,16 @@ const BannerManage = () => {
                             },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
-                                    if (value && value.fileList.length === 0) {
-                                        return Promise.reject('Vui lòng chọn hình ảnh.');
+                                    const isJpgOrPng = value.file.type === 'image/jpeg' || value.file.type === 'image/png';
+                                    if (!isJpgOrPng) {
+                                        return Promise.reject("Bạn chỉ có thể tải lên tệp JPG/PNG!");
                                     }
+
+                                    const isLt2M = value.file.size / 1024 / 1024 < 2;
+                                    if (!isLt2M) {
+                                        return Promise.reject("Hình ảnh phải nhỏ hơn 2MB!");
+                                    }
+
                                     return Promise.resolve();
                                 },
                             }),
